@@ -1,0 +1,511 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ITL AI – AI-Powered Legal Research, Drafting & Summariser for Income Tax & GST</title>
+        <meta name="description" content="ITL AI - AI Writer &amp; Tech Startup Landing Page Template">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token }}">
+
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/odometer.css' %}">
+        <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+        <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/animatedheadline.css' %}">
+        <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    </head>
+    <!-- Add CSS to style the left-right chat -->
+    <style>
+        .plan-card{
+            cursor:pointer;
+        }
+
+        .plan-card input{
+            display:none;
+        }
+
+        .plan-card.active .plan-box{
+            border:2px solid #0d6efd;
+            background:#fff;
+        }
+
+        .plan-card.active .plan-box h4{
+            color: #0d6efd;
+        }
+        .plan-card input {
+            display: none;
+        }
+
+        .plan-box {
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .plan-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .coupon-wrapper {
+            position: relative;
+        }
+
+        .coupon-wrapper input {
+            padding-right: 110px;
+        }
+
+        .coupon-btn {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            bottom: 4px;
+            padding: 0 20px;
+        }
+
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-chip {
+            display: flex;
+            align-items: center;
+            background: #2c2c2c;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            gap: 6px;
+        }
+
+        .file-chip span:first-child {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .remove-file {
+            color: #ff4d4f;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .remove-file:hover {
+            color: red;
+            transform: scale(1.2);
+        }
+
+        .file-chip {
+            justify-content: space-between;
+            min-width: 180px;
+        }
+
+
+        .file-chip span {
+            margin-right: 8px;
+        }
+
+        .file-chip button {
+            background: none;
+            border: none;
+            color: #ff4d4f;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .chat-history {
+            max-height: 600px;
+            min-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Message bubble (common) */
+        .message {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 20px;
+            max-width: 90%;
+            /* font-size: 14px; */
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            text-align: justify;
+        }
+
+        /* User & Bot shared style */
+        .user-message,
+        .bot-message {
+            background: linear-gradient(89.78deg, rgba(200,184,232,0.2), rgba(103,33,255,0.2), rgba(0,203,255,0.2));
+            border: 1px solid rgba(255,255,255,0.2);
+            
+        }
+
+        /* Alignment */
+        .user-message { margin-left: auto; }
+        .bot-message { margin-right: auto; }
+
+        /* Text color */
+        .message * { color: #fff; }
+
+        /* Chat input */
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border-radius: 25px;
+            border: 2px solid #ddd;
+            background: #f9f9f9;
+        }
+
+        .chat-input input:focus {
+            border-color: #00aaff;
+            outline: none;
+        }
+
+        .chat-input button {
+            width: 20%;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chat-input button:hover { transform: scale(1.05); }
+        .chat-input button:active { transform: scale(0.98); }
+
+        /* Typing animation */
+        .message.typing p::after {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+            0% { content: "■ □ □"; }
+            50% { content: "■ ■ □"; }
+            100% { content: "■ ■ ■"; }
+        }
+
+        /* Copy button */
+        .copy-button {
+            padding: 6px 12px;
+            background: #6721FF;
+            color: #fff;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .copy-button:hover { background: rgb(24, 154, 206); color: black; }
+
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        /* Style for each tab button */
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Text inside the tab */
+        .tab-text {
+            font-size: 16px;
+        }
+
+        /* Hover effect for tab buttons */
+        .tab-button:hover {
+            background-color: #6721FF; /* Green on hover */
+            color: white;
+        }
+
+        .tab-button.active {
+            background-color: #6721FF;
+            color: white;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: underline; /* Underline the active tab */
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-input button { width: 30%; }
+        }
+
+        .marquee {
+            width: 100%;
+            overflow: hidden;
+            padding: 8px 0;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 25s linear infinite;
+            font-weight: 600;
+        }
+
+        .marquee-content a {
+            color: red;
+            text-decoration: none;
+            margin: 0 20px;
+        }
+
+        .marquee-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* STOP ON MOUSE OVER */
+        .marquee:hover .marquee-content {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll-left {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+
+    <body data-aos-easing="ease" data-aos-duration="800" data-aos-delay="0">
+
+        <!-- Preloader -->
+        <div id="preloader" style="display: none;">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+        <!-- Preloader -->
+
+        <!-- Scroll-top -->
+        <button class="scroll-top scroll-to-target" data-target="html">
+            <i class="fas fa-angle-up"></i>
+        </button>
+        <!-- Scroll-top-end-->
+
+        <!-- header-area -->
+        <header>
+            <div id="sticky-header" class="menu-area transparent-header">
+                <div class="container custom-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mobile-nav-toggler"><i class="fas fa-bars"></i></div>
+                            <div class="menu-wrap">
+                                <nav class="menu-nav">
+                                    <div class="logo">
+                                        <a href="{% url 'index' %}" style="color:white; padding: 10px; font-size: 28px;"><img src="{% static 'img/logo.png' %}" alt="Logo" width="60" height="60" style="background: white; border-radius:25%;"> ITL AI</a>
+                                    </div>
+                                    <div class="navbar-wrap main-menu d-none d-lg-flex">
+                                        <ul class="navigation">
+                                            <li class="{% if request.path == '/' %}active{% endif %}"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="{% if request.path == '/about/' %}active{% endif %}"><a href="{% url 'about' %}">About Us</a></li>
+                                            <li class="{% if request.path == '/contact/' %}active{% endif %}"><a href="{% url 'contact' %}">Contacts</a></li>
+                                            <li class="{% if request.path == '/pricing/' %}active{% endif %}"><a href="{% url 'pricing' %}">Pricing</a></li>
+                                            <li class="{% if request.path == '/faqs/' %}active{% endif %}"><a href="{% url 'faqs' %}">FAQs</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="header-action d-none d-md-block">
+                                        <ul class="list-wrap">
+                                            {% if user.is_authenticated %}
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="user-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; font-size: 18px;">
+                                                        {{ user.username|first|upper }}
+                                                    </span>
+                                                    <span class="d-none d-md-inline">{{ user.username }}</span>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                                    <li>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{% url 'settings' %}" class="dropdown-item text-danger" style="border: none; background: none; cursor: pointer;">
+                                                            Settings
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <form method="post" action="{% url 'logout' %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="dropdown-item text-danger" style="border: none; background: none; cursor: pointer;">
+                                                                Logout
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            {% else %}
+                                                <li class="header-btn"><a href="{% url 'signup' %}" class="btn">Sign Up</a></li>
+                                                <li class="header-btn"><a href="{% url 'login' %}" class="btn">Sign In</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </nav>
+                                <div class="marquee">
+                                    <div class="marquee-content">
+                                        <!-- <a href="#">Income Tax Rules, 2026 notified</a> &nbsp; | &nbsp;
+                                        <a href="#">CBDT Circular No. 05/2026 issued</a> &nbsp; | &nbsp;
+                                        <a href="#">GST amendment applicable from 01-04-2026</a> &nbsp; | &nbsp;
+                                        <a href="#">Click here to read latest notifications</a> -->
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <!-- Mobile Menu  -->
+                            <div class="mobile-menu">
+                                <nav class="menu-box">
+                                    <div class="close-btn"><i class="fas fa-times"></i></div>
+                                    <div class="nav-logo">
+                                        <a href="{% url 'index' %}" style="color:white; padding: 10px; font-size: 28px;"><img src="{% static 'img/logo.png' %}" alt="Logo" width="60" height="60"> ITL AI</a>
+                                    </div>
+                                    <div class="menu-outer">
+                                        <!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header-->
+                                        <ul class="navigation">
+                                            <li class="{% if request.path == '/' %}active{% endif %}"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="{% if request.path == '/about/' %}active{% endif %}"><a href="{% url 'about' %}">About Us</a></li>
+                                            <li class="{% if request.path == '/contact/' %}active{% endif %}"><a href="{% url 'contact' %}">Contacts</a></li>
+                                            <li class="{% if request.path == '/pricing/' %}active{% endif %}"><a href="{% url 'pricing' %}">Pricing</a></li>
+                                            <li class="{% if request.path == '/faqs/' %}active{% endif %}"><a href="{% url 'faqs' %}">FAQs</a></li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="menu-backdrop"></div>
+                            <!-- End Mobile Menu -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- header-area-end -->
+
+        <!-- main-area -->
+
+        {% block content %}{% endblock %}
+        <!-- main-area-end -->
+
+        <!-- footer-area -->
+        <footer>
+            <div class="footer-area">
+                <div class="container">
+                    <div class="footer-top">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                <div class="footer-widget">
+                                    <div class="footer-link">
+                                        <ul class="list-wrap">
+                                            <li><a href="{% url 'about' %}">About Us</a></li>
+                                            <li><a href="{% url 'contact' %}">Contacts</a></li>
+                                            <li><a href="{% url 'pricing' %}">Pricing</a></li>
+                                            <li><a href="{% url 'faqs' %}">FAQs</a></li>
+                                            <li><a href="{% url 'index' %}">ITL AI</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                <div class="footer-widget">
+                                    <div class="footer-link">
+                                        <ul class="list-wrap">
+                                            {% for content in legal_content %}
+                                                <li><a href="{% url 'legal_detail' slug=content.slug %}">{{ content.section }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                <div class="footer-widget">
+                                    <h4 class="fw-title">Need help?</h4>
+                                    <div class="footer-contact">
+                                        <a href="tel:+91-9982608890" class="phone">+91-9982608890</a>
+                                        <a href="tel:+91-9001597011" class="phone">+91-9001597011</a>
+                                        <a href="mailto:support@incometaxlibrary.com" class="email">support@incometaxlibrary.com</a>
+                                        <a href="https://ai.incometaxlibrary.com/" class="website">https://ai.incometaxlibrary.com/</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                <div class="footer-widget">
+                                    <div class="footer-newsletter">
+                                        <h6 class="title">Upgrade Your Practice</h6>
+                                        <p>Faster research. Smarter drafting. Better outcomes — powered by ITL AI.</p>
+                                        <a href="{% url 'pricing' %}" class="btn btn-two">Start Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <div class="copyright-text">
+                                    <p>Copyright © {% now "Y" %} ITL AI All rights reserved.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- footer-area-end -->
+
+
+
+        <!-- JS here -->
+        <script src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/imagesloaded.pkgd.min.js' %}"></script>
+        <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+        <script src="{% static 'js/jquery.odometer.min.js' %}"></script>
+        <script src="{% static 'js/jquery.appear.js' %}"></script>
+        <script src="{% static 'js/gsap.js' %}"></script>
+        <script src="{% static 'js/ScrollTrigger.js' %}"></script>
+        <script src="{% static 'js/ScrollToPlugin.min.js' %}"></script>
+        <script src="{% static 'js/SplitText.js' %}"></script>
+        <script src="{% static 'js/gsap-animation.js' %}"></script>
+        <script src="{% static 'js/select2.min.js' %}"></script>
+        <script src="{% static 'js/slick.min.js' %}"></script>
+        <script src="{% static 'js/animatedheadline.min.js' %}"></script>
+        <script src="{% static 'js/aos.js' %}"></script>
+        <script src="{% static 'js/ajax-form.js' %}"></script>
+        <script src="{% static 'js/wow.min.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/lkyXGo09594002719561.js"></script>
+        <script>
+        </script>
+            
+    </body>
+</html>

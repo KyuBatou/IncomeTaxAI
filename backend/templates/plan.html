@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="main-content">
+    <section class="breadcrumb-area">
+        <div class="container">
+            <div class="faq-tab-wrap">
+                <ul class="nav nav-tabs wizard-tabs">
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Enter User Details
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link active" disabled>
+                            Select Plan
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Review & Pay
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Receipt
+                        </button>
+                    </li>
+                </ul>
+                <div class="container comment-respond mt-4">
+                    <form method="post" action="{% url 'review' %}" class="comment-form">
+                        {% csrf_token %}
+                        <!-- Hidden user data -->
+                        <input type="hidden" name="email" value="{{ form_data.email }}">
+                        <input type="hidden" name="name" value="{{ form_data.name }}">
+                        <input type="hidden" name="mobileno" value="{{ form_data.mobileno }}">
+                        <input type="hidden" name="company" value="{{ form_data.company }}">
+                        <input type="hidden" name="legal_name" value="{{ form_data.legal_name }}">
+                        <input type="hidden" name="gstin" value="{{ form_data.gstin }}">
+                        <input type="hidden" name="address" value="{{ form_data.address }}">
+                        <input type="hidden" name="order_number" value="{{ order_number }}">
+                        <div class="row justify-content-center mb-4">
+                            {% for plan in pricing_plans %}
+                                <div class="col-md-4 d-flex">
+                                    <label class="plan-card w-100">
+                                        <div class="plan-box p-4 text-center shadow-sm">
+                                            <h4>{{ plan.name }}</h4>
+                                            <h6 class="text-primary mb-3">₹ {{ plan.yearly_price }}</h6>
+                                            <input
+                                                type="radio"
+                                                class="plan-radio"
+                                                name="plan"
+                                                value="{{ plan.id }}"
+                                                data-price="{{ plan.yearly_price }}"
+                                                required
+                                            >
+                                        </div>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="form-grp col-md-12 mb-3">
+                                <label>Booked By </label>
+                                <select name="member" id="member" class="form-control">
+                                    <option value="">--- Direct ---</option>
+                                    {% for salesman in salesmans %}
+                                        <option value="{{ salesman.id }}">{{ salesman.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- Plan Amount -->
+                            <div class="form-grp col-md-6 mb-3">
+                                <label>Plan Amount</label>
+                                <input
+                                    type="text"
+                                    id="amount"
+                                    name="amount"
+                                    class="form-control"
+                                    readonly
+                                >
+                            </div>
+                            <!-- Tax -->
+                            <div class="form-grp col-md-6 mb-3">
+                                <label>GST (18%)</label>
+                                <input
+                                    type="text"
+                                    id="tax"
+                                    name="tax"
+                                    class="form-control"
+                                    readonly
+                                >
+                            </div>
+                            <!-- Coupon -->
+                            <div class="form-grp col-md-6 mb-3">
+                                <label>Coupon Code</label>
+                                <div class="coupon-wrapper">
+                                    <input
+                                        type="text"
+                                        id="coupon"
+                                        name="coupon"
+                                        class="form-control"
+                                        placeholder="Enter coupon code"
+                                    >
+                                    <button
+                                        type="button"
+                                        id="applyCouponBtn"
+                                        class="btn btn-primary coupon-btn"
+                                        onclick="applyCoupon()"
+                                        data-applied="false"
+                                    >
+                                        Apply
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Final Amount -->
+                            <div class="form-grp col-md-6 mb-3">
+                                <label><strong>Final Amount</strong></label>
+                                <input
+                                    type="text"
+                                    id="final_amount"
+                                    name="final_amount"
+                                    class="form-control"
+                                    readonly
+                                >
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'subscribe' %}" class="btn btn-secondary">
+                                Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Next
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const planRadios = document.querySelectorAll(".plan-radio");
+
+    const amountField = document.getElementById("amount");
+    const taxField = document.getElementById("tax");
+    const finalField = document.getElementById("final_amount");
+
+    let discount = 0;
+    const memberField = document.getElementById("member");
+
+    memberField.addEventListener("change", function () {
+
+        const selectedPlan = document.querySelector(".plan-radio:checked");
+        if (!selectedPlan) return;
+        if (this.value !== "") {
+            let amount = parseFloat(
+                selectedPlan.dataset.price.replace(/,/g, "")
+            );
+
+            if (!amountField.hasAttribute("readonly")) {
+                amount = parseFloat(amountField.value) || amount;
+            }
+            amountField.removeAttribute("readonly");
+            amountField.value = amount;
+        } else {
+            amountField.setAttribute("readonly", true);
+        }
+        calculateTotal();
+    });
+
+    amountField.addEventListener("input", function () {
+        const applyBtn = document.getElementById("applyCouponBtn");
+        const couponInput = document.getElementById("coupon");
+
+        if (applyBtn.dataset.applied === "true") {
+
+            discount = 0;
+
+            couponInput.disabled = false;
+            couponInput.value = "";
+
+            applyBtn.innerText = "Apply";
+            applyBtn.dataset.applied = "false";
+
+            applyBtn.classList.remove("btn-danger");
+            applyBtn.classList.add("btn-primary");
+
+        }
+
+        const amount = parseFloat(this.value) || 0;
+
+        const tax = amount * 0.18;
+
+        const finalAmount = amount + tax;
+
+        taxField.value = tax.toFixed(2);
+        finalField.value = finalAmount.toFixed(2);
+
+    });
+
+    function calculateTotal() {
+
+        const selectedPlan = document.querySelector(".plan-radio:checked");
+
+        if (!selectedPlan) return;
+
+        let amount = parseFloat(
+            selectedPlan.dataset.price.replace(/,/g, "")
+        );
+
+        if (!amountField.hasAttribute("readonly")) {
+            amount = parseFloat(amountField.value) || amount;
+        }
+        const totalAmount = Math.max(amount - discount, 0);
+        const tax = totalAmount * 0.18;
+        const finalAmount = totalAmount + tax;
+
+        amountField.value = totalAmount.toFixed(2);
+        taxField.value = tax.toFixed(2);
+        finalField.value = finalAmount.toFixed(2);
+    }
+
+
+    window.applyCoupon = function () {
+
+        const couponInput = document.getElementById("coupon");
+        const applyBtn = document.getElementById("applyCouponBtn");
+        const memberField = document.getElementById("member");
+        const planRadios = document.querySelectorAll(".plan-radio");
+
+        const coupon = couponInput.value.trim();
+
+        /* REMOVE COUPON */
+
+        if (applyBtn.dataset.applied === "true") {
+
+            discount = 0;
+
+            couponInput.disabled = false;
+            couponInput.value = "";
+
+            applyBtn.innerText = "Apply";
+            applyBtn.dataset.applied = "false";
+
+            applyBtn.classList.remove("btn-danger");
+            applyBtn.classList.add("btn-primary");
+
+            // unlock plan + member
+            memberField.disabled = false;
+
+            planRadios.forEach(function (radio) {
+                radio.disabled = false;
+            });
+
+            calculateTotal();
+
+            return;
+        }
+
+        /* APPLY COUPON */
+
+        if (coupon === "DISCOUNT100") {
+
+            discount = 10;
+
+            alert("Coupon Applied Successfully");
+
+            couponInput.disabled = true;
+
+            applyBtn.innerText = "Remove";
+            applyBtn.dataset.applied = "true";
+
+            applyBtn.classList.remove("btn-primary");
+            applyBtn.classList.add("btn-danger");
+
+            // lock plan + member
+            memberField.disabled = true;
+
+            planRadios.forEach(function (radio) {
+                radio.disabled = true;
+            });
+
+        } else {
+
+            discount = 0;
+            alert("Invalid Coupon");
+
+        }
+
+        calculateTotal();
+    };
+
+    document.querySelector("form").addEventListener("submit", function(e){
+        if(!document.querySelector(".plan-radio:checked")){
+            e.preventDefault();
+            alert("Please select a plan");
+        }
+    });
+
+    planRadios.forEach(function (radio) {
+        radio.addEventListener("change", function(){
+
+            document.querySelectorAll(".plan-card").forEach(function(card){
+                card.classList.remove("active");
+            });
+
+            radio.closest(".plan-card").classList.add("active");
+
+            calculateTotal();
+        });
+    });
+
+});
+
+</script>
+
+
+{% endblock %}

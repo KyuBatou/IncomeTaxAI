@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    .heading { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <p>Dear {{ name }},</p>
+
+  <p>You are successfully registered at <a href="http://www.incometaxlibrary.com">www.incometaxlibrary.com</a>.</p>
+
+  <p><strong>Please send a mail to <a href="mailto:support@incometaxlibrary.com">support@incometaxlibrary.com</a></strong> with your complete payment details and user ID (email).</p>
+
+  <p>We will not be responsible for CASH PAID TO ANYONE and/or even by cheque/bank draft drawn in favour of other than <strong>“Income Tax Library” payable at Jaipur</strong>.</p>
+
+  <p class="heading">Your Registration Details</p>
+  <ul>
+    <li><strong>User Name:</strong> {{ email }}</li>
+    <li><strong>Password:</strong> {{ password }}</li>
+    <li><strong>Name:</strong> {{ name }}</li>
+    <li><strong>Visitor Address:</strong> {{ address }}</li>
+    <li><strong>City:</strong> {{ city }}</li>
+    <li><strong>Pin:</strong> {{ pin }}</li>
+    <li><strong>Mobile No.:</strong> {{ mobileno }}</li>
+    <li><strong>Date:</strong> {{ date }}</li>
+  </ul>
+
+  <p>With warm regards,</p>
+  <p>Thank You<br/>Support Team<br/>Income Tax Library<br/>
+  Cell: +91 9001 597 011, +91 9982 608 890<br/>
+  Email: support@incometaxlibrary.com<br/>
+  Website: <a href="http://www.incometaxlibrary.com">IncomeTaxLibrary</a></p>
+
+  <p><em>Note: Use of the information and data contained within this mail is at your sole risk.</em></p>
+</body>
+</html>

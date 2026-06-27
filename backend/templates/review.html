@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="main-content">
+    <section class="breadcrumb-area">
+        <div class="container">
+            <div class="faq-tab-wrap">
+                <ul class="nav nav-tabs wizard-tabs">
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Enter User Details
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Select Plan
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link active" disabled>
+                            Review & Pay
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Receipt
+                        </button>
+                    </li>
+                </ul>
+                <div class="container comment-respond mt-4">
+                    <div class="container mt-4">
+                        <!-- Billing Information -->
+                        <div class="col-md-12 mb-4">
+                            <div class="review-box p-3">
+                                <h5 class="mb-3">Billing Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Name:</strong> {{ form_data.name|default:"N/A" }}</p>
+                                        <p><strong>Company:</strong> {{ form_data.company|default:"N/A" }}</p>
+                                        <p><strong>Email:</strong> {{ form_data.email }}</p>
+                                        <p><strong>Phone:</strong> {{ form_data.mobileno }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Legal Name:</strong> {{ form_data.legal_name|default:"N/A" }}</p>
+                                        <p><strong>GSTIN:</strong> {{ form_data.gstin|default:"N/A" }}</p>
+                                        <p><strong>Billing Address:</strong> {{ form_data.address }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- Order Details -->
+                        <div class="review-box p-3 mb-4">
+                            <h5 class="mb-3">Order Details</h5>
+                            <div class="row mb-2">
+                                <div class="col-6">Order Number:</div>
+                                <div class="col-6 text-end">{{ form_data.order_number }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">Order Date:</div>
+                                <div class="col-6 text-end">{{ order_date }}</div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- Payment Summary -->
+                        <div class="review-box p-3 mb-4">
+                            <h5 class="mb-3">Payment Summary</h5>
+                            <div class="row mb-2">
+                                <div class="col-6">Product:</div>
+                                <div class="col-6 text-end">{{ pricing_plan.name }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">Amount:</div>
+                                <div class="col-6 text-end">₹ {{ form_data.amount }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">GST (18%):</div>
+                                <div class="col-6 text-end">₹ {{ form_data.tax }}</div>
+                            </div>
+                            <div class="row fw-bold">
+                                <div class="col-6">Total Payable:</div>
+                                <div class="col-6 text-end">₹ {{ form_data.final_amount }}</div>
+                            </div>
+                        </div>
+                        <!-- Payment Method -->
+                        <!-- <div class="review-box p-3 mb-4">
+                            <h5 class="mb-3">Select Payment Method</h5>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="payment_method" value="paytm" id="paytm">
+                                <label class="form-check-label" for="paytm">
+                                    Paytm
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" value="razorpay" id="razorpay">
+                                <label class="form-check-label" for="razorpay">
+                                    Razorpay
+                                </label>
+                            </div>
+                        </div> -->
+                        <!-- Note -->
+                        <div class="alert alert-info">
+                            Note: Your GSTIN-compliant invoice will be sent to your email separately.
+                        </div>
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'plan' %}" class="btn btn-secondary">
+                                Back
+                            </a>
+                            <button id="pay-btn" class="btn btn-primary">
+                                Proceed to Payment
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/lkyXGo09594002719561.js"></script>
+<script>
+    // document.getElementById("pay-btn").addEventListener("click", function () {
+    
+    //     const btn = this;
+    //     const amount_in_paise = "{{ form_data.final_amount }}";
+    //     const final_amount = parseFloat("{{ form_data.final_amount }}").toFixed(2);
+    //     const order_number = "ORD_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+    //     btn.disabled = true;
+        
+    
+    //     fetch("/ai/create-paytm-order/", {
+    //         method: "POST",
+    //         cache: "no-store",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "X-CSRFToken": "{{ csrf_token }}"
+    //         },
+    //         body: JSON.stringify({
+    //             totalAmount: final_amount,
+    //             orderId: order_number,
+    //             // email: "{{ form_data.email }}",
+    //             // name: "{{ form_data.name }}",
+    //             // mobileNumber: "{{ form_data.mobileNumber }}",
+    //             // companyName: "{{ form_data.company }}",
+    //             // address: "{{ form_data.address }}",
+    //             // legalName: "{{ form_data.legalName }}",
+    //             // gstin: "{{ form_data.gstin }}",
+    //             // selectedSalesman: "{{ form_data.salesman }}",
+    //             // // product_name: order_number,
+    //             // amount: "{{ form_data.amount }}",
+    //             // taxAmount: "{{ form_data.taxAmount }}",
+    //         })
+    //     })
+    //     .then(res => res.json())
+    //     .then(data => {
+    //         console.log("Full Response:", data);
+    //         if (!data || !data.body || !data.body.txnToken ) {
+    //             alert("Payment initialization failed!");
+    //             btn.disabled = false;
+    //             return;
+    //         }
+    
+    //         const txnToken = data.body.txnToken;
+    //         console.log(txnToken)
+    //         console.log(order_number)
+    //         console.log(final_amount)
+    
+    //         window.Paytm.CheckoutJS.init({
+    //             root: "",
+    //             flow: "DEFAULT",
+    //             data: {
+    //                 orderId: order_number,
+    //                 token: txnToken,
+    //                 tokenType: "TXN_TOKEN",
+    //                 amount: final_amount
+    //             },
+    //             handler: {
+    //                 notifyMerchant: function (eventName, eventData) {
+    //                     console.log("Event:", eventName, eventData);
+    
+    //                     if (eventName === "PAYMENT_SUCCESS") {
+    //                         window.location.href = "/ai/receipt/" + orderId + "/";
+    //                     }
+    
+    //                     if (eventName === "PAYMENT_FAILED") {
+    //                         alert("Payment failed. Try again.");
+    //                         btn.disabled = false;
+    //                     }
+    //                 }
+    //             }
+    //         })
+    //         .then(() => window.Paytm.CheckoutJS.invoke())
+    //         .catch(err => {
+    //             console.error("Paytm Init Error:", err);
+    //             btn.disabled = false;
+    //         });
+    
+    //     })
+    //     .catch(err => {
+    //         console.error("API Error:", err);
+    //         alert("Something went wrong!");
+    //         btn.disabled = false;
+    //     });
+    // });
+
+    document.getElementById("pay-btn").addEventListener("click", function () {
+
+const btn = this;
+
+if (btn.dataset.clicked === "true") return;
+btn.dataset.clicked = "true";
+
+const final_amount = Number(parseFloat("{{ form_data.final_amount }}")).toFixed(2);
+const order_number = "ORD_" + crypto.randomUUID();
+
+btn.disabled = true;
+
+fetch("/ai/create-paytm-order/", {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}"
+    },
+    body: JSON.stringify({
+        totalAmount: final_amount,
+        orderId: order_number,
+        email: "{{ form_data.email }}",
+        name: "{{ form_data.name }}",
+        mobileNumber: "{{ form_data.mobileNumber }}",
+        companyName: "{{ form_data.company }}",
+        address: "{{ form_data.address }}",
+        legalName: "{{ form_data.legalName }}",
+        gstin: "{{ form_data.gstin }}",
+        // selectedSalesman: "{{ form_data.salesman }}",
+        product_name: "{{ pricing_plan.name }}",
+        amount: "{{ form_data.amount }}",
+        taxAmount: "{{ form_data.taxAmount }}",
+
+    })
+})
+.then(res => res.json())
+.then(data => {
+    if (!data?.body?.txnToken) {
+        alert("Payment initialization failed!");
+        btn.disabled = false;
+        btn.dataset.clicked = "false";
+        return;
+    }
+
+    const txnToken = data.body.txnToken;
+
+    return window.Paytm.CheckoutJS.init({
+        root: "",
+        flow: "DEFAULT",
+        data: {
+            orderId: order_number,
+            token: txnToken,
+            tokenType: "TXN_TOKEN",
+            amount: final_amount
+        },
+        handler: {
+            notifyMerchant: function (eventName) {
+
+                if (eventName === "PAYMENT_SUCCESS") {
+                    window.location.href = "/ai/verify-paytm-payment/";
+                }
+
+                if (eventName === "PAYMENT_FAILED") {
+                    alert("Payment failed. Try again.");
+                    btn.disabled = false;
+                    btn.dataset.clicked = "false";
+                }
+            }
+        }
+    });
+})
+.then(() => window.Paytm.CheckoutJS.invoke())
+.catch(err => {
+    console.error("Error:", err);
+    btn.disabled = false;
+    btn.dataset.clicked = "false";
+});
+});
+</script>
+{% endblock %}

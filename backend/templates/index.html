@@ -1,0 +1,551 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- main-area -->
+<main class="main-content fix">
+    <div class="noise-bg" data-background="https://themeadapt.com/tf/dexai/assets/img/bg/noise_bg.png" style="background-image: url(&quot;https://themeadapt.com/tf/dexai/assets/img/bg/noise_bg.png&quot;);"></div>
+    <div class="main-shape" data-background="https://themeadapt.com/tf/dexai/assets/img/images/main_shape.png" style="background-image: url(&quot;https://themeadapt.com/tf/dexai/assets/img/images/main_shape.png&quot;);"></div>
+
+    <!-- banner-area -->
+    <section class="banner-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="banner-content ta-animated-headline">
+                        <h2 class="title ah-headline wow fadeInUp clip is-full-width" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;"><span>{{ banner.title_prefix }}</span>
+                            <span class="ah-words-wrapper" style="width: 207.527px; display: inline-block; overflow: hidden;">
+                                <b class="is-visible">{{ banner.word_one }}</b>
+                                <b class="is-hidden">{{ banner.word_two }}</b>
+                            </span>
+                        </h2>
+                        <h2 class="title d-none wow fadeInUp animated" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">{{ banner.title_prefix }}<span>{{ banner.word_one }},</span> <span>{{ banner.word_two }}</span></h2>
+                        <p class="wow fadeInUp" data-wow-delay=".4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp;">{{ banner.description }}</p>
+                        <div class="banner-btn">
+                            {% if banner.button_one_link %}
+                            <a href="{{ banner.button_one_link }}" class="gradient-btn wow fadeInLeft" data-wow-delay=".6s" style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInLeft;">{{ banner.button_one_text }}</a>
+                            {% else %}{% endif %}
+                            {% if banner.button_two_link %}
+                            <a href="{{ banner.button_two_link }}" class="gradient-btn gradient-btn-two wow fadeInRight" data-wow-delay=".6s" style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInRight;">{{ banner.button_two_text }}</a>
+                            {% else %}{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- banner-area-end -->
+
+    <!-- video-area -->
+    <div class="video-area">
+        <div class="video-shape">
+            <svg height="1192" viewBox="0 0 1920 1192" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path stroke="url(#paint0_linear_2840_46)" stroke-width="7" stroke-dasharray="10 10" d="M-40.9996 902C-8.39405 961.001 87.0357 1262.13 234 1171.5C385.21 1078.25 424.961 618.039 479.564 680.288C534.166 742.538 625.164 842.979 735.172 706.451C845.181 569.923 839.697 412.37 1093.03 631.043C1346.36 849.717 1371.47 413.985 1477.97 274.534C1584.48 135.083 1738.61 381.41 1830.32 343.155C1922.04 304.9 1862.93 -74.0337 2236.96 18.2495"></path>
+                <defs>
+                    <linearGradient id="paint0_linear_2840_46" x1="2117.79" y1="34.1404" x2="83.2194" y2="768.35" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="rgba(200 189 255)"></stop>
+                        <stop offset="0.13824" stop-color="#BAA6FF"></stop>
+                        <stop offset="0.337481" stop-color="#6721FF"></stop>
+                        <stop offset="0.900573" stop-color="#180048"></stop>
+                        <stop offset="1" stop-color="#00CBFF"></stop>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        <div class="container custom-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="video-wrap">
+                        <video class="live-video" loop="" autoplay="" muted="">
+                            <source src="/ai{{ banner.video_mp4.url }}" type="video/mp4">
+                            <source src="/ai{{ banner.video_ogg.url }}" type="video/ogg">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- video-area-end -->
+
+    <!-- counter-area -->
+    <section class="counter-area pt-150 pb-90">
+        <div class="container">
+            <div class="row justify-content-center">
+                {% for counter in counters %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="counter-item">
+                        <h2 class="count">{{ counter.count }}</h2>
+                        <p>{{ counter.title }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- counter-area-end -->
+
+    <!-- writing-area -->
+    <section class="writing-area pb-120">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title text-center mb-80">
+                        <h2 class="title title-animation" style="perspective: 400px;"><div style="display: block; text-align: center; position: relative; transform-origin: 50% 0% 0px; transform: translate3d(0px, 49.2404px, -41.3176px) rotateX(-80deg); opacity: 0;">Start writing <span>10x faster</span>  with AI</div></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                {% for service in services %}
+                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-9">
+                    <div class="writing-item">
+                        <div class="writing-shape">
+                            <svg viewBox="0 0 417 207" fill="none" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" preserveAspectRatio="none">
+                                <g opacity="0.1">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 96C0 82 7.5 73 26.2229 76.38C43.8225 79.5573 73.5 62.5 65 34C58.0931 10.8417 68.4854 0.0152226 90.4536 0H387C403.569 0 417 13.4315 417 30V177C417 193.569 403.569 207 387 207H30C13.4315 207 0 193.569 0 177V96Z" fill="currentcolor"></path>
+                                    <path d="M26.2229 76.38L26.0452 77.3641L26.0452 77.3641L26.2229 76.38ZM65 34L64.0417 34.2858L65 34ZM90.4536 0L90.4536 -1L90.4529 -1L90.4536 0ZM26.4005 75.3959C16.8849 73.6781 9.9765 75.0628 5.4433 78.9101C0.915622 82.7526 -1 88.8465 -1 96H1C1 89.1535 2.83438 83.7474 6.73743 80.4349C10.6349 77.1272 16.838 75.7019 26.0452 77.3641L26.4005 75.3959ZM64.0417 34.2858C68.1618 48.1001 63.0533 59.0984 54.7432 66.3139C46.3758 73.5791 34.8545 76.9221 26.4005 75.3959L26.0452 77.3641C35.1909 79.0152 47.3082 75.4182 56.0544 67.8241C64.858 60.1802 70.3382 48.3998 65.9583 33.7142L64.0417 34.2858ZM90.4529 -1C79.3517 -0.992307 70.8799 1.74143 66.1176 7.69682C61.3388 13.673 60.5475 22.57 64.0417 34.2858L65.9583 33.7142C62.5456 22.2717 63.4971 14.1764 67.6796 8.94589C71.8788 3.69466 79.5873 1.00753 90.4543 1L90.4529 -1ZM90.4536 1H387V-1H90.4536V1ZM387 1C403.016 1 416 13.9837 416 30H418C418 12.8792 404.121 -1 387 -1V1ZM416 30V177H418V30H416ZM416 177C416 193.016 403.016 206 387 206V208C404.121 208 418 194.121 418 177H416ZM387 206H30V208H387V206ZM30 206C13.9837 206 1 193.016 1 177H-1C-1 194.121 12.8792 208 30 208V206ZM1 177V96H-1V177H1Z" fill="currentcolor"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="writing-icon">
+                            <i class="far fa-brain"></i>
+                        </div>
+                        <div class="writing-content">
+                            <h4 class="title">{{ service.title }}</h4>
+                            <p>{{ service.description }}</p>
+                            <!-- <a href="{{ service.url }}" class="link-btn">{{ service.title }}<i class="far fa-arrow-right"></i></a> -->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- writing-area-end -->
+
+    <!-- use-cases-area >
+    <section class="use-cases-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="use-cases-content">
+                        <div class="section-title mb-25">
+                            <h2 class="title title-animation" style="perspective: 400px;"><div style="display: block; text-align: start; position: relative; transform-origin: 50% 0% 0px; transform: translate3d(0px, 49.2404px, -41.3176px) rotateX(-80deg); opacity: 0;">AI Does it </div><div style="display: block; text-align: start; position: relative; transform-origin: 50% 0% 0px; transform: translate3d(0px, 49.2404px, -41.3176px) rotateX(-80deg); opacity: 0;"><span>faster</span>  &amp; better.</div></h2>
+                        </div>
+                        <p>Have a look at one of 60+ available tools included in your SinCode AI account. Just fill out the keywords and Marve will generate your next content for you.</p>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="use-cases-nav-wrap">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="website-tab" data-bs-toggle="tab" data-bs-target="#website-tab-pane" type="button" role="tab" aria-controls="website-tab-pane" aria-selected="true">Website</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social-tab-pane" type="button" role="tab" aria-controls="social-tab-pane" aria-selected="false">Social Media</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-tab-pane" type="button" role="tab" aria-controls="email-tab-pane" aria-selected="false">Emails</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="code-tab" data-bs-toggle="tab" data-bs-target="#code-tab-pane" type="button" role="tab" aria-controls="code-tab-pane" aria-selected="false">Code</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="art-tab" data-bs-toggle="tab" data-bs-target="#art-tab-pane" type="button" role="tab" aria-controls="art-tab-pane" aria-selected="false">Art</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="website-tab-pane" role="tabpanel" aria-labelledby="website-tab" tabindex="0">
+                                <div class="cases-details-wrap">
+                                    <div class="cases-details-img">
+                                        <img src="https://themeadapt.com/tf/dexai/assets/img/images/cases_img01.png" alt="">
+                                    </div>
+                                    <div class="cases-details-content">
+                                        <div class="icon">
+                                            <i class="fas fa-home-alt"></i>
+                                        </div>
+                                        <p>Meta description: Unlock the power of AI to automate your business with Since AI. Our suite of AI-powered solutions can help streamline your operations and increase efficiency.</p>
+                                        <div class="content-bottom">
+                                            <ul class="list-wrap">
+                                                <li><a href="#"><i class="far fa-copy"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-download"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-paste"></i></a></li>
+                                                <li><a href="#"><i class="far fa-trash-alt"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-plus-circle"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="social-tab-pane" role="tabpanel" aria-labelledby="social-tab" tabindex="0">
+                                <div class="cases-details-wrap">
+                                    <div class="cases-details-img">
+                                        <img src="https://themeadapt.com/tf/dexai/assets/img/images/cases_img01.png" alt="">
+                                    </div>
+                                    <div class="cases-details-content">
+                                        <div class="icon">
+                                            <i class="fas fa-home-alt"></i>
+                                        </div>
+                                        <p>Meta description: Unlock the power of AI to automate your business with Since AI. Our suite of AI-powered solutions can help streamline your operations and increase efficiency.</p>
+                                        <div class="content-bottom">
+                                            <ul class="list-wrap">
+                                                <li><a href="#"><i class="far fa-copy"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-download"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-paste"></i></a></li>
+                                                <li><a href="#"><i class="far fa-trash-alt"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-plus-circle"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="email-tab-pane" role="tabpanel" aria-labelledby="email-tab" tabindex="0">
+                                <div class="cases-details-wrap">
+                                    <div class="cases-details-img">
+                                        <img src="https://themeadapt.com/tf/dexai/assets/img/images/cases_img01.png" alt="">
+                                    </div>
+                                    <div class="cases-details-content">
+                                        <div class="icon">
+                                            <i class="fas fa-home-alt"></i>
+                                        </div>
+                                        <p>Meta description: Unlock the power of AI to automate your business with Since AI. Our suite of AI-powered solutions can help streamline your operations and increase efficiency.</p>
+                                        <div class="content-bottom">
+                                            <ul class="list-wrap">
+                                                <li><a href="#"><i class="far fa-copy"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-download"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-paste"></i></a></li>
+                                                <li><a href="#"><i class="far fa-trash-alt"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-plus-circle"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="code-tab-pane" role="tabpanel" aria-labelledby="code-tab" tabindex="0">
+                                <div class="cases-details-wrap">
+                                    <div class="cases-details-img">
+                                        <img src="https://themeadapt.com/tf/dexai/assets/img/images/cases_img01.png" alt="">
+                                    </div>
+                                    <div class="cases-details-content">
+                                        <div class="icon">
+                                            <i class="fas fa-home-alt"></i>
+                                        </div>
+                                        <p>Meta description: Unlock the power of AI to automate your business with Since AI. Our suite of AI-powered solutions can help streamline your operations and increase efficiency.</p>
+                                        <div class="content-bottom">
+                                            <ul class="list-wrap">
+                                                <li><a href="#"><i class="far fa-copy"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-download"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-paste"></i></a></li>
+                                                <li><a href="#"><i class="far fa-trash-alt"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-plus-circle"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="art-tab-pane" role="tabpanel" aria-labelledby="art-tab" tabindex="0">
+                                <div class="cases-details-wrap">
+                                    <div class="cases-details-img">
+                                        <img src="https://themeadapt.com/tf/dexai/assets/img/images/cases_img01.png" alt="">
+                                    </div>
+                                    <div class="cases-details-content">
+                                        <div class="icon">
+                                            <i class="fas fa-home-alt"></i>
+                                        </div>
+                                        <p>Meta description: Unlock the power of AI to automate your business with Since AI. Our suite of AI-powered solutions can help streamline your operations and increase efficiency.</p>
+                                        <div class="content-bottom">
+                                            <ul class="list-wrap">
+                                                <li><a href="#"><i class="far fa-copy"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-download"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-paste"></i></a></li>
+                                                <li><a href="#"><i class="far fa-trash-alt"></i></a></li>
+                                                <li><a href="#"><i class="fal fa-plus-circle"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    < use-cases-area-end -->
+
+    <!-- roadmap-area -->
+    <section class="roadmap-area pt-140 pb-130">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-9">
+                    <div class="roadmap-timeline-wrap">
+                        <div class="roadmap-line" data-background="https://themeadapt.com/tf/dexai/assets/img/brand/Line.svg" style="background-image: url(&quot;https://themeadapt.com/tf/dexai/assets/img/brand/Line.svg&quot;);"></div>
+                        <ul class="list-wrap">
+                            {% for step in roadmap_steps %}
+                            <li>
+                                <div class="roadmap-item">
+    
+                                    <div class="roadmap-img">
+                                        <img src="/ai{{ step.image.url }}" alt="">
+                                        <span class="number">{{ step.number|stringformat:"02d" }}</span>
+                                    </div>
+    
+                                    <div class="roadmap-content">
+                                        <h4 class="title">{{ step.title }}</h4>
+                                        <p>{{ step.description }}</p>
+                                    </div>
+    
+                                </div>
+                            </li>
+                            {% endfor %}
+    
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- roadmap-area-end -->
+
+    <!-- pricing-area -->
+    <section class="pricing-area pb-110">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title text-center mb-50">
+                        <h2 class="title title-animation" style="perspective: 400px;"><div style="display: block; text-align: center; position: relative; transform-origin: 50% 0% 0px; transform: translate3d(0px, 49.2404px, -41.3176px) rotateX(-80deg); opacity: 0;">Money well <span>invested</span></div></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="pricing-item-wrap">
+                <div class="row justify-content-center">
+                    {% for plan in pricing_plans %}
+                    <div class="col-xl-4 col-lg-6 col-md-9 col-sm-10">
+                        <div class="pricing-item {% if plan.is_popular %}active wow fadeInUp{% else %}wow fadeInLeft{% endif %}  " data-wow-delay=".5s" style="visibility: hidden; animation-delay: 0.5s; animation-name: none;">
+                            {% if plan.is_popular %}
+                            <span class="popular">Most popular</span>
+                            {% else %}
+                            {% endif %}
+                            <div class="pricing-shape">
+                                <svg viewBox="0 0 410 616" fill="none" x="0px" y="0px" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M85.6497 0.634114C102.343 1.89097 115.705 2.89697 134 22.4989C134.632 23.176 135.238 23.8305 135.823 24.4624C145.21 34.5995 149.203 38.9119 168.5 37.4993C179.699 36.6795 228.167 37.1659 251 37.4993H251.001C262.001 37.4993 270.501 37.4993 289 16C301.111 1.92454 315.232 0.174842 333.448 0H380C396.569 0 410 13.4315 410 30V586C410 602.569 396.569 616 380 616H30C13.4315 616 0 602.569 0 586V30C0 13.4315 13.4315 0 30 0H78.0075C80.6454 0.257338 83.1839 0.448462 85.6497 0.634114Z" fill="url(#pricing)"></path>
+                                    <defs>
+                                        <linearGradient id="pricing" x1="-35.4999" y1="-46.5001" x2="393.384" y2="749.254" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0.0246007" stop-color="#C8BDFF"></stop>
+                                            <stop offset="0.0246007" stop-color="#BAA6FF"></stop>
+                                            <stop offset="0.214137" stop-color="#6721FF"></stop>
+                                            <stop offset="0.486687" stop-color="#6721FF"></stop>
+                                            <stop offset="1" stop-color="#00CBFF"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div class="pricing-top">
+                                <div class="left-side">
+                                    <div class="content">
+                                        <h4 class="title">{{ plan.name }}</h4>
+                                        <span>{{ plan.services }}</span>
+                                    </div>
+                                </div>
+                                <div class="pricing-price">
+                                    <h2 class="title monthly_price">₹{{ plan.monthly_price }}</h2>
+                                    <h2 class="title annual_price">₹{{ plan.yearly_price }}</h2>
+                                </div>
+                            </div>
+                            <div class="pricing-list">
+                                <ul class="list-wrap">
+                                    {% for feature in plan.features.all %}
+                                    <li>{{ feature.feature_text }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="pricing-btn">
+                                <a href="#" class="btn btn-two">choose plan</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- pricing-area-end -->
+
+    <!-- faq-area -->
+    <section class="faq-area pb-150">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="faq-wrap">
+                        <div class="accordion" id="accordionExample">
+                            {% for faq in faqs %}
+                                <div class="accordion-item {% if forloop.first %}active{% endif %}">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ faq.id }}" aria-expanded="false" aria-controls="collapse{{ faq.id }}">
+                                            {{ faq.question }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ faq.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <p>{{ faq.answer }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- contact-area -->
+    <section class="contact-area pb-140">
+        <div class="container">
+            <div class="contact-info-wrap">
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-info-item">
+                            <div class="icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="content">
+                                <h2 class="title">Visit Us Daily</h2>
+                                <p>141, Alkapuri, Niwaru Road, Jhotwada <br> Jaipur – 302012 (Rajasthan)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-info-item">
+                            <div class="icon">
+                                <i class="fas fa-phone-volume"></i>
+                            </div>
+                            <div class="content">
+                                <h2 class="title">Contact Us</h2>
+                                <span>+91-9001597011</span>
+                                <span>+91-9982608890</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-info-item">
+                            <div class="icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="content">
+                                <h2 class="title">Email Us</h2>
+                                <span>support@incometaxlibrary.com</span>
+                                <span>info.incometaxlibrary@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="contact-form-wrap">
+                        <h2 class="title">Do you have any <span>question? contact us</span></h2>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="responds-wrap">
+                                    <p>Responds within 24 hours</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+
+                                <div class="contact-form comment-respond">
+                                    <form method="POST" action="{% url 'contact' %}">
+                                        {% csrf_token %}
+                                        
+                                        <!-- Name Field -->
+                                        <div class="form-grp mb-3">
+                                            <label for="{{ form.name.id_for_label }}">Your Name*</label>
+                                            {{ form.name }}
+                                            {% if form.name.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.name.errors %}
+                                                        <p>{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    
+                                        <!-- Email Field -->
+                                        <div class="form-grp mb-3">
+                                            <label for="{{ form.email.id_for_label }}">Your Email*</label>
+                                            {{ form.email }}
+                                            {% if form.email.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.email.errors %}
+                                                        <p>{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    
+                                        <!-- Phone Field -->
+                                        <div class="form-grp mb-3">
+                                            <label for="{{ form.phone.id_for_label }}">Phone*</label>
+                                            {{ form.phone }}
+                                            {% if form.phone.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.phone.errors %}
+                                                        <p>{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    
+                                        <!-- Subject Field (Fixed the duplicate "Phone" label) -->
+                                        <div class="form-grp mb-3">
+                                            <label for="{{ form.subject.id_for_label }}">Subject*</label>
+                                            {{ form.subject }}
+                                            {% if form.subject.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.subject.errors %}
+                                                        <p>{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    
+                                        <!-- Message Field -->
+                                        <div class="form-grp mb-3">
+                                            <label for="{{ form.message.id_for_label }}">Message*</label>
+                                            {{ form.message }}
+                                            {% if form.message.errors %}
+                                                <div class="invalid-feedback">
+                                                    {% for error in form.message.errors %}
+                                                        <p>{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    
+                                        <!-- Success/Error Messages -->
+                                        {% if messages %}
+                                            <div class="alert alert-success">
+                                                {% for message in messages %}
+                                                    <p>{{ message }}</p>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    
+                                        <!-- Submit Button -->
+                                        <button class="btn btn-primary" type="submit">Submit Here</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-shape">
+                            <img src="{% static 'img/contact_shape.png' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- contact-area-end -->
+
+</main>
+<!-- main-area-end -->
+{% endblock %}

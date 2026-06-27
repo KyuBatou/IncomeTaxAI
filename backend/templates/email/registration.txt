@@ -1,0 +1,28 @@
+Dear Sir,
+
+You are successfully registered at www.incometaxlibrary.com.
+
+Please send a mail to support@incometaxlibrary.com with your complete payment details and user ID (email).
+
+We will not be responsible for CASH PAID TO ANYONE and/or even by cheque/bank draft drawn in favour of
+“Income Tax Library” payable at Jaipur.
+
+Your Registration Details:
+User Name: {{ email }}
+Password: {{ password }}
+Name: {{ name }}
+Visitor Address: {{ address }}
+City: {{ city }}
+Pin: {{ pin }}
+Mobile No.: {{ mobileno }}
+Date: {{ date }}
+
+With warm regards,
+Thank You
+Support Team
+Income Tax Library
+Cell: +91 9001 597 011, +91 9982 608 890
+Email: support@incometaxlibrary.com
+Website: http://www.incometaxlibrary.com/
+
+Note: Use of the information and data contained within this mail is at your sole risk.

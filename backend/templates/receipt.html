@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="main-content">
+    <section class="breadcrumb-area">
+        <div class="container">
+            <div class="faq-tab-wrap">
+                <ul class="nav nav-tabs wizard-tabs">
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Enter User Details
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Select Plan
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" disabled>
+                            Review & Pay
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link active" disabled>
+                            Receipt
+                        </button>
+                    </li>
+                </ul>
+                <div class="container comment-respond mt-4">
+                    <div class="container mt-4">
+                        <!-- Billing Information -->
+                        <div class="col-md-12 mb-4">
+                            <div class="review-box p-3">
+                                <h5 class="mb-3">Billing Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Name:</strong> {{ form_data.name|default:"N/A" }}</p>
+                                        <p><strong>Company:</strong> {{ form_data.company_name|default:"N/A" }}</p>
+                                        <p><strong>Email:</strong> {{ form_data.user.email }}</p>
+                                        <p><strong>Phone:</strong> {{ form_data.mobile_no }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Legal Name:</strong> {{ form_data.legal_name|default:"N/A" }}</p>
+                                        <p><strong>GSTIN:</strong> {{ form_data.gstin|default:"N/A" }}</p>
+                                        <p><strong>Billing Address:</strong> {{ form_data.address }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- Order Details -->
+                        <div class="review-box p-3 mb-4">
+                            <h5 class="mb-3">Order Details</h5>
+                            <div class="row mb-2">
+                                <div class="col-6">Order Number:</div>
+                                <div class="col-6 text-end">{{ form_data.order_number|default:"N/A" }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">Order Date:</div>
+                                <div class="col-6 text-end">{{ form_data.order_date|default:"N/A" }}</div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- Payment Summary -->
+                        <div class="review-box p-3 mb-4">
+                            <h5 class="mb-3">Payment Summary</h5>
+                            <div class="row mb-2">
+                                <div class="col-6">Product:</div>
+                                <div class="col-6 text-end">{{ product_name|default:"N/A" }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">Amount:</div>
+                                <div class="col-6 text-end">₹ {{ form_data.amount|default:"N/A" }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">GST (18%):</div>
+                                <div class="col-6 text-end">₹ {{ form_data.gst_amount|default:"N/A" }}</div>
+                            </div>
+                            <div class="row fw-bold mb-4">
+                                <div class="col-6">Total Payable:</div>
+                                <div class="col-6 text-end">₹ {{ form_data.payable_amount|default:"N/A" }}</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12 mb-2">We thank you for being a subscriber of Income Tax Library (www.incometaxlibrary.com).</div>
+                                <div class="col-12 mb-2">Your Payment Transaction ID: {{ form_data.txnid|default:"N/A" }}.</div>
+                                <div class="col-12 mb-2">Your login will be activated shortly.</div>
+                            </div>
+                            <!-- Note -->
+                            <div class="text-danger">
+                                Note: If any error occurs, please contact us on +91-9001597011, +91-9982608890 or email us: support@incometaxlibrary.com.
+                            </div>
+                        </div>
+                        <div class="text-center mt-4 no-print">
+                            <button onclick="printReceipt()" class="btn btn-primary">
+                                Print Receipt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<style>
+    @media print {
+    
+        /* Page setup */
+        @page {
+            size: A4;
+            margin: 5mm;
+        }
+    
+        html, body {
+            width: 100%;
+            height: auto;
+        }
+    
+        /* Hide everything except receipt */
+        body * {
+            visibility: hidden;
+        }
+    
+        .comment-respond,
+        .comment-respond * {
+            visibility: visible;
+        }
+    
+        .comment-respond {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: scale(0.95); /* compress content slightly */
+            transform-origin: top left;
+        }
+    
+        /* Remove bootstrap spacing */
+        .container {
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+    
+        .review-box {
+            padding: 8px !important;
+            margin-bottom: 6px !important;
+            page-break-inside: avoid;
+        }
+    
+        h5 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+    
+        p {
+            margin-bottom: 2px;
+            font-size: 12px;
+        }
+    
+        hr {
+            margin: 4px 0;
+        }
+    
+        .row {
+            margin-bottom: 1px;
+        }
+    
+        /* Hide print button */
+        .no-print {
+            display: none !important;
+        }
+    
+    }
+</style>
+<script>
+    function printReceipt(){
+        window.print();
+    }
+</script>
+
+{% endblock %}

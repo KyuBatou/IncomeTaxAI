@@ -1,0 +1,34 @@
+<!-- left_chat_history.html -->
+<div class="col-md-2 p-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <h5 class="text-white">History</h5>
+        <a href="{% url 'new_chat' category=category %}" class="copy-button">New Chat</a>
+    </div>
+
+    <div class="chat-history overflow-auto" style="height:60vh;">
+        <div class="faq-tab-wrap">
+            <ul class="nav nav-tabs wizard-tabs">
+                <!-- <li class="nav-item">
+                    <a class="nav-link {% if category == 'incometax' %}active{% endif %}" href="/ai/chat/incometax/">Income Tax</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link {% if category == 'gst' %}active{% endif %}" href="/ai/chat/gst/" style="color: black;">GST</a>
+                </li>
+            </ul>
+        </div>
+        {% for chat in chats_history %}
+            <div class="d-flex justify-content-between align-items-center position-relative">
+                <div class="file-list message bot-message w-100 position-relative" style="font-size: 14px;">
+                    <a href="{% url 'chat' category=category session_id=chat.id %}"><span>{{ chat.title|truncatechars:20 }}</span></a>
+                    <span class="remove-file position-absolute top-0 end-0 p-2" data-index="{{ chat.id }}"><a href="{% url 'delete_chat' category=category session_id=chat.id %}">🗑️</a></span>
+                </div>
+            </div>
+        {% empty %}
+            <div class="d-flex justify-content-between align-items-center mb-2 position-relative">
+                <div class="file-list message bot-message w-100 position-relative">
+                    <span>No chats availble</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

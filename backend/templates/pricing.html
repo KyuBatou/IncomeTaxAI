@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- main-area -->
+<main class="main-content">
+    <div class="noise-bg" data-background="assets/img/bg/noise_bg.png" style="background-image: url(&quot;assets/img/bg/noise_bg.png&quot;);"></div>
+    <div class="main-shape" data-background="assets/img/images/main_shape.png" style="background-image: url(&quot;assets/img/images/main_shape.png&quot;);"></div>
+
+    <!-- breadcrumb-area -->
+    <section class="breadcrumb-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-content">
+                        <h2 class="title"><span>Subscription</span></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumb-area-end -->
+
+    <!-- pricing-area -->
+    <section class="pricing-area pb-110">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title text-center mb-50">
+                        <h2 class="title title-animation" style="perspective: 400px;"><div style="display: block; text-align: center; position: relative; transform-origin: 50% 0% 0px; transform: translate3d(0px, 49.2404px, -41.3176px) rotateX(-80deg); opacity: 0;">Money well <span>invested</span></div></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="pricing-item-wrap">
+                <div class="row justify-content-center">
+                    {% for plan in pricing_plans %}
+                    <div class="col-xl-4 col-lg-6 col-md-9 col-sm-10">
+                        <div class="pricing-item {% if plan.is_popular %}active wow fadeInUp{% else %}wow fadeInLeft{% endif %}  " data-wow-delay=".5s" style="visibility: hidden; animation-delay: 0.5s; animation-name: none;">
+                            {% if plan.is_popular %}
+                            <span class="popular">Most popular</span>
+                            {% else %}
+                            {% endif %}
+                            <div class="pricing-shape">
+                                <svg viewBox="0 0 410 616" fill="none" x="0px" y="0px" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M85.6497 0.634114C102.343 1.89097 115.705 2.89697 134 22.4989C134.632 23.176 135.238 23.8305 135.823 24.4624C145.21 34.5995 149.203 38.9119 168.5 37.4993C179.699 36.6795 228.167 37.1659 251 37.4993H251.001C262.001 37.4993 270.501 37.4993 289 16C301.111 1.92454 315.232 0.174842 333.448 0H380C396.569 0 410 13.4315 410 30V586C410 602.569 396.569 616 380 616H30C13.4315 616 0 602.569 0 586V30C0 13.4315 13.4315 0 30 0H78.0075C80.6454 0.257338 83.1839 0.448462 85.6497 0.634114Z" fill="url(#pricing)"></path>
+                                    <defs>
+                                        <linearGradient id="pricing" x1="-35.4999" y1="-46.5001" x2="393.384" y2="749.254" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0.0246007" stop-color="#C8BDFF"></stop>
+                                            <stop offset="0.0246007" stop-color="#BAA6FF"></stop>
+                                            <stop offset="0.214137" stop-color="#6721FF"></stop>
+                                            <stop offset="0.486687" stop-color="#6721FF"></stop>
+                                            <stop offset="1" stop-color="#00CBFF"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div class="pricing-top">
+                                <div class="left-side">
+                                    <div class="content">
+                                        <h4 class="title">{{ plan.name }}</h4>
+                                        <span>{{ plan.services }}</span>
+                                    </div>
+                                </div>
+                                <div class="pricing-price">
+                                    <h2 class="title monthly_price">₹{{ plan.monthly_price }}</h2>
+                                    <h2 class="title annual_price">₹{{ plan.yearly_price }}</h2>
+                                </div>
+                            </div>
+                            <div class="pricing-list">
+                                <ul class="list-wrap">
+                                    {% for feature in plan.features.all %}
+                                    <li>{{ feature.feature_text }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="pricing-btn">
+                                <a href="{% url 'subscribe' %}" class="btn btn-two">choose plan</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- pricing-area-end -->
+
+</main>
+<!-- main-area-end -->
+{% endblock %}

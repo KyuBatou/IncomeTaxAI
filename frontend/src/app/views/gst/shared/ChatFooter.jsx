@@ -96,19 +96,13 @@ export default function ChatFooter({
                     <Typography variant="caption" fontWeight={600}>
                         Refine to
                     </Typography>
-
                     <IconButton size="small" onClick={() => setReplyContext(null)}>
                         <Icon fontSize="small">close</Icon>
                     </IconButton>
                     </Stack>
-
                     <Typography variant="body2" fontWeight={600}>
                     {replyContext.question}
                     </Typography>
-
-                    {/* <Typography variant="caption" color="text.secondary">
-                    {replyContext.answer}
-                    </Typography> */}
                 </Box>
             )}
             {clarifyOptions.length > 0 && (

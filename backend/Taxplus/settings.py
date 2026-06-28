@@ -43,6 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://incometaxlibrary.in',
     'https://checkout.razorpay.com',
     'https://api.razorpay.com',
+    "http://localhost:5173",
 ]
 
 

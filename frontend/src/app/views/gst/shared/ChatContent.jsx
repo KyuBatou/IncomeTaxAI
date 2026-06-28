@@ -4,7 +4,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import DownloadIcon from "@mui/icons-material/Download";
-import { getSessionMessages } from "../service/service";
+import { getSessionMessages, sendChatMessage } from "../service/service";
 import { useEffect, useRef, useState } from "react";
 import { MatxLoading } from "app/components";
 import ChatWelcome from "./ChatWelcome";
@@ -80,6 +80,38 @@ export default function ChatContent({ sessionId }) {
     // later: call API for similar answers
   };
 
+  const handleSend = async ({ message, files }) => {
+    try {
+      await sendChatMessage({
+        sessionId,
+        message,
+        files,
+        model: "ask_gst",
+        maxLength: 500,
+      });
+  
+      // loadMessages(); // reload chat
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  const handleClarify = async ({ message, files }) => {
+    try {
+      await clarifyChatMessage({
+        sessionId,
+        message,
+        files,
+        model: "gpt-4",
+        maxLength: 500,
+      });
+  
+      // loadMessages();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
   useEffect(() => {
     if (!sessionId) return;
 
@@ -232,7 +264,12 @@ export default function ChatContent({ sessionId }) {
           </Box>
         ))}
       </Box>
-      <ChatFooter />
+      <ChatFooter
+        loading={loading}
+        onSend={handleSend}
+        onClarify={handleClarify}
+      />
+      {/* <ChatFooter /> */}
     </Box>
   );
 }

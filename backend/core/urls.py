@@ -7,7 +7,8 @@ router = DefaultRouter()
 router.register(r'sessions', AiChatSessionViewSet, basename='session')
 
 urlpatterns = [
-    path('chat/gpt/', summarize, name="chat_gpt"),
+    path('chat/gpt/', SummarizeView.as_view(), name='chat_gpt'),
+    # path('chat/gpt/', summarize, name="chat_gpt"),
     path('chat/clarify/', clarify, name="chat_gpt"),
 
     path('api/', include(router.urls)),

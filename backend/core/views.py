@@ -215,8 +215,8 @@ class RefineView(APIView):
         try:
 
             main_content = request.POST.get('main_content', '').strip()
-            original_answer = request.POST.get('original_answer', '')
-            refinement_instructions = request.POST.get('refinement_instructions', '')
+            original_answer = request.POST.get('previous_question', '')
+            refinement_instructions = request.POST.get('previous_answer', '')
             max_length = int(request.POST.get('max_length', 500))
             selected_model = request.POST.get('model')
             session_id = int(request.POST.get('session_id'))
@@ -290,6 +290,7 @@ class SimilarView(APIView):
         try:
 
             main_content = request.POST.get('main_content', '').strip()
+            context_answer = request.POST.get('previous_answer', '')
             max_length = int(request.POST.get('max_length', 500))
             selected_model = request.POST.get('model')
             session_id = int(request.POST.get('session_id'))
@@ -316,9 +317,10 @@ class SimilarView(APIView):
             if not text_content:
                 text_content = "No content provided."
 
-            url = "http://localhost:5000/api/v1/clarify"
+            url = "http://localhost:5000/api/v1/similar"
             payload = {
                 "query": text_content,
+                "context_answer": context_answer,
                 "max_results": 5,
                 "session_id":session_id,
                 # "message_id": message.pk,

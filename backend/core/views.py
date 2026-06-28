@@ -184,10 +184,10 @@ class ClarifyView(APIView):
                 api_response_json = response.json()
                 return JsonResponse({
                     "success": True,
-                    'options': api_response_json.get("options", ""),
                     'query': api_response_json.get("query", ""),
-                    # "answer": api_response_json.get("answer", "No answer returned from the API."),
-                    # 'sources': api_response_json.get("sources", ""),
+                    "answer": api_response_json.get("refined_answer", "No answer returned from the API."),
+                    "original_answer": api_response_json.get("original_answer", ""),
+                    'sources_used': api_response_json.get("sources", {}),
                     # 'related_judgements': api_response_json.get("related_judgements", ""),
                     # 'confidence': api_response_json.get("confidence", ""),
                     # 'query_time_ms': api_response_json.get("query_time_ms", ""),
@@ -317,7 +317,7 @@ class SimilarView(APIView):
             if not text_content:
                 text_content = "No content provided."
 
-            url = "http://localhost:5000/api/v1/similar"
+            url = "http://localhost:5000/api/v1/case-laws"
             payload = {
                 "query": text_content,
                 "context_answer": context_answer,
@@ -332,16 +332,9 @@ class SimilarView(APIView):
                 api_response_json = response.json()
                 return JsonResponse({
                     "success": True,
-                    'options': api_response_json.get("options", ""),
                     'query': api_response_json.get("query", ""),
-                    # "answer": api_response_json.get("answer", "No answer returned from the API."),
-                    # 'sources': api_response_json.get("sources", ""),
-                    # 'related_judgements': api_response_json.get("related_judgements", ""),
-                    # 'confidence': api_response_json.get("confidence", ""),
-                    # 'query_time_ms': api_response_json.get("query_time_ms", ""),
-                    # 'verification': api_response_json.get("verification", ""),
-                    # 'web_search_used': api_response_json.get("web_search_used", ""),
-                    # 'pipeline': api_response_json.get("pipeline", ""),
+                    'results': api_response_json.get("results", ""),
+                    'total_found': api_response_json.get("total_found", ""),
                 })
             else:
                 return JsonResponse({

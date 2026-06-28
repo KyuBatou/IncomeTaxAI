@@ -135,7 +135,7 @@ class SummarizeView(APIView):
 
 
 
-class SummarizeView(APIView):
+class ClarifyView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]

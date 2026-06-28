@@ -17,6 +17,8 @@ export default function ChatContent({ sessionId }) {
   const [messages, setMessages] = useState([]);
   const chatRef = useRef(null);
 
+  const [replyContext, setReplyContext] = useState(null);
+
   const typeText = (text, callback, speed = 2) => {
     let i = 0;
     const interval = setInterval(() => {
@@ -185,9 +187,11 @@ export default function ChatContent({ sessionId }) {
     saveAs(blob, "ai-response.docx");
   };
 
-  const handleRefine = (text) => {
-    console.log("Refine:", text);
-    // later: call API to refine answer
+  const handleRefine = (msg) => {
+    setReplyContext({
+      question: msg.user_query,
+      answer: msg.ai_answer,
+    });
   };
   
   const handleSimilar = (text) => {
@@ -319,7 +323,7 @@ export default function ChatContent({ sessionId }) {
                     <Button
                       size="small"
                       startIcon={<AutoFixHighIcon />}
-                      onClick={() => handleRefine(msg.ai_answer)}
+                      onClick={() => handleRefine(msg)}
                       sx={{ textTransform: "none", fontSize: "0.75rem" }}
                     >
                       Refine
@@ -357,8 +361,9 @@ export default function ChatContent({ sessionId }) {
         loading={loading}
         onSend={handleSend}
         onClarify={handleClarify}
+        replyContext={replyContext}
+        setReplyContext={setReplyContext}
       />
-      {/* <ChatFooter /> */}
     </Box>
   );
 }

@@ -14,6 +14,8 @@ export default function ChatFooter({
     onSend,
     onClarify,
     loading = false,
+    replyContext,
+    setReplyContext,
 }) {
     const [message, setMessage] = useState("");
     const [files, setFiles] = useState([]);
@@ -88,6 +90,27 @@ export default function ChatFooter({
                 borderColor: "divider",
             }}
         >
+            {replyContext && (
+                <Box sx={{ mb: 1, p: 1, borderLeft: "4px solid", borderColor: "primary.main" }}>
+                    <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="caption" fontWeight={600}>
+                        Refine to
+                    </Typography>
+
+                    <IconButton size="small" onClick={() => setReplyContext(null)}>
+                        <Icon fontSize="small">close</Icon>
+                    </IconButton>
+                    </Stack>
+
+                    <Typography variant="body2" fontWeight={600}>
+                    {replyContext.question}
+                    </Typography>
+
+                    {/* <Typography variant="caption" color="text.secondary">
+                    {replyContext.answer}
+                    </Typography> */}
+                </Box>
+            )}
             {clarifyOptions.length > 0 && (
                 <Box
                     sx={{

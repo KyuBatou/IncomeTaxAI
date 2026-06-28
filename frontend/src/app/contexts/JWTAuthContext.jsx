@@ -3,6 +3,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 // GLOBAL CUSTOM COMPONENTS
 import Loading from "app/components/MatxLoading";
+import { BASE_URL } from "app/utils/constant";
+
 
 const initialState = {
   user: null,
@@ -62,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const login = async (email, password) => {
-    const { data } = await axios.post("http://127.0.0.1:8000/ai/auth/jwt/create/", { email, password });
+    const { data } = await axios.post(`${BASE_URL}/auth/jwt/create/`, { email, password });
     // const { accessToken, user } = data;
     const { access } = data;
     // setSession(accessToken);
@@ -72,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (email, username, password) => {
-    const { data } = await axios.post("http://127.0.0.1:8000/ai/auth/user/", { email, username, password });
+    const { data } = await axios.post(`${BASE_URL}/auth/user/`, { email, username, password });
     const { accessToken, user } = data;
 
     setSession(accessToken);

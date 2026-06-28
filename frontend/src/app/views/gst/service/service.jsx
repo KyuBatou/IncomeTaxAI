@@ -1,7 +1,7 @@
 import axios from "axios";
+import { BASE_URL } from "app/utils/constant";
 
-const API_URL = "http://127.0.0.1:8000/ai/api/sessions/";
-const BASE_URL = "http://127.0.0.1:8000/ai";
+const API_URL = `${BASE_URL}/api/sessions/`;
 
 export const getSessions = async () => {
   const { data } = await axios.get(API_URL);

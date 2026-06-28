@@ -236,7 +236,7 @@ from .serializers import AiChatMessageSerializer
 # ✅ GET messages for a session
 class SessionMessagesView(APIView):
     def get(self, request, session_id):
-        messages = AiChatMessage.objects.filter(session_id=session_id)
+        messages = AiChatMessage.objects.filter(session_id=session_id).order_by('created_at')
         serializer = AiChatMessageSerializer(messages, many=True)
         return Response(serializer.data)
 

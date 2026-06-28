@@ -53,6 +53,10 @@ export default function ChatFooter({
         await onSend?.({
             message,
             files,
+            clear: () => {
+                setMessage("");
+                setFiles([]);
+            },
         });
 
         resetForm();

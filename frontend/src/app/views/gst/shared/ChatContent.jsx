@@ -10,12 +10,115 @@ import { MatxLoading } from "app/components";
 import ChatWelcome from "./ChatWelcome";
 import ChatFooter from "./ChatFooter";
 import { saveAs } from "file-saver";
-
+import { ThinkingDots } from "./ThinkingDots";
 
 export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const chatRef = useRef(null);
+
+  const typeText = (text, callback, speed = 2) => {
+    let i = 0;
+    const interval = setInterval(() => {
+      callback(text.slice(0, i));
+      i++;
+  
+      if (i > text.length) clearInterval(interval);
+    }, speed);
+  };
+
+  const loadMessages = async () => {
+    if (!sessionId) return;
+
+    try {
+      setLoading(true);
+      const data = await getSessionMessages(sessionId);
+      setMessages(data || []);
+    } catch (err) {
+      console.error("Failed to load messages:", err);
+      setMessages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // load on session change
+  useEffect(() => {
+    loadMessages();
+  }, [sessionId]);
+
+  const handleSend = async ({ message, files, clear }) => {
+    if (!message?.trim() && !files?.length) return;
+  
+    const tempId = Date.now();
+  
+    // 1. Add user + AI placeholder
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: tempId,
+        user_query: message,
+        ai_answer: "",
+        created_at: new Date().toISOString(),
+        streaming: true,
+        thinking: true,
+      },
+    ]);
+  
+    clear?.();
+  
+    try {
+      const res = await sendChatMessage({
+        sessionId,
+        message,
+        files,
+        model: "ask_gst",
+        maxLength: 500,
+      });
+  
+      const answer = res?.answer || "No response";
+  
+      // 2. FIRST: show full thinking animation → then typing
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === tempId
+            ? { ...m, thinking: false, ai_answer: "" }
+            : m
+        )
+      );
+  
+      // 3. typing effect
+      typeText(answer, (partial) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === tempId
+              ? { ...m, ai_answer: partial }
+              : m
+          )
+        );
+      }, 1.5); // 🔥 very fast typing
+  
+    } catch (err) {
+      console.error(err);
+  
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === tempId
+            ? {
+                ...m,
+                ai_answer: "❌ Failed to get response",
+                thinking: false,
+              }
+            : m
+        )
+      );
+    }
+  };
+  // clarify
+  const handleClarify = async ({ message, files }) => {
+    console.log("Clarify:", message);
+    // later: call API to clarify answer
+  };
 
   const formatTime = (value) => {
     if (!value) return "";
@@ -80,57 +183,6 @@ export default function ChatContent({ sessionId }) {
     // later: call API for similar answers
   };
 
-  const handleSend = async ({ message, files }) => {
-    try {
-      await sendChatMessage({
-        sessionId,
-        message,
-        files,
-        model: "ask_gst",
-        maxLength: 500,
-      });
-  
-      // loadMessages(); // reload chat
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  
-  const handleClarify = async ({ message, files }) => {
-    try {
-      await clarifyChatMessage({
-        sessionId,
-        message,
-        files,
-        model: "gpt-4",
-        maxLength: 500,
-      });
-  
-      // loadMessages();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  
-  useEffect(() => {
-    if (!sessionId) return;
-
-    const loadMessages = async () => {
-      try {
-        setLoading(true);
-        const data = await getSessionMessages(sessionId);
-        setMessages(data || []);
-      } catch (err) {
-        console.error("Failed to load messages:", err);
-        setMessages([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadMessages();
-  }, [sessionId]);
-
   useEffect(() => {
     if (!chatRef.current) return;
     chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -194,9 +246,8 @@ export default function ChatContent({ sessionId }) {
               >
                 {/* AI text */}
                 <Typography variant="body2" textAlign="justify">
-                  {msg.ai_answer}
+                  {msg.thinking ? <ThinkingDots /> : msg.ai_answer}
                 </Typography>
-
                 {/* ACTION ROW */}
                 <Box
                   sx={{

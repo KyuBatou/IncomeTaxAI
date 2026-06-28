@@ -229,6 +229,8 @@ export default function ChatContent({ sessionId }) {
         ai_answer: "",
         created_at: new Date().toISOString(),
         thinking: true,
+        results: [],
+        sources_used: [],
       },
     ]);
   
@@ -249,13 +251,27 @@ export default function ChatContent({ sessionId }) {
             ? {
                 ...m,
                 thinking: false,
-                ai_answer: res.answer,
+                ai_answer: res?.answer || "",
+                results: res?.results || [],
+                sources_used: res?.sources_used || [],
               }
             : m
         )
       );
     } catch (err) {
       console.error(err);
+  
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === tempId
+            ? {
+                ...m,
+                thinking: false,
+                ai_answer: "❌ Failed to get response",
+              }
+            : m
+        )
+      );
     }
   };
 
@@ -292,6 +308,7 @@ export default function ChatContent({ sessionId }) {
           <Box key={msg.id}>
             
             {/* USER */}
+            {!msg.results?.length && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
               <Paper
                 sx={{
@@ -307,6 +324,7 @@ export default function ChatContent({ sessionId }) {
                 </Typography>
               </Paper>
             </Box>
+            )}
 
             {/* AI */}
             <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
@@ -367,27 +385,29 @@ export default function ChatContent({ sessionId }) {
                   <TableContainer
                     component={Paper}
                     variant="outlined"
-                    sx={{ mt: 2 }}
+                    sx={{ p: 2 }}
                   >
                     <Table size="small">
                       <TableHead>
                         <TableRow>
-                          <TableCell>Party Name</TableCell>
-                          <TableCell>Citation</TableCell>
-                          <TableCell>Date</TableCell>
-                          <TableCell>Court</TableCell>
-                          <TableCell>Area</TableCell>
-                          <TableCell>Section</TableCell>
+                          <TableCell width={10}>Date</TableCell>
+                          <TableCell width={15}>Citation</TableCell>
+                          <TableCell width={20}>Court</TableCell>
+                          <TableCell width={45}>Party Name</TableCell>
+                          <TableCell width={10}>Section</TableCell>
                         </TableRow>
                       </TableHead>
 
                       <TableBody>
                         {msg.results.map((row) => (
                           <TableRow key={row.id}>
+                            <TableCell>{row.dateofjudgement}</TableCell>
+                            <TableCell>{row.citation}</TableCell>
+                            <TableCell>{row.court_name}</TableCell>
                             <TableCell>
                               <Typography
                                 component="a"
-                                href={`https://incometaxlibrary.in/judgement/${row.id}`}
+                                href={`https://incometaxlibrary.com/dt/judgements/${row.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{
@@ -401,11 +421,6 @@ export default function ChatContent({ sessionId }) {
                                 {row.partyname}
                               </Typography>
                             </TableCell>
-
-                            <TableCell>{row.citation}</TableCell>
-                            <TableCell>{row.dateofjudgement}</TableCell>
-                            <TableCell>{row.court_name}</TableCell>
-                            <TableCell>{row.court_area}</TableCell>
                             <TableCell>{row.sectionno}</TableCell>
                           </TableRow>
                         ))}
@@ -414,7 +429,7 @@ export default function ChatContent({ sessionId }) {
                   </TableContainer>
                 )}
                 {/* ACTION ROW */}
-                {!msg.thinking && !loading && (
+                {!msg.thinking && !loading && !msg.results && (
                   <Box
                     sx={{
                       display: "flex",

@@ -49,12 +49,78 @@ export default function ChatContent({ sessionId }) {
     loadMessages();
   }, [sessionId]);
 
+  // const handleSend = async ({ message, files, clear }) => {
+  //   if (!message?.trim() && !files?.length) return;
+  
+  //   const tempId = Date.now();
+  
+  //   // 1. Add user + AI placeholder
+  //   setMessages((prev) => [
+  //     ...prev,
+  //     {
+  //       id: tempId,
+  //       user_query: message,
+  //       ai_answer: "",
+  //       created_at: new Date().toISOString(),
+  //       streaming: true,
+  //       thinking: true,
+  //     },
+  //   ]);
+  
+  //   clear?.();
+  
+  //   try {
+  //     const res = await sendChatMessage({
+  //       sessionId,
+  //       message,
+  //       files,
+  //       model: "ask_gst",
+  //       maxLength: 500,
+  //     });
+  
+  //     const answer = res?.answer || "No response";
+  
+  //     // 2. FIRST: show full thinking animation → then typing
+  //     setMessages((prev) =>
+  //       prev.map((m) =>
+  //         m.id === tempId
+  //           ? { ...m, thinking: false, ai_answer: "" }
+  //           : m
+  //       )
+  //     );
+  
+  //     // 3. typing effect
+  //     typeText(answer, (partial) => {
+  //       setMessages((prev) =>
+  //         prev.map((m) =>
+  //           m.id === tempId
+  //             ? { ...m, ai_answer: partial }
+  //             : m
+  //         )
+  //       );
+  //     }, 1.5); // 🔥 very fast typing
+  
+  //   } catch (err) {
+  //     console.error(err);
+  
+  //     setMessages((prev) =>
+  //       prev.map((m) =>
+  //         m.id === tempId
+  //           ? {
+  //               ...m,
+  //               ai_answer: "❌ Failed to get response",
+  //               thinking: false,
+  //             }
+  //           : m
+  //       )
+  //     );
+  //   }
+  // };
   const handleSend = async ({ message, files, clear }) => {
     if (!message?.trim() && !files?.length) return;
   
     const tempId = Date.now();
   
-    // 1. Add user + AI placeholder
     setMessages((prev) => [
       ...prev,
       {
@@ -70,17 +136,35 @@ export default function ChatContent({ sessionId }) {
     clear?.();
   
     try {
-      const res = await sendChatMessage({
-        sessionId,
-        message,
-        files,
-        model: "ask_gst",
-        maxLength: 500,
-      });
+      let res;
+  
+      if (replyContext) {
+        // Refine request
+        res = await sendChatMessage({
+          sessionId,
+          message,
+          files,
+          model: "ask_gst",
+          maxLength: 500,
+  
+          // extra data
+          replyContext,
+        });
+  
+        setReplyContext(null);
+      } else {
+        // Normal request
+        res = await sendChatMessage({
+          sessionId,
+          message,
+          files,
+          model: "ask_gst",
+          maxLength: 500,
+        });
+      }
   
       const answer = res?.answer || "No response";
   
-      // 2. FIRST: show full thinking animation → then typing
       setMessages((prev) =>
         prev.map((m) =>
           m.id === tempId
@@ -89,7 +173,6 @@ export default function ChatContent({ sessionId }) {
         )
       );
   
-      // 3. typing effect
       typeText(answer, (partial) => {
         setMessages((prev) =>
           prev.map((m) =>
@@ -98,8 +181,7 @@ export default function ChatContent({ sessionId }) {
               : m
           )
         );
-      }, 1.5); // 🔥 very fast typing
-  
+      }, 1.5);
     } catch (err) {
       console.error(err);
   

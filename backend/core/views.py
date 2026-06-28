@@ -215,6 +215,8 @@ class RefineView(APIView):
         try:
 
             main_content = request.POST.get('main_content', '').strip()
+            original_answer = request.POST.get('original_answer', '')
+            refinement_instructions = request.POST.get('refinement_instructions', '')
             max_length = int(request.POST.get('max_length', 500))
             selected_model = request.POST.get('model')
             session_id = int(request.POST.get('session_id'))
@@ -241,9 +243,11 @@ class RefineView(APIView):
             if not text_content:
                 text_content = "No content provided."
 
-            url = "http://localhost:5000/api/v1/clarify"
+            url = "http://localhost:5000/api/v1/refine"
             payload = {
-                "query": text_content,
+                "original_query": text_content,
+                "original_answer": original_answer,
+                "refinement_instructions": refinement_instructions,
                 "max_results": 5,
                 "session_id":session_id,
                 # "message_id": message.pk,

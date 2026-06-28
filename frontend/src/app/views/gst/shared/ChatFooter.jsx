@@ -205,6 +205,15 @@ export default function ChatFooter({
                             >
                                 <Icon>attach_file</Icon>
                             </IconButton>
+                            <IconButton
+                                color="primary"
+                                disabled={loading}
+                                onClick={handleClarify}
+                                title="Clarify"
+                            >
+                                <Icon>help_outline</Icon>
+                            </IconButton>
+
                         </InputAdornment>
                     ),
 
@@ -219,14 +228,6 @@ export default function ChatFooter({
                                 <Icon>send</Icon>
                             </IconButton>
 
-                            <IconButton
-                                color="secondary"
-                                disabled={loading}
-                                onClick={handleClarify}
-                                title="Clarify"
-                            >
-                                <Icon>help_outline</Icon>
-                            </IconButton>
                         </InputAdornment>
                     ),
                 }}

@@ -248,6 +248,32 @@ export default function ChatContent({ sessionId }) {
                 <Typography variant="body2" textAlign="justify">
                   {msg.thinking ? <ThinkingDots /> : msg.ai_answer}
                 </Typography>
+                {/* Sources */}
+                {Array.isArray(msg.sources_used) && msg.sources_used.length > 0 && (
+                  <Box sx={{ mt: 1 }}>
+                    <Stack spacing={0.5} sx={{ mt: 0.5 }}>
+                      {msg.sources_used.map((item) => (
+                        <Typography
+                          key={item.id}
+                          component="a"
+                          href={`https://incometaxlibrary.in/judgement/${item.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            fontSize: 13,
+                            color: "primary.main",
+                            textDecoration: "none",
+                            "&:hover": {
+                              textDecoration: "underline",
+                            },
+                          }}
+                        >
+                          {item.heading}
+                        </Typography>
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
                 {/* ACTION ROW */}
                 <Box
                   sx={{

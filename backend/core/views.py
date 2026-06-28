@@ -95,9 +95,10 @@ class SummarizeView(APIView):
                 api_response_json = response.json()
 
                 message.ai_answer = api_response_json.get("answer", "No answer returned from the API.")
+                message.sources_used = api_response_json.get("sources", {})
                 message.session.message_count += message.session.message_count
                 if message.session.title == "New Chat":
-                    message.session.title = main_content[::15] + "..."
+                    message.session.title = main_content[::30] + "..."
                 message.session.save()
                 message.save()
                 # return api_response_json
@@ -105,7 +106,7 @@ class SummarizeView(APIView):
                     "success": True,
                     "answer": api_response_json.get("answer", "No answer returned from the API."),
                     'query': api_response_json.get("query", ""),
-                    'sources': api_response_json.get("sources", ""),
+                    'sources_used': api_response_json.get("sources", {}),
                     'related_judgements': api_response_json.get("related_judgements", ""),
                     'confidence': api_response_json.get("confidence", ""),
                     'query_time_ms': api_response_json.get("query_time_ms", ""),
@@ -134,72 +135,76 @@ class SummarizeView(APIView):
 
 
 
-@require_POST
-def clarify(request):
-    try:
+class SummarizeView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
-        main_content = request.POST.get('main_content', '').strip()
-        max_length = int(request.POST.get('max_length', 500))
-        selected_model = request.POST.get('model')
-        session_id = int(request.POST.get('session_id'))
-        text_content = main_content
-        files = request.FILES.getlist('files')
+    def post(self, request):
+        try:
 
-        if files:
-            file_texts = []
+            main_content = request.POST.get('main_content', '').strip()
+            max_length = int(request.POST.get('max_length', 500))
+            selected_model = request.POST.get('model')
+            session_id = int(request.POST.get('session_id'))
+            text_content = main_content
+            files = request.FILES.getlist('files')
 
-            for file in files:
-                file_name = file.name
-                file_content = file.read()
-                # fs = FileSystemStorage()
-                # filename = fs.save(file_name, file)
-                # file_url = fs.url(filename)
-                # print(f"File uploaded to {file_url}")
-                # print(f"File uploaded to {file_content}")
-                # print("File Name:", file_name)
-                file_texts.append(f"[File: {file_name}]")
-            text_content = "\n".join(file_texts)
-            if main_content:
-                text_content += f"\n\nUser Message:\n{main_content}"
+            if files:
+                file_texts = []
 
-        if not text_content:
-            text_content = "No content provided."
+                for file in files:
+                    file_name = file.name
+                    file_content = file.read()
+                    # fs = FileSystemStorage()
+                    # filename = fs.save(file_name, file)
+                    # file_url = fs.url(filename)
+                    # print(f"File uploaded to {file_url}")
+                    # print(f"File uploaded to {file_content}")
+                    # print("File Name:", file_name)
+                    file_texts.append(f"[File: {file_name}]")
+                text_content = "\n".join(file_texts)
+                if main_content:
+                    text_content += f"\n\nUser Message:\n{main_content}"
 
-        url = "http://localhost:5000/api/v1/clarify"
-        payload = {
-            "query": text_content,
-            "max_results": 5,
-            "session_id":session_id,
-            # "message_id": message.pk,
-            "selected_model": selected_model,
-            "files": files,
-        }
-        response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            api_response_json = response.json()
-            return JsonResponse({
-                "success": True,
-                'options': api_response_json.get("options", ""),
-                'query': api_response_json.get("query", ""),
-                # "answer": api_response_json.get("answer", "No answer returned from the API."),
-                # 'sources': api_response_json.get("sources", ""),
-                # 'related_judgements': api_response_json.get("related_judgements", ""),
-                # 'confidence': api_response_json.get("confidence", ""),
-                # 'query_time_ms': api_response_json.get("query_time_ms", ""),
-                # 'verification': api_response_json.get("verification", ""),
-                # 'web_search_used': api_response_json.get("web_search_used", ""),
-                # 'pipeline': api_response_json.get("pipeline", ""),
-            })
-        else:
-            return JsonResponse({
-                "success": False,
-                "error": "API request failed with status code {}".format(response.status_code)
-            })
+            if not text_content:
+                text_content = "No content provided."
 
-    except Exception as e:
-        print(e)
-        logger.error(f"Summarization error: {str(e)}")
-        return JsonResponse({"success": False, "error": f"Server error: {str(e)}"})
+            url = "http://localhost:5000/api/v1/clarify"
+            payload = {
+                "query": text_content,
+                "max_results": 5,
+                "session_id":session_id,
+                # "message_id": message.pk,
+                "selected_model": selected_model,
+                "files": files,
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                api_response_json = response.json()
+                return JsonResponse({
+                    "success": True,
+                    'options': api_response_json.get("options", ""),
+                    'query': api_response_json.get("query", ""),
+                    # "answer": api_response_json.get("answer", "No answer returned from the API."),
+                    # 'sources': api_response_json.get("sources", ""),
+                    # 'related_judgements': api_response_json.get("related_judgements", ""),
+                    # 'confidence': api_response_json.get("confidence", ""),
+                    # 'query_time_ms': api_response_json.get("query_time_ms", ""),
+                    # 'verification': api_response_json.get("verification", ""),
+                    # 'web_search_used': api_response_json.get("web_search_used", ""),
+                    # 'pipeline': api_response_json.get("pipeline", ""),
+                })
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "error": "API request failed with status code {}".format(response.status_code)
+                })
+
+        except Exception as e:
+            print(e)
+            logger.error(f"Summarization error: {str(e)}")
+            return JsonResponse({"success": False, "error": f"Server error: {str(e)}"})
 
 # Create your views here.
 from rest_framework import viewsets

@@ -30,9 +30,9 @@ export default function App() {
                 {/* <Divider sx={{ bgcolor: 'secondary.dark' }} /> */}
                 <Tabs value={value} onChange={handleChange} sx={{ justifyContent: 'space-between' }} >
                   <Tab label="Ask Bot" sx={{ flex: 1 }} />
-                  <Tab label="Case Law Research" sx={{ flex: 1 }} />
                   <Tab label="Summerizer" sx={{ flex: 1 }} />
                   <Tab label="Draft Assistant" sx={{ flex: 1 }} />
+                  <Tab label="Case Law Research" sx={{ flex: 1 }} />
                 </Tabs>
                 {value === 0 && <Tab1 /> }
               </SimpleCard>

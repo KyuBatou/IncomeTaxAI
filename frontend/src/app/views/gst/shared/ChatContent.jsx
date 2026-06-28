@@ -4,7 +4,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import DownloadIcon from "@mui/icons-material/Download";
-import { clarifyChatMessage, getSessionMessages, sendChatMessage } from "../service/service";
+import { clarifyChatMessage, getSessionMessages, sendChatMessage, sendSimilarMessage } from "../service/service";
 import { useEffect, useRef, useState } from "react";
 import { MatxLoading } from "app/components";
 import ChatWelcome from "./ChatWelcome";
@@ -12,6 +12,14 @@ import ChatFooter from "./ChatFooter";
 import { saveAs } from "file-saver";
 import { ThinkingDots } from "./ThinkingDots";
 import ReactMarkdown from "react-markdown";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
 export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
@@ -210,9 +218,45 @@ export default function ChatContent({ sessionId }) {
     });
   };
   
-  const handleSimilar = (text) => {
-    console.log("Similar:", text);
-    // later: call API for similar answers
+  const handleSimilar = async (msg) => {
+    const tempId = Date.now();
+  
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: tempId,
+        user_query: msg.user_query,
+        ai_answer: "",
+        created_at: new Date().toISOString(),
+        thinking: true,
+      },
+    ]);
+  
+    try {
+      const res = await sendSimilarMessage({
+        sessionId,
+        message: msg.user_query,
+        question: msg.user_query,
+        answer: msg.ai_answer,
+        files: [],
+        model: "ask_gst",
+        maxLength: 500,
+      });
+  
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === tempId
+            ? {
+                ...m,
+                thinking: false,
+                ai_answer: res.answer,
+              }
+            : m
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -319,6 +363,56 @@ export default function ChatContent({ sessionId }) {
                     </Stack>
                   </Box>
                 )}
+                {Array.isArray(msg.results) && msg.results.length > 0 && (
+                  <TableContainer
+                    component={Paper}
+                    variant="outlined"
+                    sx={{ mt: 2 }}
+                  >
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Party Name</TableCell>
+                          <TableCell>Citation</TableCell>
+                          <TableCell>Date</TableCell>
+                          <TableCell>Court</TableCell>
+                          <TableCell>Area</TableCell>
+                          <TableCell>Section</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {msg.results.map((row) => (
+                          <TableRow key={row.id}>
+                            <TableCell>
+                              <Typography
+                                component="a"
+                                href={`https://incometaxlibrary.in/judgement/${row.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                sx={{
+                                  color: "primary.main",
+                                  textDecoration: "none",
+                                  "&:hover": {
+                                    textDecoration: "underline",
+                                  },
+                                }}
+                              >
+                                {row.partyname}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell>{row.citation}</TableCell>
+                            <TableCell>{row.dateofjudgement}</TableCell>
+                            <TableCell>{row.court_name}</TableCell>
+                            <TableCell>{row.court_area}</TableCell>
+                            <TableCell>{row.sectionno}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
                 {/* ACTION ROW */}
                 {!msg.thinking && !loading && (
                   <Box
@@ -362,7 +456,7 @@ export default function ChatContent({ sessionId }) {
                       <Button
                         size="small"
                         startIcon={<CompareArrowsIcon />}
-                        onClick={() => handleSimilar(msg.ai_answer)}
+                        onClick={() => handleSimilar(msg)}
                         sx={{ textTransform: "none", fontSize: "0.75rem" }}
                       >
                         Similar

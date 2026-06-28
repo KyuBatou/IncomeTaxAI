@@ -50,7 +50,6 @@ export const sendChatMessage = async (payload) => {
     formData.append("files", file);
   });
   if (payload.replyContext) {
-    console.log(payload.replyContext);
     formData.append("previous_question", payload.replyContext.question);
     formData.append("previous_answer", payload.replyContext.answer);
     url = `${BASE_URL}/chat/refine/`;
@@ -71,6 +70,23 @@ export const clarifyChatMessage = async (payload) => {
   });
 
   const { data } = await apiClient.post(`${BASE_URL}/chat/clarify/`, formData);
+
+  return data;
+};
+
+export const sendSimilarMessage = async (payload) => {
+  const formData = new FormData();
+
+  formData.append("main_content", payload.message);
+  formData.append("session_id", payload.sessionId);
+  formData.append("model", payload.model);
+  formData.append("previous_answer", payload.answer);
+
+  payload.files.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  const { data } = await apiClient.post(`${BASE_URL}/chat/similar/`, formData);
 
   return data;
 };

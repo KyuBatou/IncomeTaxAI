@@ -184,10 +184,8 @@ class ClarifyView(APIView):
                 api_response_json = response.json()
                 return JsonResponse({
                     "success": True,
+                    'options': api_response_json.get("options", ""),
                     'query': api_response_json.get("query", ""),
-                    "answer": api_response_json.get("refined_answer", "No answer returned from the API."),
-                    "original_answer": api_response_json.get("original_answer", ""),
-                    'sources_used': api_response_json.get("sources", {}),
                     # 'related_judgements': api_response_json.get("related_judgements", ""),
                     # 'confidence': api_response_json.get("confidence", ""),
                     # 'query_time_ms': api_response_json.get("query_time_ms", ""),
@@ -259,8 +257,10 @@ class RefineView(APIView):
                 api_response_json = response.json()
                 return JsonResponse({
                     "success": True,
-                    'options': api_response_json.get("options", ""),
                     'query': api_response_json.get("query", ""),
+                    "answer": api_response_json.get("refined_answer", "No answer returned from the API."),
+                    "original_answer": api_response_json.get("original_answer", ""),
+                    'sources_used': api_response_json.get("sources", {}),
                     # "answer": api_response_json.get("answer", "No answer returned from the API."),
                     # 'sources': api_response_json.get("sources", ""),
                     # 'related_judgements': api_response_json.get("related_judgements", ""),

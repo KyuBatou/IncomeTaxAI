@@ -11,6 +11,8 @@ urlpatterns = [
     # path('chat/gpt/', summarize, name="chat_gpt"),
     # path('chat/clarify/', clarify, name="chat_gpt"),
     path('chat/clarify/', ClarifyView.as_view(), name='chat_clarify'),
+    path('chat/refine/', RefineView.as_view(), name='chat_refine'),
+    path('chat/similar/', SimilarView.as_view(), name='chat_similar'),
 
     path('api/', include(router.urls)),
 

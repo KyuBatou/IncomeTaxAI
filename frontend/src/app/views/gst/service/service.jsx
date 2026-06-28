@@ -40,7 +40,7 @@ import apiClient from "app/hooks/apiClient";
 
 export const sendChatMessage = async (payload) => {
   const formData = new FormData();
-  const url = `${BASE_URL}/chat/gpt/`
+  let url = `${BASE_URL}/chat/gpt/`;
 
   formData.append("main_content", payload.message);
   formData.append("session_id", payload.sessionId);
@@ -50,9 +50,10 @@ export const sendChatMessage = async (payload) => {
     formData.append("files", file);
   });
   if (payload.replyContext) {
+    console.log(payload.replyContext);
     formData.append("previous_question", payload.replyContext.question);
     formData.append("previous_answer", payload.replyContext.answer);
-    url = `${BASE_URL}/chat/refine/`
+    url = `${BASE_URL}/chat/refine/`;
   }
 
   const { data } = await apiClient.post(url, formData);

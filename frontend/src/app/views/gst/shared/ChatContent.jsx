@@ -373,67 +373,69 @@ export default function ChatContent({ sessionId }) {
                   </Box>
                 )}
                 {/* ACTION ROW */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    mt: 1,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {/* LEFT SIDE → ACTION BUTTONS */}
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      size="small"
-                      startIcon={<ContentCopyIcon />}
-                      onClick={() => handleCopy(msg.ai_answer)}
-                      sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                    >
-                      Copy
-                    </Button>
-
-                    <Button
-                      size="small"
-                      startIcon={<DownloadIcon />}
-                      onClick={() => handleDownload(msg.ai_answer)}
-                      sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                    >
-                      Download
-                    </Button>
-
-                    <Button
-                      size="small"
-                      startIcon={<AutoFixHighIcon />}
-                      onClick={() => handleRefine(msg)}
-                      sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                    >
-                      Refine
-                    </Button>
-
-                    <Button
-                      size="small"
-                      startIcon={<CompareArrowsIcon />}
-                      onClick={() => handleSimilar(msg.ai_answer)}
-                      sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                    >
-                      Similar
-                    </Button>
-                  </Stack>
-
-                  {/* RIGHT SIDE → TIME */}
-                  <Typography
-                    variant="caption"
+                {!msg.thinking && !loading && (
+                  <Box
                     sx={{
-                      opacity: 0.6,
-                      ml: "auto",
-                      pl: 1,
-                      whiteSpace: "nowrap",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      mt: 1,
+                      flexWrap: "wrap",
                     }}
                   >
-                    {formatTime(msg.created_at)}
-                  </Typography>
-                </Box>
+                    {/* LEFT SIDE → ACTION BUTTONS */}
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        size="small"
+                        startIcon={<ContentCopyIcon />}
+                        onClick={() => handleCopy(msg.ai_answer)}
+                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                      >
+                        Copy
+                      </Button>
+
+                      <Button
+                        size="small"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => handleDownload(msg.ai_answer)}
+                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                      >
+                        Download
+                      </Button>
+
+                      <Button
+                        size="small"
+                        startIcon={<AutoFixHighIcon />}
+                        onClick={() => handleRefine(msg)}
+                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                      >
+                        Refine
+                      </Button>
+
+                      <Button
+                        size="small"
+                        startIcon={<CompareArrowsIcon />}
+                        onClick={() => handleSimilar(msg.ai_answer)}
+                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                      >
+                        Similar
+                      </Button>
+                    </Stack>
+
+                    {/* RIGHT SIDE → TIME */}
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        opacity: 0.6,
+                        ml: "auto",
+                        pl: 1,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {formatTime(msg.created_at)}
+                    </Typography>
+                  </Box>
+                )}
               </Paper>
             </Box>
           </Box>

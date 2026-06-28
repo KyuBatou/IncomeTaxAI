@@ -100,7 +100,7 @@ export default function ChatFooter({
                         <Icon fontSize="small">close</Icon>
                     </IconButton>
                     </Stack>
-                    <Typography variant="body2" fontWeight={600}>
+                    <Typography variant="body1">
                     {replyContext.question}
                     </Typography>
                 </Box>

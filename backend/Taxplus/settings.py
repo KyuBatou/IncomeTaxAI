@@ -97,7 +97,9 @@ ROOT_URLCONF = 'Taxplus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        # 'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, '../frontend/dist')],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -181,12 +183,19 @@ USE_THOUSAND_SEPARATOR = False
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-STATIC_URL = 'ai/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# STATIC_URL = 'ai/static/'
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATICFILES_STORAGE="whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_URL = 'assets/'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE="whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "../frontend/dist/assets"),
+    os.path.join(BASE_DIR, "../frontend/dist/"),
+]
 
 CORS_ORIGIN_ALLOW_ALL = True
 X_FRAME_OPTIONS = "ALLOWALL"

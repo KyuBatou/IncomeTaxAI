@@ -30,31 +30,38 @@ RAZORPAY_KEY_SECRET = 'BUZCMpYbbWuu59Yt9p6UXpbp'
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
-class IndexView(FormView, TemplateView):
+class IndexView(TemplateView):
     template_name = "index.html"
-    form_class = ContactMessageForm
-    success_url = reverse_lazy('index')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["roadmap_steps"] = RoadmapStep.objects.all()
-        context["counters"] = CounterBoard.objects.all()
-        context["services"] = Service.objects.filter(is_active=True)
-        context["faqs"] = FAQ.objects.all()
-        context["pricing_plans"] = PricingPlan.objects.prefetch_related(
-            Prefetch('features', queryset=PricingFeature.objects.only('feature_text'))
-        )
-        context["banner"] = Banner.objects.first()
-        context["legal_content"] = LegalContent.objects.all()
         return context
 
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, "Your message has been sent successfully!")
-        return super().form_valid(form)
+# class IndexView(FormView, TemplateView):
+#     template_name = "index.html"
+#     form_class = ContactMessageForm
+#     success_url = reverse_lazy('index')
 
-    def form_invalid(self, form):
-        return super().form_invalid(form)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["roadmap_steps"] = RoadmapStep.objects.all()
+#         context["counters"] = CounterBoard.objects.all()
+#         context["services"] = Service.objects.filter(is_active=True)
+#         context["faqs"] = FAQ.objects.all()
+#         context["pricing_plans"] = PricingPlan.objects.prefetch_related(
+#             Prefetch('features', queryset=PricingFeature.objects.only('feature_text'))
+#         )
+#         context["banner"] = Banner.objects.first()
+#         context["legal_content"] = LegalContent.objects.all()
+#         return context
+
+#     def form_valid(self, form):
+#         form.save()
+#         messages.success(self.request, "Your message has been sent successfully!")
+#         return super().form_valid(form)
+
+#     def form_invalid(self, form):
+#         return super().form_invalid(form)
 
 class FaqView(TemplateView):
     template_name = "faqs.html"

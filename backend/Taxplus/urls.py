@@ -105,4 +105,6 @@ if settings.DEBUG:
 
 urlpatterns = [
     path('ai/', include(ai_patterns)),
+    path('', IndexView.as_view(), name='index'),
+
 ]

@@ -4,7 +4,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import DownloadIcon from "@mui/icons-material/Download";
-import { getSessionMessages, sendChatMessage } from "../service/service";
+import { clarifyChatMessage, getSessionMessages, sendChatMessage } from "../service/service";
 import { useEffect, useRef, useState } from "react";
 import { MatxLoading } from "app/components";
 import ChatWelcome from "./ChatWelcome";
@@ -116,8 +116,20 @@ export default function ChatContent({ sessionId }) {
   };
   // clarify
   const handleClarify = async ({ message, files }) => {
-    console.log("Clarify:", message);
-    // later: call API to clarify answer
+    try {
+      const res = await clarifyChatMessage({
+        sessionId,
+        message,
+        files,
+        model: "ask_gst",
+        maxLength: 500,
+      });
+
+      return res || {};
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
   };
 
   const formatTime = (value) => {

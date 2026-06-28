@@ -53,3 +53,17 @@ export const sendChatMessage = async (payload) => {
 
   return data;
 };
+
+export const clarifyChatMessage = async (payload) => {
+  const formData = new FormData();
+  formData.append("main_content", payload.message);
+  formData.append("session_id", payload.sessionId);
+  formData.append("model", payload.model);
+  payload.files.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  const { data } = await apiClient.post(`${BASE_URL}/chat/clarify/`, formData);
+
+  return data;
+};

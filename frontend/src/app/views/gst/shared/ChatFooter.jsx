@@ -17,6 +17,7 @@ export default function ChatFooter({
 }) {
     const [message, setMessage] = useState("");
     const [files, setFiles] = useState([]);
+    const [clarifyOptions, setClarifyOptions] = useState([]);
 
     const fileInputRef = useRef(null);
 
@@ -63,14 +64,17 @@ export default function ChatFooter({
     };
 
     const handleClarify = async () => {
-        if (!message.trim() && files.length === 0) return;
-
-        await onClarify?.({
+        if (!message.trim() && files.length === 0) return;      
+        try {
+          const res = await onClarify?.({
             message,
             files,
-        });
-
-        resetForm();
+          });
+          
+          setClarifyOptions(res?.options || []);
+        } catch (err) {
+          console.error(err);
+        }
     };
 
     return (
@@ -84,6 +88,64 @@ export default function ChatFooter({
                 borderColor: "divider",
             }}
         >
+            {clarifyOptions.length > 0 && (
+                <Box
+                    sx={{
+                        mt: 1,
+                        mb: 1,
+                        p: 1,
+                        borderRadius: 2,
+                        bgcolor: "grey.50",
+                        border: "1px solid",
+                        borderColor: "divider",
+                    }}
+                    >
+                    <Typography
+                        variant="caption"
+                        sx={{
+                        display: "block",
+                        mb: 1,
+                        fontWeight: 600,
+                        color: "text.secondary",
+                        }}
+                    >
+                        Choose a clarification
+                    </Typography>
+
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        useFlexGap
+                        flexWrap="wrap"
+                    >
+                        {clarifyOptions.map((option, index) => (
+                        <Chip
+                            key={index}
+                            label={option}
+                            clickable
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => {
+                            setMessage(option);
+                            setClarifyOptions([]);
+                            }}
+                            sx={{
+                            borderRadius: "20px",
+                            cursor: "pointer",
+                            transition: "all .2s ease",
+                            "&:hover": {
+                                bgcolor: "primary.main",
+                                color: "#000",
+                                borderColor: "primary.main",
+                                transform: "translateY(-2px)",
+                                boxShadow: 2,
+                            },
+                            }}
+                        />
+                        ))}
+                    </Stack>
+                </Box>
+            )}
             {/* Hidden File Input */}
             <input
                 hidden

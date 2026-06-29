@@ -11,7 +11,7 @@ import sessionRoutes from "./views/sessions/session-routes";
 
 // DASHBOARD PAGE
 const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics")));
-const GST = Loadable(lazy(() => import("app/views/gst/App")));
+const GST = Loadable(lazy(() => import("app/views/gst/ask_bot/App")));
 
 const routes = [
   { path: "/", element: <Navigate to="gst" /> },

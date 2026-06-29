@@ -8,12 +8,14 @@ export const getSessions = async () => {
   return data;
 };
 
-export const createSession = async () => {
+export const createSession = async (
+  modelType = "case_law_research",
+  title = "New Chat"
+) => {
   const payload = {
-    title: "New Chat",
-    session_token: crypto.randomUUID(),
-    category: 1,
-    metadata: {}
+    title,
+    model_type: modelType,
+    metadata: {},
   };
 
   const { data } = await axios.post(API_URL, payload);

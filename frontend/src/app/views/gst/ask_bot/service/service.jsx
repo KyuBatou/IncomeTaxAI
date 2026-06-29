@@ -8,18 +8,15 @@ export const getSessions = async () => {
   return data;
 };
 
-export const createSession = async (
-  modelType = "ask_bot",
-  title = "New Chat"
-) => {
-  const payload = {
-    title,
-    model_type: modelType,
-    metadata: {},
-  };
-
-  const { data } = await axios.post(API_URL, payload);
-  return data;
+export const createSession = async () => { 
+  const payload = { 
+    title: "New Chat", 
+    model_type: "ask_bot",
+    session_token: crypto.randomUUID(),
+    category: 1, 
+    metadata: {} 
+  }; 
+  const { data } = await axios.post(API_URL, payload); return data; 
 };
 
 export const deleteSession = async (id) => {

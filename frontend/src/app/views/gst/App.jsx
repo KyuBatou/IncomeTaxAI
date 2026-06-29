@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid2";
 import Tab1 from "./ask_bot/shared/Tab1";
 import Tab2 from "./summerizer/shared/Tab2";
 import Tab3 from "./draft_assistant/shared/Tab3";
-import Tab4 from "./case_law_reserch/shared/Tab4";
+import Tab4 from "./case_law_research/shared/Tab4";
 
 // STYLED COMPONENTS
 const ContentBox = styled("div")(({ theme }) => ({
@@ -21,7 +21,6 @@ export default function App() {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
     setValue(newValue);
   };
 

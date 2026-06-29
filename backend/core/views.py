@@ -367,16 +367,13 @@ class AiChatSessionViewSet(viewsets.ModelViewSet):
         if model_type:
             queryset = queryset.filter(model_type=model_type)
 
-        return queryset.order_by("-last_activity")
+        return queryset.order_by("last_activity")
 
     def perform_create(self, serializer):
         serializer.save(
             user=self.request.user,
             session_token=str(uuid.uuid4()),
-            model_type=self.request.query_params.get(
-                "model_type",
-                AiChatSession.ModelType.ASK_BOT
-            )
+            model_type=self.request.data.get("model_type")
         )
 
 

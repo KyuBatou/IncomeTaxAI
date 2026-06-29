@@ -4,7 +4,7 @@ import { BASE_URL } from "app/utils/constant";
 const API_URL = `${BASE_URL}/api/sessions/`;
 
 export const getSessions = async () => {
-  const { data } = await axios.get(API_URL);
+  const { data } = await axios.get(`${API_URL}?model_type=case_law_research`);
   return data;
 };
 

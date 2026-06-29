@@ -359,15 +359,24 @@ class AiChatSessionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # return AiChatSession.objects.all().order_by("-last_activity")
-        return AiChatSession.objects.filter(
+        queryset = AiChatSession.objects.filter(
             user=self.request.user
-        ).order_by("-last_activity")
+        )
+
+        model_type = self.request.query_params.get("model_type")
+        if model_type:
+            queryset = queryset.filter(model_type=model_type)
+
+        return queryset.order_by("-last_activity")
 
     def perform_create(self, serializer):
         serializer.save(
             user=self.request.user,
-            session_token=str(uuid.uuid4())
+            session_token=str(uuid.uuid4()),
+            model_type=self.request.query_params.get(
+                "model_type",
+                AiChatSession.ModelType.ASK_BOT
+            )
         )
 
 

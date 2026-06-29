@@ -165,9 +165,21 @@ class TblPayment(models.Model):
 
 
 class AiChatSession(models.Model):
+    class ModelType(models.TextChoices):
+        ASK_BOT = "ask_bot", "Ask Bot"
+        CASE_LAW_RESEARCH = "case_law_research", "Case Law Research"
+        SUMMARIZER = "summarizer", "Summarizer"
+        DRAFT_ASSISTANT = "draft_assistant", "Draft Assistant"
+
     title = models.CharField(max_length=250, default="New Chat")
     session_token = models.CharField(max_length=64, unique=True, db_index=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='user_sessions')
+    model_type = models.CharField(
+        max_length=30,
+        choices=ModelType.choices,
+        default=ModelType.ASK_BOT,
+        db_index=True,
+    )
     category = models.IntegerField(default=1)
     metadata = models.JSONField(default=dict, blank=True)
     message_count = models.IntegerField(default=0)

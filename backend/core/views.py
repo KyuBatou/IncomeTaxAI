@@ -1,15 +1,20 @@
 
 from django.core.files.storage import FileSystemStorage
-from django.views.decorators.http import require_POST
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
-
 from django.http import JsonResponse
-import logging, requests
-
 from core.models import AiChatMessage
+from rest_framework import viewsets
+from .models import AiChatSession
+from .serializers import AiChatSessionSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import AiChatMessage, AiChatSession
+from .serializers import AiChatMessageSerializer
+import uuid, logging, requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -348,11 +353,6 @@ class SimilarView(APIView):
             return JsonResponse({"success": False, "error": f"Server error: {str(e)}"})
 
 # Create your views here.
-from rest_framework import viewsets
-from .models import AiChatSession
-from .serializers import AiChatSessionSerializer
-from rest_framework.permissions import IsAuthenticated
-import uuid
 
 class AiChatSessionViewSet(viewsets.ModelViewSet):
     serializer_class = AiChatSessionSerializer
@@ -371,14 +371,6 @@ class AiChatSessionViewSet(viewsets.ModelViewSet):
         )
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from .models import AiChatMessage, AiChatSession
-from .serializers import AiChatMessageSerializer
-
-
 # ✅ GET messages for a session
 class SessionMessagesView(APIView):
     def get(self, request, session_id):
@@ -386,37 +378,3 @@ class SessionMessagesView(APIView):
         serializer = AiChatMessageSerializer(messages, many=True)
         return Response(serializer.data)
 
-
-# ✅ CREATE message in session
-class CreateMessageView(APIView):
-    def post(self, request, session_id):
-        try:
-            session = AiChatSession.objects.get(id=session_id)
-        except AiChatSession.DoesNotExist:
-            return Response(
-                {"error": "Session not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        data = request.data
-
-        message = AiChatMessage.objects.create(
-            session=session,
-            user_query=data.get("user_query"),
-            ai_answer=data.get("ai_answer", ""),
-            source_bot=data.get("source_bot", "main"),
-            is_detailed=data.get("is_detailed", False),
-            planner_output=data.get("planner_output"),
-            sources_used=data.get("sources_used"),
-            sources_shown=data.get("sources_shown"),
-            web_context=data.get("web_context"),
-            verification=data.get("verification"),
-            was_resynthesized=data.get("was_resynthesized", False),
-            confidence=data.get("confidence", 0.0),
-            query_time_ms=data.get("query_time_ms", 0),
-            web_search_used=data.get("web_search_used", True),
-            max_results=data.get("max_results", 5),
-        )
-
-        serializer = AiChatMessageSerializer(message)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -59,7 +59,7 @@ class DraftAssistantSummarizeView(APIView):
                 user_query=main_content,
                 ai_answer="",
             )
-            url = "http://localhost:5004/process_notice/"
+            url = "http://localhost:5003/api/notice/process/"
             payload = {
                 "notice_text": text_content,
                 "user_name": user_name,
@@ -72,6 +72,7 @@ class DraftAssistantSummarizeView(APIView):
                 "files": files,
             }
             response = requests.post(url, json=payload)
+            print(response.text)
 
             if response.status_code == 200:
                 api_response_json = response.json()

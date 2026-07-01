@@ -1,10 +1,8 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import DownloadIcon from "@mui/icons-material/Download";
-import { clarifyChatMessage, getSessionMessages, sendChatMessage, sendSimilarMessage } from "../service/service";
+import { getSessionMessages, sendChatMessage } from "../service/service";
 import { useEffect, useRef, useState } from "react";
 import { MatxLoading } from "app/components";
 import ChatWelcome from "./ChatWelcome";
@@ -12,21 +10,11 @@ import ChatFooter from "./ChatFooter";
 import { saveAs } from "file-saver";
 import { ThinkingDots } from "./ThinkingDots";
 import ReactMarkdown from "react-markdown";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
 
 export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const chatRef = useRef(null);
-
-  const [replyContext, setReplyContext] = useState(null);
 
   const typeText = (text, callback, speed = 2) => {
     let i = 0;
@@ -58,7 +46,11 @@ export default function ChatContent({ sessionId }) {
     loadMessages();
   }, [sessionId]);
 
-  const handleSend = async ({ message, files, clear }) => {
+  const handleSend = async ({
+      message,
+      files,
+      clear,
+    }) => {
     if (!message?.trim() && !files?.length) return;
   
     const tempId = Date.now();
@@ -79,31 +71,14 @@ export default function ChatContent({ sessionId }) {
   
     try {
       let res;
-  
-      if (replyContext) {
-        // Refine request
-        res = await sendChatMessage({
-          sessionId,
-          message,
-          files,
-          model: "summerizer",
-          maxLength: 500,
-  
-          // extra data
-          replyContext,
-        });
-  
-        setReplyContext(null);
-      } else {
-        // Normal request
-        res = await sendChatMessage({
-          sessionId,
-          message,
-          files,
-          model: "summerizer",
-          maxLength: 500,
-        });
-      }
+      // Normal request
+      res = await sendChatMessage({
+        sessionId,
+        message,
+        files,
+        model: "draft_assistant",
+        maxLength: 500,
+      });
   
       const answer = res?.answer || "No response";
   
@@ -138,23 +113,6 @@ export default function ChatContent({ sessionId }) {
             : m
         )
       );
-    }
-  };
-  // clarify
-  const handleClarify = async ({ message, files }) => {
-    try {
-      const res = await clarifyChatMessage({
-        sessionId,
-        message,
-        files,
-        model: "summerizer",
-        maxLength: 500,
-      });
-
-      return res || {};
-    } catch (err) {
-      console.error(err);
-      return [];
     }
   };
 
@@ -209,70 +167,6 @@ export default function ChatContent({ sessionId }) {
   
     const blob = await Packer.toBlob(doc);
     saveAs(blob, "ai-response.docx");
-  };
-
-  const handleRefine = (msg) => {
-    setReplyContext({
-      question: msg.user_query,
-      answer: msg.ai_answer,
-    });
-  };
-  
-  const handleSimilar = async (msg) => {
-    const tempId = Date.now();
-  
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: tempId,
-        user_query: msg.user_query,
-        ai_answer: "",
-        created_at: new Date().toISOString(),
-        thinking: true,
-        results: [],
-        sources_used: [],
-      },
-    ]);
-  
-    try {
-      const res = await sendSimilarMessage({
-        sessionId,
-        message: msg.user_query,
-        question: msg.user_query,
-        answer: msg.ai_answer,
-        files: [],
-        model: "summerizer",
-        maxLength: 500,
-      });
-  
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === tempId
-            ? {
-                ...m,
-                thinking: false,
-                ai_answer: res?.answer || "",
-                results: res?.results || [],
-                sources_used: res?.sources_used || [],
-              }
-            : m
-        )
-      );
-    } catch (err) {
-      console.error(err);
-  
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === tempId
-            ? {
-                ...m,
-                thinking: false,
-                ai_answer: "❌ Failed to get response",
-              }
-            : m
-        )
-      );
-    }
   };
 
   useEffect(() => {
@@ -355,79 +249,6 @@ export default function ChatContent({ sessionId }) {
                     </ReactMarkdown>
                   )}
                 </Typography>
-                {/* Sources */}
-                {Array.isArray(msg.sources_used) && msg.sources_used.length > 0 && (
-                  <Box sx={{ mt: 1 }}>
-                    <Stack spacing={0.5} sx={{ mt: 0.5 }}>
-                      {msg.sources_used.map((item) => (
-                        <Typography
-                          key={item.id}
-                          component="a"
-                          href={`https://incometaxlibrary.in/judgement/${item.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{
-                            fontSize: 13,
-                            color: "primary.main",
-                            textDecoration: "none",
-                            "&:hover": {
-                              textDecoration: "underline",
-                            },
-                          }}
-                        >
-                          {item.heading}
-                        </Typography>
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-                {Array.isArray(msg.results) && msg.results.length > 0 && (
-                  <TableContainer
-                    component={Paper}
-                    variant="outlined"
-                    sx={{ p: 2 }}
-                  >
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell width={10}>Date</TableCell>
-                          <TableCell width={15}>Citation</TableCell>
-                          <TableCell width={20}>Court</TableCell>
-                          <TableCell width={45}>Party Name</TableCell>
-                          <TableCell width={10}>Section</TableCell>
-                        </TableRow>
-                      </TableHead>
-
-                      <TableBody>
-                        {msg.results.map((row) => (
-                          <TableRow key={row.id}>
-                            <TableCell>{row.dateofjudgement}</TableCell>
-                            <TableCell>{row.citation}</TableCell>
-                            <TableCell>{row.court_name}</TableCell>
-                            <TableCell>
-                              <Typography
-                                component="a"
-                                href={`https://incometaxlibrary.com/dt/judgements/${row.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{
-                                  color: "primary.main",
-                                  textDecoration: "none",
-                                  "&:hover": {
-                                    textDecoration: "underline",
-                                  },
-                                }}
-                              >
-                                {row.partyname}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>{row.sectionno}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                )}
                 {/* ACTION ROW */}
                 {!msg.thinking && !loading && !msg.results && (
                   <Box
@@ -458,24 +279,6 @@ export default function ChatContent({ sessionId }) {
                       >
                         Download
                       </Button>
-
-                      <Button
-                        size="small"
-                        startIcon={<AutoFixHighIcon />}
-                        onClick={() => handleRefine(msg)}
-                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                      >
-                        Refine
-                      </Button>
-
-                      <Button
-                        size="small"
-                        startIcon={<CompareArrowsIcon />}
-                        onClick={() => handleSimilar(msg)}
-                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                      >
-                        Similar
-                      </Button>
                     </Stack>
 
                     {/* RIGHT SIDE → TIME */}
@@ -500,9 +303,6 @@ export default function ChatContent({ sessionId }) {
       <ChatFooter
         loading={loading}
         onSend={handleSend}
-        onClarify={handleClarify}
-        replyContext={replyContext}
-        setReplyContext={setReplyContext}
       />
     </Box>
   );

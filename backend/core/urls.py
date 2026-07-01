@@ -4,6 +4,7 @@ from .views import *
 
 from .case_law_research_views import *
 from .draft_assistant import *
+from .summarizer import *
 
 router = DefaultRouter()
 router.register(r'sessions', AiChatSessionViewSet, basename='session')
@@ -22,5 +23,6 @@ urlpatterns = [
     path('chat/case-law-research/similar/', CaseLawSimilarView.as_view(), name='chat_similar'),
 
     path('chat/draft-assistant/gpt/', DraftAssistantSummarizeView.as_view(), name='chat_gpt'),
+    path('chat/summarizer/gpt/', SummarizerSummarizeView.as_view(), name='chat_gpt'),
 
 ]

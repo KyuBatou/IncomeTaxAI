@@ -72,7 +72,6 @@ class DraftAssistantSummarizeView(APIView):
                 "files": files,
             }
             response = requests.post(url, json=payload)
-            print(response.text)
 
             if response.status_code == 200:
                 api_response_json = response.json()

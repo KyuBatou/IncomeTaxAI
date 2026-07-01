@@ -77,7 +77,7 @@ class DraftAssistantSummarizeView(APIView):
             if response.status_code == 200:
                 api_response_json = response.json()
 
-                message.ai_answer = api_response_json.get("answer", "No answer returned from the API.")
+                message.ai_answer = api_response_json.get("generated_reply", "No answer returned from the API.")
                 message.sources_used = api_response_json.get("sources", {})
                 message.session.message_count += message.session.message_count
                 if message.session.title == "New Chat":

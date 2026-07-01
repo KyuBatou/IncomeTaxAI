@@ -58,7 +58,6 @@ class SummarizeView(APIView):
             session_id = int(request.POST.get('session_id'))
             text_content = main_content
             files = request.FILES.getlist('files')
-            print(files)
 
             if files:
                 file_texts = []

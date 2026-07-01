@@ -39,7 +39,7 @@ export default function App() {
                 </Tabs>
                 {value === 0 && <Tab1 /> }
                 {/* {value === 1 && <Tab2 /> } */}
-                {/* {value === 2 && <Tab3 /> } */}
+                {value === 2 && <Tab3 /> }
                 {value === 3 && <Tab4 /> }
               </SimpleCard>
           </Grid>

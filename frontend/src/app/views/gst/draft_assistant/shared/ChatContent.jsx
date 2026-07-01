@@ -1,10 +1,8 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import DownloadIcon from "@mui/icons-material/Download";
-import { clarifyChatMessage, getSessionMessages, sendChatMessage, sendSimilarMessage } from "../service/service";
+import { getSessionMessages, sendChatMessage } from "../service/service";
 import { useEffect, useRef, useState } from "react";
 import { MatxLoading } from "app/components";
 import ChatWelcome from "./ChatWelcome";
@@ -25,8 +23,6 @@ export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const chatRef = useRef(null);
-
-  const [replyContext, setReplyContext] = useState(null);
 
   const typeText = (text, callback, speed = 2) => {
     let i = 0;
@@ -79,31 +75,14 @@ export default function ChatContent({ sessionId }) {
   
     try {
       let res;
-  
-      if (replyContext) {
-        // Refine request
-        res = await sendChatMessage({
-          sessionId,
-          message,
-          files,
-          model: "draft_assistant",
-          maxLength: 500,
-  
-          // extra data
-          replyContext,
-        });
-  
-        setReplyContext(null);
-      } else {
-        // Normal request
-        res = await sendChatMessage({
-          sessionId,
-          message,
-          files,
-          model: "draft_assistant",
-          maxLength: 500,
-        });
-      }
+      // Normal request
+      res = await sendChatMessage({
+        sessionId,
+        message,
+        files,
+        model: "draft_assistant",
+        maxLength: 500,
+      });
   
       const answer = res?.answer || "No response";
   
@@ -138,23 +117,6 @@ export default function ChatContent({ sessionId }) {
             : m
         )
       );
-    }
-  };
-  // clarify
-  const handleClarify = async ({ message, files }) => {
-    try {
-      const res = await clarifyChatMessage({
-        sessionId,
-        message,
-        files,
-        model: "draft_assistant",
-        maxLength: 500,
-      });
-
-      return res || {};
-    } catch (err) {
-      console.error(err);
-      return [];
     }
   };
 
@@ -209,70 +171,6 @@ export default function ChatContent({ sessionId }) {
   
     const blob = await Packer.toBlob(doc);
     saveAs(blob, "ai-response.docx");
-  };
-
-  const handleRefine = (msg) => {
-    setReplyContext({
-      question: msg.user_query,
-      answer: msg.ai_answer,
-    });
-  };
-  
-  const handleSimilar = async (msg) => {
-    const tempId = Date.now();
-  
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: tempId,
-        user_query: msg.user_query,
-        ai_answer: "",
-        created_at: new Date().toISOString(),
-        thinking: true,
-        results: [],
-        sources_used: [],
-      },
-    ]);
-  
-    try {
-      const res = await sendSimilarMessage({
-        sessionId,
-        message: msg.user_query,
-        question: msg.user_query,
-        answer: msg.ai_answer,
-        files: [],
-        model: "draft_assistant",
-        maxLength: 500,
-      });
-  
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === tempId
-            ? {
-                ...m,
-                thinking: false,
-                ai_answer: res?.answer || "",
-                results: res?.results || [],
-                sources_used: res?.sources_used || [],
-              }
-            : m
-        )
-      );
-    } catch (err) {
-      console.error(err);
-  
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === tempId
-            ? {
-                ...m,
-                thinking: false,
-                ai_answer: "❌ Failed to get response",
-              }
-            : m
-        )
-      );
-    }
   };
 
   useEffect(() => {
@@ -458,24 +356,6 @@ export default function ChatContent({ sessionId }) {
                       >
                         Download
                       </Button>
-
-                      <Button
-                        size="small"
-                        startIcon={<AutoFixHighIcon />}
-                        onClick={() => handleRefine(msg)}
-                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                      >
-                        Refine
-                      </Button>
-
-                      <Button
-                        size="small"
-                        startIcon={<CompareArrowsIcon />}
-                        onClick={() => handleSimilar(msg)}
-                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                      >
-                        Similar
-                      </Button>
                     </Stack>
 
                     {/* RIGHT SIDE → TIME */}
@@ -500,9 +380,9 @@ export default function ChatContent({ sessionId }) {
       <ChatFooter
         loading={loading}
         onSend={handleSend}
-        onClarify={handleClarify}
-        replyContext={replyContext}
-        setReplyContext={setReplyContext}
+        // onClarify={handleClarify}
+        // replyContext={replyContext}
+        // setReplyContext={setReplyContext}
       />
     </Box>
   );

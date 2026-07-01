@@ -3,6 +3,7 @@ from django.urls import path, include
 from .views import *
 
 from .case_law_research_views import *
+from .draft_assistant import *
 
 router = DefaultRouter()
 router.register(r'sessions', AiChatSessionViewSet, basename='session')
@@ -19,5 +20,7 @@ urlpatterns = [
     path('chat/case-law-research/clarify/', CaseLawClarifyView.as_view(), name='chat_clarify'),
     path('chat/case-law-research/refine/', CaseLawRefineView.as_view(), name='chat_refine'),
     path('chat/case-law-research/similar/', CaseLawSimilarView.as_view(), name='chat_similar'),
+
+    path('chat/draft-assistant/gpt/', DraftAssistantSummarizeView.as_view(), name='chat_gpt'),
 
 ]

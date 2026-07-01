@@ -4,13 +4,14 @@ import { BASE_URL } from "app/utils/constant";
 const API_URL = `${BASE_URL}/api/sessions/`;
 
 export const getSessions = async () => {
-  const { data } = await axios.get(API_URL);
+  const { data } = await axios.get(`${API_URL}?model_type=draft_assistant`);
   return data;
 };
 
 export const createSession = async () => {
   const payload = {
     title: "New Chat",
+    model_type: "draft_assistant",
     session_token: crypto.randomUUID(),
     category: 1,
     metadata: {}
@@ -40,7 +41,7 @@ import apiClient from "app/hooks/apiClient";
 
 export const sendChatMessage = async (payload) => {
   const formData = new FormData();
-  let url = `${BASE_URL}/chat/gpt/`;
+  let url = `${BASE_URL}/chat/draft-assistant/gpt/`;
 
   formData.append("main_content", payload.message);
   formData.append("session_id", payload.sessionId);
@@ -49,44 +50,7 @@ export const sendChatMessage = async (payload) => {
   payload.files.forEach((file) => {
     formData.append("files", file);
   });
-  if (payload.replyContext) {
-    formData.append("previous_question", payload.replyContext.question);
-    formData.append("previous_answer", payload.replyContext.answer);
-    url = `${BASE_URL}/chat/refine/`;
-  }
-
   const { data } = await apiClient.post(url, formData);
-
-  return data;
-};
-
-export const clarifyChatMessage = async (payload) => {
-  const formData = new FormData();
-  formData.append("main_content", payload.message);
-  formData.append("session_id", payload.sessionId);
-  formData.append("model", payload.model);
-  payload.files.forEach((file) => {
-    formData.append("files", file);
-  });
-
-  const { data } = await apiClient.post(`${BASE_URL}/chat/clarify/`, formData);
-
-  return data;
-};
-
-export const sendSimilarMessage = async (payload) => {
-  const formData = new FormData();
-
-  formData.append("main_content", payload.message);
-  formData.append("session_id", payload.sessionId);
-  formData.append("model", payload.model);
-  formData.append("previous_answer", payload.answer);
-
-  payload.files.forEach((file) => {
-    formData.append("files", file);
-  });
-
-  const { data } = await apiClient.post(`${BASE_URL}/chat/similar/`, formData);
 
   return data;
 };

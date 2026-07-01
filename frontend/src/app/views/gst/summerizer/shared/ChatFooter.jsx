@@ -197,7 +197,7 @@ export default function ChatFooter({
                 fullWidth
                 multiline
                 minRows={1}
-                maxRows={2}
+                maxRows={3}
                 size="small"
                 placeholder="Type a message..."
                 value={message}

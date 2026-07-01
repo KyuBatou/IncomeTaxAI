@@ -33,7 +33,7 @@ export default function ChatContent() {
             placeholder="Type a message..."
             multiline
             minRows={1}
-            maxRows={2}
+            maxRows={3}
             size="small"
             InputProps={{
                 endAdornment: (

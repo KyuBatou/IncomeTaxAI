@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import {
     Box,
     Chip,
+    Grid,
     Icon,
     IconButton,
     InputAdornment,
@@ -12,14 +13,16 @@ import {
 
 export default function ChatFooter({
     onSend,
-    onClarify,
     loading = false,
-    replyContext,
-    setReplyContext,
 }) {
     const [message, setMessage] = useState("");
     const [files, setFiles] = useState([]);
-    const [clarifyOptions, setClarifyOptions] = useState([]);
+    const [form, setForm] = useState({
+        user_name: "",
+        business_name: "",
+        gstin: "",
+        address: "",
+    });
 
     const fileInputRef = useRef(null);
 
@@ -48,35 +51,37 @@ export default function ChatFooter({
     const resetForm = () => {
         setMessage("");
         setFiles([]);
+        setForm({
+            user_name: "",
+            business_name: "",
+            gstin: "",
+            address: "",
+        });
     };
 
     const handleSend = async () => {
         if (!message.trim() && files.length === 0) return;
 
         await onSend?.({
+            user_name: form.user_name,
+            business_name: form.business_name,
+            gstin: form.gstin,
+            address: form.address,
             message,
             files,
             clear: () => {
                 setMessage("");
                 setFiles([]);
+                setForm({
+                    user_name: "",
+                    business_name: "",
+                    gstin: "",
+                    address: "",
+                });
             },
         });
 
         resetForm();
-    };
-
-    const handleClarify = async () => {
-        if (!message.trim() && files.length === 0) return;      
-        try {
-          const res = await onClarify?.({
-            message,
-            files,
-          });
-          
-          setClarifyOptions(res?.options || []);
-        } catch (err) {
-          console.error(err);
-        }
     };
 
     return (
@@ -90,79 +95,6 @@ export default function ChatFooter({
                 borderColor: "divider",
             }}
         >
-            {replyContext && (
-                <Box sx={{ mb: 1, p: 1, borderLeft: "4px solid", borderColor: "primary.main" }}>
-                    <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="caption" fontWeight={600}>
-                        Refine to
-                    </Typography>
-                    <IconButton size="small" onClick={() => setReplyContext(null)}>
-                        <Icon fontSize="small">close</Icon>
-                    </IconButton>
-                    </Stack>
-                    <Typography variant="body1">
-                    {replyContext.question}
-                    </Typography>
-                </Box>
-            )}
-            {clarifyOptions.length > 0 && (
-                <Box
-                    sx={{
-                        mt: 1,
-                        mb: 1,
-                        p: 1,
-                        borderRadius: 2,
-                        bgcolor: "grey.50",
-                        border: "1px solid",
-                        borderColor: "divider",
-                    }}
-                    >
-                    <Typography
-                        variant="caption"
-                        sx={{
-                        display: "block",
-                        mb: 1,
-                        fontWeight: 600,
-                        color: "text.secondary",
-                        }}
-                    >
-                        Choose a clarification
-                    </Typography>
-
-                    <Stack
-                        direction="row"
-                        spacing={1}
-                        useFlexGap
-                        flexWrap="wrap"
-                    >
-                        {clarifyOptions.map((option, index) => (
-                        <Chip
-                            key={index}
-                            label={option}
-                            clickable
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => {
-                            setMessage(option);
-                            setClarifyOptions([]);
-                            }}
-                            sx={{
-                            borderRadius: "20px",
-                            cursor: "pointer",
-                            transition: "all .2s ease",
-                            "&:hover": {
-                                bgcolor: "primary.main",
-                                color: "#000",
-                                borderColor: "primary.main",
-                                transform: "translateY(-2px)",
-                                boxShadow: 2,
-                            },
-                            }}
-                        />
-                        ))}
-                    </Stack>
-                </Box>
-            )}
             {/* Hidden File Input */}
             <input
                 hidden
@@ -193,11 +125,72 @@ export default function ChatFooter({
                 </Stack>
             )}
 
+            <Grid container spacing={1} sx={{ mb: 1 }}>
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        label="User Name"
+                        value={form.user_name}
+                        onChange={(e) =>
+                            setForm((prev) => ({
+                                ...prev,
+                                user_name: e.target.value,
+                            }))
+                        }
+                    />
+                </Grid>
+
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        label="Business Name"
+                        value={form.business_name}
+                        onChange={(e) =>
+                            setForm((prev) => ({
+                                ...prev,
+                                business_name: e.target.value,
+                            }))
+                        }
+                    />
+                </Grid>
+
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        label="GSTIN"
+                        value={form.gstin}
+                        onChange={(e) =>
+                            setForm((prev) => ({
+                                ...prev,
+                                gstin: e.target.value,
+                            }))
+                        }
+                    />
+                </Grid>
+
+                <Grid item xs={12} sm={3}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        label="Address"
+                        value={form.address}
+                        onChange={(e) =>
+                            setForm((prev) => ({
+                                ...prev,
+                                address: e.target.value,
+                            }))
+                        }
+                    />
+                </Grid>
+            </Grid>
             <TextField
                 fullWidth
                 multiline
                 minRows={1}
-                maxRows={2}
+                maxRows={3}
                 size="small"
                 placeholder="Type a message..."
                 value={message}
@@ -222,15 +215,6 @@ export default function ChatFooter({
                             >
                                 <Icon>attach_file</Icon>
                             </IconButton>
-                            <IconButton
-                                color="primary"
-                                disabled={loading}
-                                onClick={handleClarify}
-                                title="Clarify"
-                            >
-                                <Icon>help_outline</Icon>
-                            </IconButton>
-
                         </InputAdornment>
                     ),
 

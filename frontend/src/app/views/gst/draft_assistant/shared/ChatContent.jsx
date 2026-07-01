@@ -10,14 +10,6 @@ import ChatFooter from "./ChatFooter";
 import { saveAs } from "file-saver";
 import { ThinkingDots } from "./ThinkingDots";
 import ReactMarkdown from "react-markdown";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
 
 export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
@@ -253,79 +245,6 @@ export default function ChatContent({ sessionId }) {
                     </ReactMarkdown>
                   )}
                 </Typography>
-                {/* Sources */}
-                {Array.isArray(msg.sources_used) && msg.sources_used.length > 0 && (
-                  <Box sx={{ mt: 1 }}>
-                    <Stack spacing={0.5} sx={{ mt: 0.5 }}>
-                      {msg.sources_used.map((item) => (
-                        <Typography
-                          key={item.id}
-                          component="a"
-                          href={`https://incometaxlibrary.in/judgement/${item.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{
-                            fontSize: 13,
-                            color: "primary.main",
-                            textDecoration: "none",
-                            "&:hover": {
-                              textDecoration: "underline",
-                            },
-                          }}
-                        >
-                          {item.heading}
-                        </Typography>
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
-                {Array.isArray(msg.results) && msg.results.length > 0 && (
-                  <TableContainer
-                    component={Paper}
-                    variant="outlined"
-                    sx={{ p: 2 }}
-                  >
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell width={10}>Date</TableCell>
-                          <TableCell width={15}>Citation</TableCell>
-                          <TableCell width={20}>Court</TableCell>
-                          <TableCell width={45}>Party Name</TableCell>
-                          <TableCell width={10}>Section</TableCell>
-                        </TableRow>
-                      </TableHead>
-
-                      <TableBody>
-                        {msg.results.map((row) => (
-                          <TableRow key={row.id}>
-                            <TableCell>{row.dateofjudgement}</TableCell>
-                            <TableCell>{row.citation}</TableCell>
-                            <TableCell>{row.court_name}</TableCell>
-                            <TableCell>
-                              <Typography
-                                component="a"
-                                href={`https://incometaxlibrary.com/dt/judgements/${row.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{
-                                  color: "primary.main",
-                                  textDecoration: "none",
-                                  "&:hover": {
-                                    textDecoration: "underline",
-                                  },
-                                }}
-                              >
-                                {row.partyname}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>{row.sectionno}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                )}
                 {/* ACTION ROW */}
                 {!msg.thinking && !loading && !msg.results && (
                   <Box
@@ -380,9 +299,6 @@ export default function ChatContent({ sessionId }) {
       <ChatFooter
         loading={loading}
         onSend={handleSend}
-        // onClarify={handleClarify}
-        // replyContext={replyContext}
-        // setReplyContext={setReplyContext}
       />
     </Box>
   );

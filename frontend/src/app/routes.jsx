@@ -10,7 +10,7 @@ import sessionRoutes from "./views/sessions/session-routes";
 // import materialRoutes from "app/views/material-kit/MaterialRoutes";
 
 // DASHBOARD PAGE
-const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics")));
+const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics3")));
 const GST = Loadable(lazy(() => import("app/views/gst/App")));
 
 const routes = [
@@ -24,10 +24,11 @@ const routes = [
     children: [
       // ...materialRoutes,
       // dashboard route
-      { path: "/dashboard", element: <Analytics />, auth: authRoles.admin },
+      // { path: "/dashboard", element: <Analytics />, auth: authRoles.admin },
       { path: "/gst", element: <GST />, auth: authRoles.admin },
     ]
   },
+  { path: "/dashboard", element: <Analytics />, auth: authRoles.admin },
 
   // session pages route
   ...sessionRoutes

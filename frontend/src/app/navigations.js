@@ -1,6 +1,5 @@
 const navigations = [
-  { name: "Dashboard", path: "/dashboard", icon: "dashboard" },
-  { name: "Dashboard2", path: "/gst/chat", icon: "dashboard" },
+  { name: "GST Chats", path: "/gst/chat", icon: "dashboard" },
   { label: "PAGES", type: "label" },
   {
     name: "Session/Auth",

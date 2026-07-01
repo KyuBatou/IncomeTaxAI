@@ -14,7 +14,7 @@ const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics3")))
 const GST = Loadable(lazy(() => import("app/views/gst/App")));
 
 const routes = [
-  { path: "/", element: <Navigate to="gst" /> },
+  { path: "/", element: <Navigate to="dashboard" /> },
   {
     element: (
       <AuthGuard>

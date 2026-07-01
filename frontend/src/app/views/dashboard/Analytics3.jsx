@@ -1,211 +1,72 @@
-import { Fragment } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import DescriptionIcon from "@mui/icons-material/Description";
-import GavelIcon from "@mui/icons-material/Gavel";
-import ChatIcon from "@mui/icons-material/Chat";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import HomeMain from "./HomeMain";
+import LandingHeader from "./LandingHeader";
+import StatsSection from "./StatsSection";
+import PricingSection from "./PricingSection";
+import FAQSection from "./FAQSection";
+import ContactSection from "./ContactSection";
+import Footer from "./Footer";
+import WritingAreaSection from "./WritingAreaSection";
+import RoadmapSection from "./RoadmapSection";
 
-export default function Analytics() {
-  const features = [
-    {
-      icon: <ChatIcon color="primary" sx={{ fontSize: 40 }} />,
-      title: "AI Legal Assistant",
-      desc: "Ask legal questions and receive AI-powered guidance in seconds.",
-    },
-    {
-      icon: <DescriptionIcon color="primary" sx={{ fontSize: 40 }} />,
-      title: "Draft Documents",
-      desc: "Generate notices, agreements, replies, petitions and legal drafts.",
-    },
-    {
-      icon: <GavelIcon color="primary" sx={{ fontSize: 40 }} />,
-      title: "Legal Research",
-      desc: "Search laws, acts, judgments and legal references efficiently.",
-    },
-  ];
+export default function LandingMain() {
+  const words = ["GST", "Income Tax"];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 1200);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <Fragment>
-      <Container maxWidth="lg" sx={{ py: 5 }}>
-        {/* Hero */}
-        <Card
-          sx={{
-            p: 6,
-            borderRadius: 4,
-            background:
-              "linear-gradient(135deg,#1976d2 0%,#42a5f5 100%)",
-            color: "#fff",
-            mb: 5,
-          }}
-        >
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={7}>
-              <Typography variant="h3" fontWeight={700} gutterBottom>
-                AI Legal Assistant
-              </Typography>
+    <Box
+      sx={{
+        position: "relative",
+        minHeight: "100vh",
+        color: "#fff",
+        overflowX: "hidden",
 
-              <Typography
-                variant="h6"
-                sx={{ opacity: 0.9, mb: 4 }}
-              >
-                Generate legal drafts, analyze documents, answer legal
-                questions and improve productivity using Artificial
-                Intelligence.
-              </Typography>
+        background: `
+          radial-gradient(circle at 10% 20%, rgba(255,0,80,0.25), transparent 40%),
+          radial-gradient(circle at 90% 30%, rgba(255,80,120,0.15), transparent 40%),
+          radial-gradient(circle at 50% 90%, rgba(255,0,60,0.15), transparent 50%),
+          linear-gradient(135deg, #120006 0%, #2B0008 40%, #8B0016 100%)
+        `,
+      }}
+    >
 
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  size="large"
-                  endIcon={<ArrowForwardIcon />}
-                >
-                  Start Chat
-                </Button>
 
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{
-                    color: "#fff",
-                    borderColor: "#fff",
-                    "&:hover": {
-                      borderColor: "#fff",
-                    },
-                  }}
-                >
-                  Learn More
-                </Button>
-              </Stack>
-            </Grid>
+      <LandingHeader
+        scrollToSection={scrollToSection} 
+      />
 
-            <Grid item xs={12} md={5}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <AutoAwesomeIcon
-                  sx={{
-                    fontSize: 180,
-                    opacity: 0.9,
-                  }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </Card>
+      <HomeMain />
+      
+      <StatsSection />
 
-        {/* Features */}
-        <Typography
-          variant="h4"
-          fontWeight={600}
-          textAlign="center"
-          mb={4}
-        >
-          What You Can Do
-        </Typography>
+      <WritingAreaSection />
 
-        <Grid container spacing={3}>
-          {features.map((item) => (
-            <Grid item xs={12} md={4} key={item.title}>
-              <Card
-                sx={{
-                  height: "100%",
-                  textAlign: "center",
-                  p: 3,
-                  borderRadius: 3,
-                  transition: ".3s",
-                  "&:hover": {
-                    transform: "translateY(-6px)",
-                    boxShadow: 8,
-                  },
-                }}
-              >
-                <CardContent>
-                  {item.icon}
+      <RoadmapSection />
 
-                  <Typography
-                    variant="h6"
-                    fontWeight={600}
-                    mt={2}
-                    mb={1}
-                  >
-                    {item.title}
-                  </Typography>
+      <PricingSection />
 
-                  <Typography color="text.secondary">
-                    {item.desc}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+      <FAQSection />
 
-        {/* Stats */}
-        <Grid container spacing={3} mt={3}>
-          {[
-            ["10K+", "Legal Drafts Generated"],
-            ["500+", "Organizations"],
-            ["99.9%", "Availability"],
-            ["24×7", "AI Assistance"],
-          ].map(([value, label]) => (
-            <Grid item xs={6} md={3} key={label}>
-              <Card sx={{ p: 3, textAlign: "center" }}>
-                <Typography
-                  variant="h3"
-                  color="primary"
-                  fontWeight={700}
-                >
-                  {value}
-                </Typography>
+      <ContactSection />
 
-                <Typography color="text.secondary">
-                  {label}
-                </Typography>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+      <Footer />
 
-        {/* Footer */}
-        <Box
-          sx={{
-            mt: 6,
-            py: 4,
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="h5" fontWeight={600}>
-            Ready to simplify legal work?
-          </Typography>
-
-          <Typography color="text.secondary" mt={1} mb={3}>
-            Start generating legal drafts and get AI-powered legal
-            assistance today.
-          </Typography>
-
-          <Button
-            variant="contained"
-            size="large"
-            endIcon={<ArrowForwardIcon />}
-          >
-            Get Started
-          </Button>
-        </Box>
-      </Container>
-    </Fragment>
+    </Box>
   );
 }

@@ -82,6 +82,7 @@ class CaseLawSummarizeView(APIView):
                     "answer": api_response_json.get("answer", "No answer returned from the API."),
                     'query': api_response_json.get("query", ""),
                     'sources_used': api_response_json.get("sources", {}),
+                    'results': api_response_json.get("results", {}),
                     'related_judgements': api_response_json.get("related_judgements", ""),
                     'confidence': api_response_json.get("confidence", ""),
                     'query_time_ms': api_response_json.get("query_time_ms", ""),
@@ -156,7 +157,12 @@ class CaseLawClarifyView(APIView):
                 api_response_json = response.json()
                 return JsonResponse({
                     "success": True,
-                    'options': api_response_json.get("options", ""),
+                    'options': [
+                        item.get("query")
+                        for item in api_response_json.get("options", [])
+                        if isinstance(item, dict) and item.get("query")
+                    ],
+                    # 'options': api_response_json.get("options", ""),
                     'query': api_response_json.get("query", ""),
                     # 'related_judgements': api_response_json.get("related_judgements", ""),
                     # 'confidence': api_response_json.get("confidence", ""),
@@ -213,7 +219,7 @@ class CaseLawRefineView(APIView):
             if not text_content:
                 text_content = "No content provided."
 
-            url = "http://localhost:5002/api/v1/refine"
+            url = "http://localhost:5002/api/judgements/premium/refine/"
             payload = {
                 "original_query": text_content,
                 "original_answer": original_answer,

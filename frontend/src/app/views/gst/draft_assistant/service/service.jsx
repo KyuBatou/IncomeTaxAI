@@ -41,15 +41,23 @@ import apiClient from "app/hooks/apiClient";
 
 export const sendChatMessage = async (payload) => {
   const formData = new FormData();
-  let url = `${BASE_URL}/chat/draft-assistant/gpt/`;
 
-  formData.append("main_content", payload.message);
-  formData.append("session_id", payload.sessionId);
-  formData.append("model", payload.model);
+  const url = `${BASE_URL}/chat/draft-assistant/gpt/`;
 
-  payload.files.forEach((file) => {
+  formData.append("main_content", payload.message || "");
+  formData.append("session_id", payload.sessionId || "");
+  formData.append("model", payload.model || "");
+
+  // New fields
+  formData.append("user_name", payload.user_name || "");
+  formData.append("business_name", payload.business_name || "");
+  formData.append("gstin", payload.gstin || "");
+  formData.append("address", payload.address || "");
+
+  (payload.files || []).forEach((file) => {
     formData.append("files", file);
   });
+
   const { data } = await apiClient.post(url, formData);
 
   return data;

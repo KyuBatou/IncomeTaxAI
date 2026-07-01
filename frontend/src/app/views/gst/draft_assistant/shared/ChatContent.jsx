@@ -46,7 +46,15 @@ export default function ChatContent({ sessionId }) {
     loadMessages();
   }, [sessionId]);
 
-  const handleSend = async ({ message, files, clear }) => {
+  const handleSend = async ({
+      user_name,
+      business_name,
+      gstin,
+      address,
+      message,
+      files,
+      clear,
+    }) => {
     if (!message?.trim() && !files?.length) return;
   
     const tempId = Date.now();
@@ -70,6 +78,10 @@ export default function ChatContent({ sessionId }) {
       // Normal request
       res = await sendChatMessage({
         sessionId,
+        user_name,
+        business_name,
+        gstin,
+        address,
         message,
         files,
         model: "draft_assistant",

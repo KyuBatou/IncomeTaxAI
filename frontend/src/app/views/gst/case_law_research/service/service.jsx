@@ -39,7 +39,7 @@ import apiClient from "app/hooks/apiClient";
 
 export const sendChatMessage = async (payload) => {
   const formData = new FormData();
-  let url = `${BASE_URL}/chat/gpt/`;
+  let url = `${BASE_URL}/chat/case-law-research/gpt/`;
 
   formData.append("main_content", payload.message);
   formData.append("session_id", payload.sessionId);
@@ -51,7 +51,7 @@ export const sendChatMessage = async (payload) => {
   if (payload.replyContext) {
     formData.append("previous_question", payload.replyContext.question);
     formData.append("previous_answer", payload.replyContext.answer);
-    url = `${BASE_URL}/chat/refine/`;
+    url = `${BASE_URL}/chat/case-law-research/refine/`;
   }
 
   const { data } = await apiClient.post(url, formData);
@@ -68,7 +68,7 @@ export const clarifyChatMessage = async (payload) => {
     formData.append("files", file);
   });
 
-  const { data } = await apiClient.post(`${BASE_URL}/chat/clarify/`, formData);
+  const { data } = await apiClient.post(`${BASE_URL}/chat/case-law-research/clarify/`, formData);
 
   return data;
 };
@@ -85,7 +85,7 @@ export const sendSimilarMessage = async (payload) => {
     formData.append("files", file);
   });
 
-  const { data } = await apiClient.post(`${BASE_URL}/chat/similar/`, formData);
+  const { data } = await apiClient.post(`${BASE_URL}/chat/case-law-research/similar/`, formData);
 
   return data;
 };

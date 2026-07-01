@@ -190,9 +190,9 @@ class CaseLawRefineView(APIView):
     def post(self, request):
         try:
 
-            main_content = request.POST.get('main_content', '').strip()
-            original_answer = request.POST.get('previous_question', '')
-            refinement_instructions = request.POST.get('previous_answer', '')
+            main_content = request.POST.get('previous_question', '').strip()
+            original_answer = request.POST.get('previous_answer', '')
+            refinement_instructions = request.POST.get('main_content', '')
             max_length = int(request.POST.get('max_length', 500))
             selected_model = request.POST.get('model')
             session_id = int(request.POST.get('session_id'))

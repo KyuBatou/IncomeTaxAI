@@ -72,6 +72,8 @@ export default function ChatContent({ sessionId }) {
         created_at: new Date().toISOString(),
         streaming: true,
         thinking: true,
+        results: [],
+        sources_used: [],
       },
     ]);
   
@@ -86,7 +88,7 @@ export default function ChatContent({ sessionId }) {
           sessionId,
           message,
           files,
-          model: "ask_gst",
+          model: "case_law_research",
           maxLength: 500,
   
           // extra data
@@ -100,7 +102,7 @@ export default function ChatContent({ sessionId }) {
           sessionId,
           message,
           files,
-          model: "ask_gst",
+          model: "case_law_research",
           maxLength: 500,
         });
       }
@@ -119,7 +121,13 @@ export default function ChatContent({ sessionId }) {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === tempId
-              ? { ...m, ai_answer: partial }
+              ? { 
+                ...m,
+                thinking: false,
+                ai_answer: res?.answer || "",
+                results: res?.results || [],
+                sources_used: res?.sources_used || [],
+              }
               : m
           )
         );
@@ -147,7 +155,7 @@ export default function ChatContent({ sessionId }) {
         sessionId,
         message,
         files,
-        model: "ask_gst",
+        model: "case_law_research",
         maxLength: 500,
       });
 
@@ -241,7 +249,7 @@ export default function ChatContent({ sessionId }) {
         question: msg.user_query,
         answer: msg.ai_answer,
         files: [],
-        model: "ask_gst",
+        model: "case_law_research",
         maxLength: 500,
       });
   
@@ -308,7 +316,6 @@ export default function ChatContent({ sessionId }) {
           <Box key={msg.id}>
             
             {/* USER */}
-            {!msg.results?.length && (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
               <Paper
                 sx={{
@@ -324,7 +331,6 @@ export default function ChatContent({ sessionId }) {
                 </Typography>
               </Paper>
             </Box>
-            )}
 
             {/* AI */}
             <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>

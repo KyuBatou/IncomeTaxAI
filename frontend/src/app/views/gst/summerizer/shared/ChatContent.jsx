@@ -86,7 +86,7 @@ export default function ChatContent({ sessionId }) {
           sessionId,
           message,
           files,
-          model: "ask_gst",
+          model: "summerizer",
           maxLength: 500,
   
           // extra data
@@ -100,7 +100,7 @@ export default function ChatContent({ sessionId }) {
           sessionId,
           message,
           files,
-          model: "ask_gst",
+          model: "summerizer",
           maxLength: 500,
         });
       }
@@ -147,7 +147,7 @@ export default function ChatContent({ sessionId }) {
         sessionId,
         message,
         files,
-        model: "ask_gst",
+        model: "summerizer",
         maxLength: 500,
       });
 
@@ -241,7 +241,7 @@ export default function ChatContent({ sessionId }) {
         question: msg.user_query,
         answer: msg.ai_answer,
         files: [],
-        model: "ask_gst",
+        model: "summerizer",
         maxLength: 500,
       });
   

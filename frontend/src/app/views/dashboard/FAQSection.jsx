@@ -8,30 +8,7 @@ import {
 } from "@mui/material";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 
-const faqs = [
-  {
-    q: "What is ITL AI?",
-    a: "ITL AI is an AI-powered legal research, drafting and document intelligence platform designed for Chartered Accountants, Advocates, Tax Consultants and legal professionals.",
-  },
-  {
-    q: "Which legal databases are supported?",
-    a: "ITL AI provides research across Income Tax, GST, Judicial Pronouncements, Circulars, Notifications, Acts, Rules and legal drafting templates.",
-  },
-  {
-    q: "Can ITL AI generate legal drafts?",
-    a: "Yes. Generate notices, replies, agreements, legal opinions, petitions, submissions and professional documents within seconds.",
-  },
-  {
-    q: "Is my data secure?",
-    a: "Absolutely. Your conversations and uploaded documents remain private and are processed using enterprise-grade security practices.",
-  },
-  {
-    q: "Who should use ITL AI?",
-    a: "Perfect for Chartered Accountants, Advocates, Company Secretaries, Cost Accountants, Tax Consultants, Law Firms and Enterprises.",
-  },
-];
-
-export default function FAQSection() {
+export default function FAQSection({ data = [] }) {
   return (
     <Box
       id="faq"
@@ -42,7 +19,6 @@ export default function FAQSection() {
     >
       <Container maxWidth="md">
         {/* Heading */}
-
         <Typography
           sx={{
             fontSize: { xs: 36, md: 50 },
@@ -69,25 +45,20 @@ export default function FAQSection() {
           Everything you need to know about ITL AI.
         </Typography>
 
-        {faqs.map((faq, index) => (
+        {data?.map((faq, index) => (
           <Accordion
-            key={faq.q}
+            key={faq.id || index}
             disableGutters
             elevation={0}
             sx={{
               mb: 2.5,
               borderRadius: "20px !important",
               overflow: "hidden",
-
               background:
                 "linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.03))",
-
               backdropFilter: "blur(30px)",
-
               border: "1px solid rgba(255,255,255,.08)",
-
               color: "#fff",
-
               transition: ".35s",
 
               "&:before": {
@@ -96,8 +67,7 @@ export default function FAQSection() {
 
               "&:hover": {
                 borderColor: "#ff4d6d",
-                boxShadow:
-                  "0 15px 40px rgba(255,77,109,.18)",
+                boxShadow: "0 15px 40px rgba(255,77,109,.18)",
               },
 
               "&.Mui-expanded": {
@@ -109,29 +79,18 @@ export default function FAQSection() {
           >
             <AccordionSummary
               expandIcon={
-                <ExpandMoreRoundedIcon
-                  sx={{
-                    color: "#ff4d6d",
-                    fontSize: 30,
-                    transition: ".3s",
-                  }}
-                />
+                <ExpandMoreRoundedIcon sx={{ color: "#ff4d6d", fontSize: 30 }} />
               }
               sx={{
                 px: 4,
                 py: 1.2,
-
                 "& .MuiAccordionSummary-content": {
                   alignItems: "center",
                   gap: 2,
                 },
-
-                "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded":
-                  {
-                    transform: "rotate(180deg)",
-                  },
               }}
             >
+              {/* Number */}
               <Typography
                 sx={{
                   width: 36,
@@ -151,30 +110,21 @@ export default function FAQSection() {
                 {index + 1}
               </Typography>
 
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  fontSize: 18,
-                }}
-              >
-                {faq.q}
+              <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                {faq.question}
               </Typography>
             </AccordionSummary>
 
-            <AccordionDetails
-              sx={{
-                px: 9,
-                pb: 4,
-              }}
-            >
+            <AccordionDetails sx={{ px: 9, pb: 4 }}>
               <Typography
                 sx={{
+                  textAlign: 'justify',
                   color: "rgba(255,255,255,.72)",
                   lineHeight: 1.9,
                   fontSize: 16,
                 }}
               >
-                {faq.a}
+                {faq.answer}
               </Typography>
             </AccordionDetails>
           </Accordion>

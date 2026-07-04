@@ -4,31 +4,14 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import BalanceIcon from "@mui/icons-material/Balance";
 import GroupsIcon from "@mui/icons-material/Groups";
 
-const stats = [
-  {
-    icon: <BalanceIcon sx={{ fontSize: 42 }} />,
-    value: 141000,
-    suffix: "+",
-    title: "Income Tax Case Laws",
-    desc: "Comprehensive judicial precedents",
-  },
-  {
-    icon: <GavelIcon sx={{ fontSize: 42 }} />,
-    value: 18000,
-    suffix: "+",
-    title: "GST Case Laws",
-    desc: "Latest GST decisions & rulings",
-  },
-  {
-    icon: <GroupsIcon sx={{ fontSize: 42 }} />,
-    value: 10000,
-    suffix: "+",
-    title: "Professionals",
-    desc: "CA, CS, CMA & Advocates",
-  },
-];
+export default function StatsSection({ data = [] }) {
+  // map backend → icons (since backend doesn’t send icons)
+  const getIcon = (title) => {
+    if (title?.toLowerCase().includes("income")) return <BalanceIcon sx={{ fontSize: 42 }} />;
+    if (title?.toLowerCase().includes("gst")) return <GavelIcon sx={{ fontSize: 42 }} />;
+    return <GroupsIcon sx={{ fontSize: 42 }} />;
+  };
 
-export default function StatsSection() {
   return (
     <Box
       id="about"
@@ -39,18 +22,17 @@ export default function StatsSection() {
     >
       <Container maxWidth="lg">
         <Typography
-            sx={{
-                fontSize: { xs: 36, md: 50 },
-                fontWeight: 800,
-                textAlign: "center",
-                mb: 2,
-                background:
-                "linear-gradient(90deg,#fff,#ff8fa3,#ff4d6d)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-            }}
+          sx={{
+            fontSize: { xs: 36, md: 50 },
+            fontWeight: 800,
+            textAlign: "center",
+            mb: 2,
+            background: "linear-gradient(90deg,#fff,#ff8fa3,#ff4d6d)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
         >
-            Trusted by Tax Professionals
+          Trusted by Tax Professionals
         </Typography>
 
         <Typography
@@ -62,13 +44,13 @@ export default function StatsSection() {
             mb: 7,
           }}
         >
-          Built with one of India's largest legal and taxation knowledge
-          databases to deliver accurate AI-powered research and drafting.
+          Built with one of India's largest legal and taxation knowledge databases
+          to deliver accurate AI-powered research and drafting.
         </Typography>
 
         <Grid container spacing={4}>
-          {stats.map((item) => (
-            <Grid item xs={12} md={4} key={item.title}>
+          {data?.map((item) => (
+            <Grid item xs={12} md={4} key={item.id}>
               <Box
                 sx={{
                   height: "100%",
@@ -100,6 +82,7 @@ export default function StatsSection() {
                   },
                 }}
               >
+                {/* ICON */}
                 <Box
                   sx={{
                     width: 70,
@@ -108,51 +91,30 @@ export default function StatsSection() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    background:
-                      "linear-gradient(135deg,#ff2d55,#ff6b81)",
+                    background: "linear-gradient(135deg,#ff2d55,#ff6b81)",
                     color: "#fff",
                     mb: 3,
-                    boxShadow:
-                      "0 12px 30px rgba(255,77,109,.35)",
+                    boxShadow: "0 12px 30px rgba(255,77,109,.35)",
                   }}
                 >
-                  {item.icon}
+                  {getIcon(item.title)}
                 </Box>
 
-                <Typography
-                  sx={{
-                    fontSize: 42,
-                    fontWeight: 800,
-                    mb: 1,
-                  }}
-                >
+                {/* COUNT */}
+                <Typography sx={{ fontSize: 42, fontWeight: 800, mb: 1 }}>
                   <CountUp
-                    end={item.value}
+                    end={parseInt(item.count)}
                     duration={3}
                     separator=","
                     enableScrollSpy
                     scrollSpyOnce
                   />
-                  {item.suffix}
+                  +
                 </Typography>
 
-                <Typography
-                  sx={{
-                    fontWeight: 700,
-                    fontSize: 20,
-                    mb: 1,
-                  }}
-                >
+                {/* TITLE */}
+                <Typography sx={{ fontWeight: 700, fontSize: 20 }}>
                   {item.title}
-                </Typography>
-
-                <Typography
-                  sx={{
-                    color: "rgba(255,255,255,.65)",
-                    lineHeight: 1.8,
-                  }}
-                >
-                  {item.desc}
                 </Typography>
               </Box>
             </Grid>

@@ -1,27 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 
-const steps = [
-  {
-    number: "01",
-    title: "Ask Your Question",
-    desc: "Type your Income Tax or GST query in natural language.",
-    img: "/ai/media/roadmap/ASK_Image_1.png",
-  },
-  {
-    number: "02",
-    title: "AI Legal Analysis",
-    desc: "AI analyses statutes, case laws, circulars and procedures relevant to your query.",
-    img: "/ai/media/roadmap/ASK_Image_2.png",
-  },
-  {
-    number: "03",
-    title: "Get a Detailed Answer",
-    desc: "Receive citation-backed responses with legal references and practical insights.",
-    img: "/ai/media/roadmap/ASK_Image_3.png",
-  },
-];
-
-export default function RoadmapSection() {
+export default function RoadmapSection({ data = [] }) {
   return (
     <Box
       sx={{
@@ -33,12 +12,7 @@ export default function RoadmapSection() {
       <Container maxWidth="md">
         {/* Heading */}
         <Box textAlign="center" mb={12}>
-          <Typography
-            sx={{
-              fontSize: { xs: 30, md: 52 },
-              fontWeight: 900,
-            }}
-          >
+          <Typography sx={{ fontSize: { xs: 30, md: 52 }, fontWeight: 900 }}>
             How It Works
           </Typography>
 
@@ -72,13 +46,13 @@ export default function RoadmapSection() {
             },
           }}
         >
-          {steps.map((step, index) => {
+          {data?.map((step, index) => {
             const isLeft = index % 2 === 0;
 
             return (
               <Grid
                 container
-                key={step.number}
+                key={step.id || index}
                 sx={{
                   mb: 12,
                   alignItems: "center",
@@ -148,18 +122,12 @@ export default function RoadmapSection() {
                       </Typography>
 
                       <Typography sx={{ color: "rgba(255,255,255,.65)", mt: 1 }}>
-                        {step.desc}
+                        {step.description}
                       </Typography>
 
-                      <Box
-                        sx={{
-                          mt: 2,
-                          borderRadius: 3,
-                          overflow: "hidden",
-                        }}
-                      >
+                      <Box sx={{ mt: 2, borderRadius: 3, overflow: "hidden" }}>
                         <img
-                          src={step.img}
+                          src={step.image}
                           alt={step.title}
                           style={{
                             width: "100%",
@@ -207,18 +175,12 @@ export default function RoadmapSection() {
                       </Typography>
 
                       <Typography sx={{ color: "rgba(255,255,255,.65)", mt: 1 }}>
-                        {step.desc}
+                        {step.description}
                       </Typography>
 
-                      <Box
-                        sx={{
-                          mt: 2,
-                          borderRadius: 3,
-                          overflow: "hidden",
-                        }}
-                      >
+                      <Box sx={{ mt: 2, borderRadius: 3, overflow: "hidden" }}>
                         <img
-                          src={step.img}
+                          src={step.image}
                           alt={step.title}
                           style={{
                             width: "100%",

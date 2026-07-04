@@ -1,33 +1,56 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function Hero() {
-  const words = ["GST", "Income Tax", "Legal Drafting", "Case Laws"];
+export default function Hero({ data }) {
+  const words = [data?.word_one, data?.word_two].filter(Boolean);
+
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
   const speed = 120;
 
+  // reset when words change
+  useEffect(() => {
+    setIndex(0);
+    setSubIndex(0);
+    setDeleting(false);
+  }, [data]);
+
   // TYPEWRITER EFFECT
   useEffect(() => {
-    if (subIndex === words[index].length + 1 && !deleting) {
-      setTimeout(() => setDeleting(true), 1200);
-      return;
-    }
-
-    if (subIndex === 0 && deleting) {
-      setDeleting(false);
-      setIndex((prev) => (prev + 1) % words.length);
-      return;
-    }
-
-    const timeout = setTimeout(() => {
-      setSubIndex((prev) => prev + (deleting ? -1 : 1));
-    }, deleting ? speed / 2 : speed);
-
+    if (!words.length) return;
+  
+    let timeout;
+  
+    const type = () => {
+      const currentWord = words[index];
+  
+      if (!deleting) {
+        // typing
+        if (subIndex < currentWord.length) {
+          setSubIndex((prev) => prev + 1);
+          timeout = setTimeout(type, speed);
+        } else {
+          timeout = setTimeout(() => setDeleting(true), 1000);
+        }
+      } else {
+        // deleting
+        if (subIndex > 0) {
+          setSubIndex((prev) => prev - 1);
+          timeout = setTimeout(type, speed / 2);
+        } else {
+          setDeleting(false);
+          setIndex((prev) => (prev + 1) % words.length);
+          timeout = setTimeout(type, 300);
+        }
+      }
+    };
+  
+    timeout = setTimeout(type, speed);
+  
     return () => clearTimeout(timeout);
-  }, [subIndex, index, deleting]);
+  }, [index, subIndex, deleting, words]);
 
   return (
     <Box
@@ -38,7 +61,6 @@ export default function Hero() {
         py: 14,
         color: "#fff",
         textAlign: "center",
-
       }}
     >
       {/* glow overlay */}
@@ -55,16 +77,12 @@ export default function Hero() {
         {/* TITLE */}
         <Typography
           sx={{
-            fontSize: { xs: 34, md: 50 },
+            fontSize: { xs: 34, md: 60 },
             fontWeight: 900,
             lineHeight: 1.1,
           }}
         >
-          AI-Powered Legal Intelligence
-          <br />
-          Delivering Instant, Accurate Answers for
-          <br />
-
+          {data?.title_prefix} <br></br>
           {/* TYPING TEXT */}
           <Box
             component="span"
@@ -74,11 +92,11 @@ export default function Hero() {
               gap: 1,
               color: "#ff4d6d",
               fontWeight: 900,
+              minHeight: 60,
             }}
           >
-            {words[index].substring(0, subIndex)}
+            {words[index]?.substring(0, subIndex)}
 
-            {/* CURSOR */}
             <Box
               component="span"
               sx={{
@@ -86,8 +104,8 @@ export default function Hero() {
                 height: "40px",
                 backgroundColor: "#ff4d6d",
                 display: "inline-block",
-                ml: 0.5,
-                animation: "blink 0.8s infinite",
+                ml: 1.0,
+                animation: "blink 2s infinite",
               }}
             />
           </Box>
@@ -104,39 +122,38 @@ export default function Hero() {
             lineHeight: 1.8,
           }}
         >
-          ITL AI is an advanced legal research assistant for Chartered Accountants,
-          Advocates, and tax professionals. It delivers instant law-backed answers,
-          smart drafting, case law insights, and compliance assistance powered by AI.
+          {data?.description}
         </Typography>
 
         {/* CTA BUTTON */}
-        <Button
-          onClick={() => window.location.href = "/session/signin"}
-          sx={{
-            mt: 6,
-            px: 7,
-            py: 1.6,
-            borderRadius: 50,
-            fontWeight: 800,
-            fontSize: 15,
-            color: "#fff",
-
-            background:
-              "linear-gradient(90deg,#ff2d55,#ff4d6d,#ff6b81)",
-
-            boxShadow: "0 0 30px rgba(255,77,109,0.4)",
-
-            "&:hover": {
-              transform: "scale(1.05)",
-              boxShadow: "0 0 50px rgba(255,77,109,0.6)",
-            },
-          }}
-        >
-          Start AI Assistant
-        </Button>
+        {data?.button_one_text && (
+          <Button
+            onClick={() =>
+              (window.location.href = data?.button_one_link || "/")
+            }
+            sx={{
+              mt: 6,
+              px: 7,
+              py: 1.6,
+              borderRadius: 50,
+              fontWeight: 800,
+              fontSize: 15,
+              color: "#fff",
+              background:
+                "linear-gradient(90deg,#ff2d55,#ff4d6d,#ff6b81)",
+              boxShadow: "0 0 30px rgba(255,77,109,0.4)",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: "0 0 50px rgba(255,77,109,0.6)",
+              },
+            }}
+          >
+            {data?.button_one_text}
+          </Button>
+        )}
       </Container>
 
-      {/* CURSOR BLINK ANIMATION */}
+      {/* CURSOR ANIMATION */}
       <style>
         {`
           @keyframes blink {

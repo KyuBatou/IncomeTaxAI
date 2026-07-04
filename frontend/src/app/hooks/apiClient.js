@@ -5,7 +5,7 @@ const apiClient = axios.create({
   baseURL: BASE_URL,
 });
 
-// 🔐 Attach JWT token automatically
+// 🔐 REQUEST: attach token
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
@@ -17,6 +17,27 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// 🚨 RESPONSE: handle auth globally
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+
+    if (status === 401) {
+      // clear auth
+      localStorage.removeItem("accessToken");
+
+      // optional: clear axios header
+      delete apiClient.defaults.headers.common.Authorization;
+
+      // force redirect
+      window.location.href = "/session/signin";
+    }
+
+    return Promise.reject(error);
+  }
 );
 
 export default apiClient;

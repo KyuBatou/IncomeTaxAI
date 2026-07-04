@@ -9,14 +9,15 @@ import ContactSection from "./ContactSection";
 import Footer from "./Footer";
 import WritingAreaSection from "./WritingAreaSection";
 import RoadmapSection from "./RoadmapSection";
-import { BASE_URL } from "app/utils/constant";
-import axios from "axios";
+import apiClient from "app/hooks/apiClient";
+import Loading from "app/components/MatxLoading";
 
 export default function LandingMain() {
   const words = ["GST", "Income Tax"];
   const [index, setIndex] = useState(0);
 
-  const [landingData, setLandingData] = useState(0);
+  const [landingData, setLandingData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -24,14 +25,22 @@ export default function LandingMain() {
     }, 1200);
 
     const fetchLanding = async () => {
-      const { data } = await axios.get(`${BASE_URL}/landing/`);
-      setLandingData(data);
+      try {
+        setLoading(true);
+
+        const { data } = await apiClient.get("/landing/");
+        setLandingData(data);
+
+      } catch (error) {
+        console.error("Landing API error:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-  
+
     fetchLanding();
 
     return () => clearInterval(timer);
-
   }, []);
 
   const scrollToSection = (id) => {
@@ -41,6 +50,11 @@ export default function LandingMain() {
     }
   };
 
+  // ✅ LOADING STATE (IMPORTANT)
+  if (loading || !landingData) {
+    return <Loading />;
+  }
+
   return (
     <Box
       sx={{
@@ -48,7 +62,6 @@ export default function LandingMain() {
         minHeight: "100vh",
         color: "#fff",
         overflowX: "hidden",
-
         background: `
           radial-gradient(circle at 10% 20%, rgba(255,0,80,0.25), transparent 40%),
           radial-gradient(circle at 90% 30%, rgba(255,80,120,0.15), transparent 40%),
@@ -57,38 +70,16 @@ export default function LandingMain() {
         `,
       }}
     >
+      <LandingHeader scrollToSection={scrollToSection} />
 
-
-      <LandingHeader
-        scrollToSection={scrollToSection} 
-      />
-
-
-      <HomeMain data={landingData.hero} />
-      <StatsSection data={landingData.stats} />
-      <WritingAreaSection data={landingData.writing_area} />
-      <RoadmapSection data={landingData.roadmap} />
-      <PricingSection data={landingData.pricing} />
-      <FAQSection data={landingData.faq} />
+      <HomeMain data={landingData.banner} />
+      <StatsSection data={landingData.counters} />
+      <WritingAreaSection data={landingData.services} />
+      <RoadmapSection data={landingData.roadmap_steps} />
+      <PricingSection data={landingData.pricing_plans} />
       <ContactSection data={landingData.contact} />
-      <Footer data={landingData.footer} />
-
-      {/* <HomeMain />
-      
-      <StatsSection />
-
-      <WritingAreaSection />
-
-      <RoadmapSection />
-
-      <PricingSection />
-
-      <FAQSection />
-
-      <ContactSection />
-
-      <Footer /> */}
-
+      <FAQSection data={landingData.faqs} />
+      <Footer data={landingData.legal_content} scrollToSection={scrollToSection}/>
     </Box>
   );
 }

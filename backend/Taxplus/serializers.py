@@ -2,6 +2,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from login_auth.models import * 
 from datetime import datetime
+from rest_framework import serializers
+from core.models import * 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -39,3 +41,51 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['ai_monthly_page_view'] = user.ai_monthly_page_view
 
         return token
+
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = "__all__"
+
+class CounterBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CounterBoard
+        fields = "__all__"
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = "__all__"
+
+class FAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQ
+        fields = "__all__"
+
+class RoadmapStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoadmapStep
+        fields = "__all__"
+
+class LegalContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LegalContent
+        fields = ["id", "section", "slug",]
+
+class PricingFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PricingFeature
+        fields = ["id", "feature_text"]
+
+class PricingPlanSerializer(serializers.ModelSerializer):
+    features = PricingFeatureSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PricingPlan
+        fields = "__all__"
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = "__all__"
+

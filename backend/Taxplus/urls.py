@@ -78,6 +78,7 @@ ai_patterns = [
     path('admin/', admin.site.urls),
 
     path("landing/", LandingAPIView.as_view(), name="landing"),
+    path("contact/", ContactMessageCreateAPIView.as_view(), name="contact"),
 
     # path('', IndexView.as_view(), name='index'),
     # path('faqs/', FaqView.as_view(), name='faqs'),

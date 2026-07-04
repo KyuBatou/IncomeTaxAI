@@ -494,59 +494,73 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+from django.db.models import Prefetch
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from .serializers import (
+    BannerSerializer,
+    CounterBoardSerializer,
+    ServiceSerializer,
+    FAQSerializer,
+    PricingPlanSerializer,
+    RoadmapStepSerializer,
+    LegalContentSerializer,
+)
+
+
 class LandingAPIView(APIView):
+    permission_classes = []
+
     def get(self, request):
+        pricing_plans = PricingPlan.objects.prefetch_related(
+            Prefetch(
+                "features",
+                queryset=PricingFeature.objects.only("id", "feature_text", "plan"),
+            )
+        )
+
         data = {
-            "hero": {
-                "title": "AI Tax Assistant",
-                "subtitle": "Simplify GST & Income Tax Filing",
-                "button_text": "Get Started"
-            },
-            "stats": {
-                "clients": 1500,
-                "returns_filed": 25000,
-                "accuracy": "99.9%"
-            },
-            "writing_area": {
-                "title": "Why Choose Us",
-                "description": "..."
-            },
-            "roadmap": [
-                {
-                    "title": "Upload Documents",
-                    "description": "..."
-                },
-                {
-                    "title": "Review",
-                    "description": "..."
-                }
-            ],
-            "pricing": [
-                {
-                    "name": "Basic",
-                    "price": 499
-                },
-                {
-                    "name": "Premium",
-                    "price": 999
-                }
-            ],
-            "faq": [
-                {
-                    "question": "What is GST?",
-                    "answer": "..."
-                }
-            ],
-            "contact": {
-                "phone": "9876543210",
-                "email": "support@example.com"
-            },
-            "footer": {
-                "copyright": "© 2026 AI Tax Assistant"
-            }
+            "banner": BannerSerializer(Banner.objects.first()).data,
+            "roadmap_steps": RoadmapStepSerializer(
+                RoadmapStep.objects.all(),
+                many=True
+            ).data,
+            "counters": CounterBoardSerializer(
+                CounterBoard.objects.all(),
+                many=True
+            ).data,
+            "services": ServiceSerializer(
+                Service.objects.filter(is_active=True),
+                many=True
+            ).data,
+            "faqs": FAQSerializer(
+                FAQ.objects.all(),
+                many=True
+            ).data,
+            "pricing_plans": PricingPlanSerializer(
+                pricing_plans,
+                many=True
+            ).data,
+            "legal_content": LegalContentSerializer(
+                LegalContent.objects.all(),
+                many=True
+            ).data,
         }
 
         return Response(data)
+
+from rest_framework import status
+
+class ContactMessageCreateAPIView(APIView):
+    def post(self, request):
+        serializer = ContactMessageSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Message sent successfully"},
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

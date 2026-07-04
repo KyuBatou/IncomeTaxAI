@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 
-const navItems = ["home", "about", "pricing", "faq", "contact"];
+const navItems = ["home", "about", "pricing", "contact", "faq",];
 
 export default function LandingHeader({ scrollToSection }) {
   return (

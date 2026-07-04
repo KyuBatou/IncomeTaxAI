@@ -1,4 +1,6 @@
-import { Box, Container, Grid, Typography, Stack } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
+
+// map icon string → MUI icon
 import BalanceIcon from "@mui/icons-material/Balance";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -7,40 +9,25 @@ import SummarizeIcon from "@mui/icons-material/Summarize";
 import SearchIcon from "@mui/icons-material/Search";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 
-const features = [
-  {
-    title: "Ask GST",
-    desc: "Ask GST enables users to submit queries in simple English with brief facts. It analyzes the issue and delivers structured guidance backed by GST provisions, rules, circulars, and notifications.",
-    icon: <BalanceIcon />,
-  },
-  {
-    title: "Ask Income Tax",
-    desc: "Ask Income Tax enables structured answers based on Income-tax Act provisions, case laws, and notifications for advisory and compliance support.",
-    icon: <GavelIcon />,
-  },
-  {
-    title: "ITL Summariser",
-    desc: "Upload or paste long judgments and get structured summaries highlighting key legal issues and findings instantly.",
-    icon: <SummarizeIcon />,
-  },
-  {
-    title: "GST Case Law Research",
-    desc: "Search GST judgments using facts and get relevant case laws with key judicial principles and insights.",
-    icon: <SearchIcon />,
-  },
-  {
-    title: "IT Case Law Research",
-    desc: "Find relevant Income Tax judgments quickly with structured legal reasoning and precedents.",
-    icon: <AutoAwesomeIcon />,
-  },
-  {
-    title: "ITL Draft Assistant",
-    desc: "Draft notices, replies, agreements, and legal documents using AI with structured legal language and accuracy.",
-    icon: <EditNoteIcon />,
-  },
-];
+export default function WritingAreaSection({ data = [] }) {
 
-export default function WritingAreaSection() {
+  const getIcon = (icon) => {
+    switch (icon) {
+      case "far fa-brain":
+        return <AutoAwesomeIcon />;
+      case "far fa-chart-line":
+        return <GavelIcon />;
+      case "fal fa-lightbulb-on":
+        return <SummarizeIcon />;
+      case "far fa-search":
+        return <SearchIcon />;
+      case "far fa-edit":
+        return <EditNoteIcon />;
+      default:
+        return <DescriptionIcon />;
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -60,8 +47,7 @@ export default function WritingAreaSection() {
               color: "#fff",
             }}
           >
-            Start writing <span style={{ color: "#ff4d6d" }}>10x faster</span>{" "}
-            with AI
+            Start writing <span style={{ color: "#ff4d6d" }}>10x faster</span> with AI
           </Typography>
 
           <Typography
@@ -77,10 +63,10 @@ export default function WritingAreaSection() {
           </Typography>
         </Box>
 
-        {/* Cards */}
+        {/* CARDS */}
         <Grid container spacing={4}>
-          {features.map((item) => (
-            <Grid item xs={12} md={4} key={item.title}>
+          {data?.map((item) => (
+            <Grid item xs={12} md={4} key={item.id}>
               <Box
                 sx={{
                   height: "100%",
@@ -88,13 +74,10 @@ export default function WritingAreaSection() {
                   borderRadius: 5,
                   position: "relative",
                   overflow: "hidden",
-
                   background:
                     "linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.02))",
-
                   border: "1px solid rgba(255,255,255,.08)",
                   backdropFilter: "blur(20px)",
-
                   transition: "0.35s",
 
                   "&:hover": {
@@ -115,7 +98,7 @@ export default function WritingAreaSection() {
                   },
                 }}
               >
-                {/* Icon */}
+                {/* ICON */}
                 <Box
                   sx={{
                     width: 60,
@@ -131,10 +114,10 @@ export default function WritingAreaSection() {
                     boxShadow: "0 10px 25px rgba(255,77,109,.35)",
                   }}
                 >
-                  {item.icon}
+                  {getIcon(item.icon_link)}
                 </Box>
 
-                {/* Title */}
+                {/* TITLE */}
                 <Typography
                   sx={{
                     fontSize: 20,
@@ -146,15 +129,16 @@ export default function WritingAreaSection() {
                   {item.title}
                 </Typography>
 
-                {/* Description */}
+                {/* DESCRIPTION */}
                 <Typography
                   sx={{
+                    textAlign: 'justify',
                     color: "rgba(255,255,255,.65)",
                     lineHeight: 1.8,
                     fontSize: 14,
                   }}
                 >
-                  {item.desc}
+                  {item.description}
                 </Typography>
               </Box>
             </Grid>

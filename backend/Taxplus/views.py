@@ -492,3 +492,61 @@ from .serializers import *
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class LandingAPIView(APIView):
+    def get(self, request):
+        data = {
+            "hero": {
+                "title": "AI Tax Assistant",
+                "subtitle": "Simplify GST & Income Tax Filing",
+                "button_text": "Get Started"
+            },
+            "stats": {
+                "clients": 1500,
+                "returns_filed": 25000,
+                "accuracy": "99.9%"
+            },
+            "writing_area": {
+                "title": "Why Choose Us",
+                "description": "..."
+            },
+            "roadmap": [
+                {
+                    "title": "Upload Documents",
+                    "description": "..."
+                },
+                {
+                    "title": "Review",
+                    "description": "..."
+                }
+            ],
+            "pricing": [
+                {
+                    "name": "Basic",
+                    "price": 499
+                },
+                {
+                    "name": "Premium",
+                    "price": 999
+                }
+            ],
+            "faq": [
+                {
+                    "question": "What is GST?",
+                    "answer": "..."
+                }
+            ],
+            "contact": {
+                "phone": "9876543210",
+                "email": "support@example.com"
+            },
+            "footer": {
+                "copyright": "© 2026 AI Tax Assistant"
+            }
+        }
+
+        return Response(data)

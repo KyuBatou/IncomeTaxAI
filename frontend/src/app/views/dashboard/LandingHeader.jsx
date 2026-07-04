@@ -101,7 +101,7 @@ export default function LandingHeader({ scrollToSection }) {
 
         {/* ================= CTA BUTTON ================= */}
         <Button
-          onClick={() => scrollToSection("home")}
+          onClick={() => window.location.href = "/session/signin"}
           sx={{
             px: 3,
             py: 1,

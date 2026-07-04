@@ -9,17 +9,29 @@ import ContactSection from "./ContactSection";
 import Footer from "./Footer";
 import WritingAreaSection from "./WritingAreaSection";
 import RoadmapSection from "./RoadmapSection";
+import { BASE_URL } from "app/utils/constant";
+import axios from "axios";
 
 export default function LandingMain() {
   const words = ["GST", "Income Tax"];
   const [index, setIndex] = useState(0);
+
+  const [landingData, setLandingData] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % words.length);
     }, 1200);
 
+    const fetchLanding = async () => {
+      const { data } = await axios.get(`${BASE_URL}/landing/`);
+      setLandingData(data);
+    };
+  
+    fetchLanding();
+
     return () => clearInterval(timer);
+
   }, []);
 
   const scrollToSection = (id) => {
@@ -51,7 +63,17 @@ export default function LandingMain() {
         scrollToSection={scrollToSection} 
       />
 
-      <HomeMain />
+
+      <HomeMain data={landingData.hero} />
+      <StatsSection data={landingData.stats} />
+      <WritingAreaSection data={landingData.writing_area} />
+      <RoadmapSection data={landingData.roadmap} />
+      <PricingSection data={landingData.pricing} />
+      <FAQSection data={landingData.faq} />
+      <ContactSection data={landingData.contact} />
+      <Footer data={landingData.footer} />
+
+      {/* <HomeMain />
       
       <StatsSection />
 
@@ -65,7 +87,7 @@ export default function LandingMain() {
 
       <ContactSection />
 
-      <Footer />
+      <Footer /> */}
 
     </Box>
   );

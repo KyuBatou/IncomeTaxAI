@@ -77,6 +77,8 @@ ai_patterns = [
     path('admin/login/', block_admin_login),
     path('admin/', admin.site.urls),
 
+    path("landing/", LandingAPIView.as_view(), name="landing"),
+
     # path('', IndexView.as_view(), name='index'),
     # path('faqs/', FaqView.as_view(), name='faqs'),
     # path('about/', AboutView.as_view(), name='about'),
@@ -106,6 +108,6 @@ if settings.DEBUG:
 urlpatterns = [
     path('ai/', include(ai_patterns)),
     path('', IndexView.as_view(), name='index'),
-    re_path(r"^(?!media/|admin/|api/).*", IndexView.as_view(), name='index'),
+    re_path(r"^(?!media/|admin/|api/|ai/).*", IndexView.as_view(), name='index'),
 
 ]

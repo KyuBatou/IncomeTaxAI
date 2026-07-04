@@ -15,13 +15,11 @@ const initialState = {
 const isValidToken = (accessToken) => {
   if (!accessToken) return false;
   const decodedToken = jwtDecode(accessToken);
-  console.log("decodedToken:", decodedToken);
-
 
   // const currentTime = Date.now() / 1000;
   // return decodedToken.exp > currentTime;
 
-  return decodedToken?.id ? true : false;
+  return decodedToken?.user_id ? true : false;
 };
 
 const setSession = (accessToken) => {

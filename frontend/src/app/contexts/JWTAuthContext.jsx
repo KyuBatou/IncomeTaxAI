@@ -15,6 +15,8 @@ const initialState = {
 const isValidToken = (accessToken) => {
   if (!accessToken) return false;
   const decodedToken = jwtDecode(accessToken);
+  console.log("decodedToken:", decodedToken);
+
 
   // const currentTime = Date.now() / 1000;
   // return decodedToken.exp > currentTime;
@@ -121,6 +123,7 @@ export const AuthProvider = ({ children }) => {
     const initialize = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
+        console.log("accessToken:", accessToken);
         console.log("isValidToken:", isValidToken(accessToken));
   
         if (accessToken && isValidToken(accessToken)) {

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -60,24 +61,34 @@ const initialValues = {
 
 // form field validation schema
 const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid Email address")
+    .required("Email is required!"),
+
   password: Yup.string()
-    .min(2, "Password must be 6 character length")
-    .required("Password is required!"),
-  email: Yup.string().email("Invalid Email address").required("Email is required!")
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required!")
 });
 
 export default function JwtLogin() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/gst", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleFormSubmit = async (values) => {
     try {
       await login(values.email, values.password);
-      navigate("/gst");
-    } catch (e) {
-      console.error(e);
+      navigate("/gst", { replace: true });
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -87,16 +98,21 @@ export default function JwtLogin() {
         <Grid container>
           <Grid size={{ sm: 6, xs: 12 }}>
             <div className="img-wrapper">
-              <img src="/assets/images/illustrations/dreamer.svg" width="100%" alt="" />
+              <img
+                src="/assets/images/illustrations/dreamer.svg"
+                width="100%"
+                alt="Login Illustration"
+              />
             </div>
           </Grid>
 
           <Grid size={{ sm: 6, xs: 12 }}>
             <ContentBox>
               <Formik
-                onSubmit={handleFormSubmit}
                 initialValues={initialValues}
-                validationSchema={validationSchema}>
+                validationSchema={validationSchema}
+                onSubmit={handleFormSubmit}
+              >
                 {({
                   values,
                   errors,
@@ -114,26 +130,26 @@ export default function JwtLogin() {
                       name="email"
                       label="Email"
                       variant="outlined"
-                      onBlur={handleBlur}
                       value={values.email}
                       onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={Boolean(touched.email && errors.email)}
                       helperText={touched.email && errors.email}
-                      error={Boolean(errors.email && touched.email)}
                       sx={{ mb: 3 }}
                     />
 
                     <TextField
                       fullWidth
                       size="small"
-                      name="password"
                       type="password"
+                      name="password"
                       label="Password"
                       variant="outlined"
-                      onBlur={handleBlur}
                       value={values.password}
                       onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={Boolean(touched.password && errors.password)}
                       helperText={touched.password && errors.password}
-                      error={Boolean(errors.password && touched.password)}
                       sx={{ mb: 1.5 }}
                     />
 
@@ -142,8 +158,8 @@ export default function JwtLogin() {
                         <Checkbox
                           size="small"
                           name="remember"
-                          onChange={handleChange}
                           checked={values.remember}
+                          onChange={handleChange}
                           sx={{ padding: 0 }}
                         />
 
@@ -152,17 +168,19 @@ export default function JwtLogin() {
 
                       <NavLink
                         to="/session/forgot-password"
-                        style={{ color: theme.palette.primary.main }}>
+                        style={{ color: theme.palette.primary.main }}
+                      >
                         Forgot password?
                       </NavLink>
                     </FlexBox>
 
                     <LoadingButton
                       type="submit"
-                      color="primary"
                       loading={isSubmitting}
                       variant="contained"
-                      sx={{ my: 2 }}>
+                      color="primary"
+                      sx={{ my: 2 }}
+                    >
                       Login
                     </LoadingButton>
 
@@ -170,7 +188,11 @@ export default function JwtLogin() {
                       Don't have an account?
                       <NavLink
                         to="/session/signup"
-                        style={{ color: theme.palette.primary.main, marginLeft: 5 }}>
+                        style={{
+                          color: theme.palette.primary.main,
+                          marginLeft: 5
+                        }}
+                      >
                         Register
                       </NavLink>
                     </Paragraph>

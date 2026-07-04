@@ -86,35 +86,78 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: "LOGOUT" });
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const accessToken = window.localStorage.getItem("accessToken");
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const accessToken = window.localStorage.getItem("accessToken");
 
+  //       if (accessToken && isValidToken(accessToken)) {
+  //         setSession(accessToken);
+  //         const response = await axios.get("/api/auth/profile");
+  //         const { user } = response.data;
+
+  //         dispatch({
+  //           type: "INIT",
+  //           payload: { isAuthenticated: true, user }
+  //         });
+  //       } else {
+  //         dispatch({
+  //           type: "INIT",
+  //           payload: { isAuthenticated: false, user: null }
+  //         });
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+
+  //       dispatch({
+  //         type: "INIT",
+  //         payload: { isAuthenticated: false, user: null }
+  //       });
+  //     }
+  //   })();
+  // }, []);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+  
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
-          const response = await axios.get("/api/auth/profile");
-          const { user } = response.data;
-
+  
+          // Decode the JWT to get the user payload
+          const user = jwtDecode(accessToken);
+  
           dispatch({
             type: "INIT",
-            payload: { isAuthenticated: true, user }
+            payload: {
+              isAuthenticated: true,
+              user
+            }
           });
         } else {
           dispatch({
             type: "INIT",
-            payload: { isAuthenticated: false, user: null }
+            payload: {
+              isAuthenticated: false,
+              user: null
+            }
           });
         }
-      } catch (err) {
-        console.log(err);
-
+      } catch (error) {
+        console.error(error);
+  
         dispatch({
           type: "INIT",
-          payload: { isAuthenticated: false, user: null }
+          payload: {
+            isAuthenticated: false,
+            user: null
+          }
         });
       }
-    })();
+    };
+  
+    initialize();
   }, []);
 
   if (!state.isInitialized) return <Loading />;

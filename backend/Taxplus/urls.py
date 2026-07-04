@@ -59,8 +59,8 @@
 
 
 
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
-from django.urls import path, include
 from django.contrib import admin
 from django.conf import settings
 from .views import *
@@ -106,5 +106,6 @@ if settings.DEBUG:
 urlpatterns = [
     path('ai/', include(ai_patterns)),
     path('', IndexView.as_view(), name='index'),
+    re_path(r"^(?!media/|admin/|api/).*", IndexView.as_view(), name='index'),
 
 ]

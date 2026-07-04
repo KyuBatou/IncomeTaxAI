@@ -121,8 +121,6 @@ export const AuthProvider = ({ children }) => {
     const initialize = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        console.log("accessToken:", accessToken);
-        console.log("isValidToken:", isValidToken(accessToken));
   
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);

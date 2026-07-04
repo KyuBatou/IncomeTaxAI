@@ -75,7 +75,7 @@ export default function JwtLogin() {
   const handleFormSubmit = async (values) => {
     try {
       await login(values.email, values.password);
-      navigate("/");
+      navigate("/gst");
     } catch (e) {
       console.error(e);
     }

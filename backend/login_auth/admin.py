@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserChangeForm
 from django.db.models.functions import Coalesce
 from rangefilter.filters import DateRangeFilter
+from django.utils.safestring import mark_safe
 from django.utils.timezone import localtime
 from import_export import resources, fields
 from django.utils.html import format_html
@@ -433,7 +434,8 @@ class UserAdmin(BaseUserAdmin):
             f"</div>"
         )
 
-        return format_html(visit_table)
+        return mark_safe(visit_table)
+        # return format_html(visit_table)
 
     visit_details.short_description = 'Visit Details'
 
@@ -471,7 +473,8 @@ class UserAdmin(BaseUserAdmin):
             f"</div>"
         )
 
-        return format_html(approval_history_table)
+        return mark_safe(approval_history_table)
+        # return format_html(approval_history_table)
 
     approval_history_table.short_description = 'Approval History'
 
@@ -485,8 +488,8 @@ class UserAdmin(BaseUserAdmin):
             f"{visit_table}"
             f"</div>"
         )
-
-        return format_html(combined_tables)
+        return mark_safe(combined_tables)
+        # return format_html(combined_tables)
 
     visit_and_approval_details.short_description = 'Logs Details'
 

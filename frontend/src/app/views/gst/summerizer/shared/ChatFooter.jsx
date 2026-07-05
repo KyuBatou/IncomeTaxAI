@@ -20,7 +20,7 @@ export default function ChatFooter({
     const [message, setMessage] = useState("");
     const [files, setFiles] = useState([]);
     const [summaryType, setSummaryType] = useState(
-        "Detailed Legal Digest"
+        "Auto (from instructions or Detailed Digest)"
     );
 
     const summaryOptions = [

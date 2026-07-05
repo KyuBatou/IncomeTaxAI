@@ -363,7 +363,7 @@ export default function ChatContent({ sessionId }) {
                         <Typography
                           key={item.id}
                           component="a"
-                          href={`https://incometaxlibrary.in/judgement/${item.id}`}
+                          href={`https://incometaxlibrary.com/gst/judgement/${item.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           sx={{
@@ -407,7 +407,7 @@ export default function ChatContent({ sessionId }) {
                             <TableCell>
                               <Typography
                                 component="a"
-                                href={`https://incometaxlibrary.com/dt/judgements/${row.id}`}
+                                href={`https://incometaxlibrary.com/gst/judgements/${row.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{

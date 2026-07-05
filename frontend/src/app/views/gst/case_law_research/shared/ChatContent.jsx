@@ -413,7 +413,7 @@ export default function ChatContent({ sessionId }) {
                             <TableCell>
                               <Typography
                                 component="a"
-                                href={`https://incometaxlibrary.com/dt/judgements/${row.id}`}
+                                href={`https://incometaxlibrary.com/gst/judgements/${row.id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{

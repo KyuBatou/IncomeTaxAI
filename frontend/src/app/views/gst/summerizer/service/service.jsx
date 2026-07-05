@@ -44,7 +44,10 @@ export const sendChatMessage = async (payload) => {
 
   const url = `${BASE_URL}/chat/summarizer/gpt/`;
 
-  formData.append("main_content", payload.message || "");
+  formData.append(
+    "main_content",
+    `${payload.message || ""} ${payload.summaryType || ""}`.trim()
+  );
   formData.append("session_id", payload.sessionId || "");
   formData.append("model", payload.model || "");
 

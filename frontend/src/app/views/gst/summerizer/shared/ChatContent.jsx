@@ -49,6 +49,7 @@ export default function ChatContent({ sessionId }) {
   const handleSend = async ({
       message,
       files,
+      summaryType,
       clear,
     }) => {
     if (!message?.trim() && !files?.length) return;
@@ -76,6 +77,7 @@ export default function ChatContent({ sessionId }) {
         sessionId,
         message,
         files,
+        summaryType,
         model: "draft_assistant",
         maxLength: 500,
       });

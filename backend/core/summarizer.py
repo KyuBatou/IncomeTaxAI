@@ -54,7 +54,7 @@ class SummarizerSummarizeView(APIView):
                 user_query=main_content,
                 ai_answer="",
             )
-            url = "http://localhost:5003/api/summarize/"
+            url = "http://localhost:5004/api/summarize/text/"
             payload = {
                 "main_content": text_content,
                 "session_id":session_id,

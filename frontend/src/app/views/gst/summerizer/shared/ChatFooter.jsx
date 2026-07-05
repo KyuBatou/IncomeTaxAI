@@ -2,9 +2,12 @@ import { useRef, useState } from "react";
 import {
     Box,
     Chip,
+    FormControl,
     Icon,
     IconButton,
     InputAdornment,
+    MenuItem,
+    Select,
     Stack,
     TextField,
     Typography,
@@ -16,6 +19,25 @@ export default function ChatFooter({
 }) {
     const [message, setMessage] = useState("");
     const [files, setFiles] = useState([]);
+    const [summaryType, setSummaryType] = useState(
+        "Detailed Legal Digest"
+    );
+
+    const summaryOptions = [
+        "Auto (from instructions or Detailed Digest)",
+        "Detailed Legal Digest",
+        "Executive Summary",
+        "Concise Proffessional Summary",
+        "One-Line Legal Ratio",
+        "Litigation Note",
+        "Issue-Wise ANalysis",
+        "Headnote Format",
+        "Clause Summary Table",
+        "Risk Analysis Report",
+        "Chronology Report",
+        "Advisory Summary",
+        "Tabular Extraction",
+    ];
 
     const fileInputRef = useRef(null);
 
@@ -44,6 +66,7 @@ export default function ChatFooter({
     const resetForm = () => {
         setMessage("");
         setFiles([]);
+        setSummaryType("Detailed Legal Digest");
     };
 
     const handleSend = async () => {
@@ -52,9 +75,11 @@ export default function ChatFooter({
         await onSend?.({
             message,
             files,
+            summaryType,
             clear: () => {
                 setMessage("");
                 setFiles([]);
+                setSummaryType("Detailed Legal Digest");
             },
         });
 
@@ -80,6 +105,20 @@ export default function ChatFooter({
                 ref={fileInputRef}
                 onChange={handleFileChange}
             />
+
+            {/* Summary Type Dropdown */}
+            <FormControl size="small" sx={{ mb: 1, minWidth: 260 }}>
+            <Select
+                value={summaryType}
+                onChange={(e) => setSummaryType(e.target.value)}
+            >
+                {summaryOptions.map((item) => (
+                <MenuItem key={item} value={item}>
+                    {item}
+                </MenuItem>
+                ))}
+            </Select>
+            </FormControl>
 
             {/* Selected Files */}
             {files.length > 0 && (

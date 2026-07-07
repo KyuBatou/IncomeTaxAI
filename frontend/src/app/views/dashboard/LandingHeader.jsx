@@ -1,4 +1,5 @@
 import { Box, Button, Container, Typography } from "@mui/material";
+import { MatxLogo } from "app/components";
 
 const navItems = ["home", "about", "pricing", "contact", "faq",];
 
@@ -25,10 +26,12 @@ export default function LandingHeader({ scrollToSection }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          py: 1.5,
+          py: .5,
         }}
       >
         {/* ================= LOGO ================= */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <MatxLogo />
         <Typography
           onClick={() => scrollToSection("home")}
           sx={{
@@ -50,6 +53,7 @@ export default function LandingHeader({ scrollToSection }) {
         >
           ITL AI
         </Typography>
+        </Box>
 
         {/* ================= NAV LINKS ================= */}
         <Box

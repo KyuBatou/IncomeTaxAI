@@ -20,6 +20,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { marked } from "marked";
 
 export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
@@ -201,19 +202,62 @@ export default function ChatContent({ sessionId }) {
   
 
   const handleDownload = async (text) => {
+    const tokens = marked.lexer(text);
+  
+    const children = [];
+  
+    tokens.forEach((token) => {
+      if (token.type === "heading") {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: token.text,
+                bold: true,
+                size: token.depth === 1 ? 32 : 26,
+              }),
+            ],
+            spacing: {
+              after: 200,
+            },
+          })
+        );
+      }
+  
+      else if (token.type === "paragraph") {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: token.text.replace(/\*\*/g, ""),
+                size: 24,
+              }),
+            ],
+            spacing: {
+              after: 120,
+            },
+          })
+        );
+      }
+  
+      else if (token.type === "list") {
+        token.items.forEach((item) => {
+          children.push(
+            new Paragraph({
+              text: item.text,
+              bullet: {
+                level: 0,
+              },
+            })
+          );
+        });
+      }
+    });
+  
     const doc = new Document({
       sections: [
         {
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: text,
-                  size: 24,
-                }),
-              ],
-            }),
-          ],
+          children,
         },
       ],
     });
@@ -221,6 +265,27 @@ export default function ChatContent({ sessionId }) {
     const blob = await Packer.toBlob(doc);
     saveAs(blob, "ai-response.docx");
   };
+  // const handleDownload = async (text) => {
+  //   const doc = new Document({
+  //     sections: [
+  //       {
+  //         children: [
+  //           new Paragraph({
+  //             children: [
+  //               new TextRun({
+  //                 text: text,
+  //                 size: 24,
+  //               }),
+  //             ],
+  //           }),
+  //         ],
+  //       },
+  //     ],
+  //   });
+  
+  //   const blob = await Packer.toBlob(doc);
+  //   saveAs(blob, "ai-response.docx");
+  // };
 
   const handleRefine = (msg) => {
     setReplyContext({

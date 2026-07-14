@@ -622,9 +622,10 @@ def block_admin_login(request):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class ForgetPasswordView(View):
+class ForgetPasswordViews(View):
 
     def post(self, request, *args, **kwargs):
+        print("hereee")
         body_unicode = request.body.decode('utf-8')
         body_data = json.loads(body_unicode)
         email = body_data.get('email')

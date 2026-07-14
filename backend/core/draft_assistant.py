@@ -80,7 +80,7 @@ class DraftAssistantSummarizeView(APIView):
                 message.sources_used = api_response_json.get("sources", {})
                 message.session.message_count += message.session.message_count
                 if message.session.title == "New Chat":
-                    message.session.title = text_content[::30] + "..."
+                    message.session.title = (lambda x: " ".join(x.split()[:4]) + ("..." if len(x.split()) > 4 else ""))(text_content)
                 message.session.save()
                 message.save()
                 return JsonResponse({

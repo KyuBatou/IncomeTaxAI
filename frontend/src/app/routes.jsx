@@ -13,6 +13,7 @@ import sessionRoutes from "./views/sessions/session-routes";
 const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics3")));
 const GST = Loadable(lazy(() => import("app/views/gst/App")));
 const SubscribeTable = Loadable(lazy(() => import("app/views/subscribe/App")));
+const ContentTable = Loadable(lazy(() => import("app/views/legal-content/App")));
 
 const routes = [
   { path: "/", element: <Navigate to="dashboard" /> },
@@ -31,6 +32,7 @@ const routes = [
   },
   { path: "/dashboard", element: <Analytics />, auth: authRoles.admin },
   { path: "/subscribe", element: <SubscribeTable />, auth: authRoles.guest},
+  { path: "/content/:slug/*", element: <ContentTable />, auth: authRoles.guest},
 
   // session pages route
   ...sessionRoutes

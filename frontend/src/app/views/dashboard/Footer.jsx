@@ -196,7 +196,7 @@ export default function Footer({ data, scrollToSection }) {
               {data?.map((item) => (
                 <Typography
                   key={item.id}
-                  onClick={() => navigate(`/${item.slug}`)}
+                  onClick={() => navigate(`/content/${item.slug}`)}
                   sx={{
                     cursor: "pointer",
                     color: "rgba(255,255,255,.5)",

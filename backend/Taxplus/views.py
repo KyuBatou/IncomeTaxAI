@@ -640,3 +640,9 @@ class ForgetPasswordViews(View):
             return JsonResponse({'error': '❌ User not found'}, status=404)
         except Exception as e:
             return JsonResponse({'error': f'❌ Something went wrong: {str(e)}'}, status=500)
+
+class LegalContentDetailView(APIView):
+    def get(self, request, slug):
+        content = get_object_or_404(LegalContent, slug=slug)
+        serializer = LegalContentSerializer(content)
+        return Response(serializer.data)

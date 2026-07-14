@@ -104,6 +104,7 @@ ai_patterns = [
     path('salesmen/', SalesmanListView.as_view(), name='salesman-list'),
     path('plans/', PlansListView.as_view(), name='plans-list'),
 
+    path('content/<slug:slug>/', LegalContentDetailView.as_view(), name='legal-content-detail'),
 
     path('auth/', include('djoser.urls')),
     path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),

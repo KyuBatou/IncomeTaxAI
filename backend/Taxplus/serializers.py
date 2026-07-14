@@ -70,7 +70,7 @@ class RoadmapStepSerializer(serializers.ModelSerializer):
 class LegalContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LegalContent
-        fields = ["id", "section", "slug",]
+        fields = ['section', 'slug', 'legal_content']
 
 class PricingFeatureSerializer(serializers.ModelSerializer):
     class Meta:

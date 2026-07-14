@@ -4,6 +4,7 @@ import styled from "@mui/material/styles/styled";
 import { Span } from "./Typography";
 import { MatxLogo } from "app/components";
 import useSettings from "app/hooks/useSettings";
+import { Typography } from "@mui/material";
 
 // STYLED COMPONENTS
 const BrandRoot = styled("div")(() => ({
@@ -28,9 +29,29 @@ export default function Brand({ children }) {
     <BrandRoot>
       <Box display="flex" alignItems="center">
         <MatxLogo />
-        <StyledSpan mode={mode} color="white" className="sidenavHoverShow">
-          IncomeTax Library AI
-        </StyledSpan>
+        <Typography
+          onClick={() => scrollToSection("home")}
+          sx={{
+            fontWeight: 900,
+            fontSize: 20,
+            cursor: "pointer",
+            letterSpacing: 1,
+            ml:2,
+
+            background:
+              "linear-gradient(90deg,#ff4d6d,#ff8fa3,#ffb3c1)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+
+            transition: "0.3s",
+            "&:hover": {
+              transform: "scale(1.05)",
+            },
+          }}
+        >
+          ITL AI
+        </Typography>
+
       </Box>
 
       <Box className="sidenavHoverShow" sx={{ display: mode === "compact" ? "none" : "block" }}>

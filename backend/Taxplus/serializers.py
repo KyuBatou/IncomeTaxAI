@@ -89,3 +89,54 @@ class ContactMessageSerializer(serializers.ModelSerializer):
         model = ContactMessage
         fields = "__all__"
 
+from djoser.serializers import UserCreateSerializer
+from .utils import send_registration_email
+from django.http import JsonResponse
+from django.db import IntegrityError
+from rest_framework.exceptions import ValidationError
+
+class SalesmanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name',]
+
+class PlansListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PricingPlan
+        fields = '__all__'
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = (
+            'id', 'email', 'password', 'name',  'company', 'address', 'city', 'state', 'pin', 'telephone',
+            'mobileno', 'fax'
+        )
+
+    def create(self, validated_data):
+        try:
+            password = validated_data.pop('password')
+            user = User(
+                email=validated_data.get('email'),
+                name=validated_data.get('name'),
+                company=validated_data.get('company'),
+                address=validated_data.get('address'),
+                city=validated_data.get('city'),
+                state=validated_data.get('state'),
+                pin=validated_data.get('pin'),
+                telephone=validated_data.get('telephone'),
+                mobileno=validated_data.get('mobileno'),
+                fax=validated_data.get('fax')
+            )
+            user.passwordd = password
+            user.set_password(password)
+            user.save()
+            send_registration_email(user)
+            return JsonResponse({"message": "User created successfully", "user_id": user.id}, status=201)
+        except IntegrityError as e:
+            return JsonResponse({"error": "Integrity Error: " + str(e)}, status=400)
+        except ValidationError as e:
+            return JsonResponse({"error": "Validation Error: " + str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": "An unexpected error occurred", "details": str(e)}, status=500)

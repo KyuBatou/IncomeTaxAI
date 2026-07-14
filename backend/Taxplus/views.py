@@ -564,3 +564,78 @@ class ContactMessageCreateAPIView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from rest_framework import generics
+from rest_framework.generics import CreateAPIView
+
+class SalesmanListView(APIView):
+    def get(self, request, *args, **kwargs):
+        salesmen = User.objects.filter(is_salesman=True, is_active=True).order_by('name')
+        serializer = SalesmanSerializer(salesmen, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PlansListView(generics.ListAPIView):
+    # permission_classes = [IsLoginAuthenticated]
+    serializer_class = PlansListSerializer
+    model = PricingPlan
+    queryset = PricingPlan.objects
+    # lookup_field = 'pk'
+
+
+class UserRegisterView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = CustomUserCreateSerializer
+
+class UserDetailsView(APIView):
+
+    def get(self, request, email):
+        try:
+            user = User.objects.get(email__iexact=email, is_salesman=False)
+            user_data = {
+                'id': user.pk,
+                'email': user.username,
+                'name': user.name,
+                'mobileNumber': user.mobileno,
+                'companyName': user.company,
+                'address': user.address,
+                'legalName': '',
+                'gstin': '',
+                'isFounderMember' : True if user.founder_member == 'Founder Member' else False,
+            }
+            payment = TblPayment.objects.filter(user=user)
+            if payment.exists():
+                user_data['legal_name'] = payment.first().legal_name
+                user_data['gstin'] = payment.first().gstin
+
+            return Response(user_data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+
+from django.http import HttpResponseForbidden
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+def block_admin_login(request):
+    return HttpResponseForbidden("Access Denied")
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ForgetPasswordView(View):
+
+    def post(self, request, *args, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body_data = json.loads(body_unicode)
+        email = body_data.get('email')
+
+        if not email:
+            return JsonResponse({'error': 'Email is required'}, status=400)
+
+        try:
+            user = User.objects.get(email=email)
+            send_forgot_password_email(user)
+            return JsonResponse({'message': '✅ Password sent to your email successfully!'}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({'error': '❌ User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': f'❌ Something went wrong: {str(e)}'}, status=500)

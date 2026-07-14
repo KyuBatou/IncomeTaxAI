@@ -100,6 +100,20 @@ ai_patterns = [
 
     # path('create-paytm-order/', payment, name='create_paytm_order'),
     # path('verify-paytm-payment/', paytm_response, name='verify_paytm_payment'),
+
+    path('salesmen/', SalesmanListView.as_view(), name='salesman-list'),
+    path('plans/', PlansListView.as_view(), name='plans-list'),
+
+
+    path('auth/', include('djoser.urls')),
+    path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('auth/user/<str:email>/', UserDetailsView.as_view(), name='user-details-by-email'),
+    path('auth/forget-password/', ForgetPasswordView.as_view(), name='forget-password-email'),
+    path("auth/user/", UserRegisterView.as_view(), name='user-register'),
+    path('auth/', include('djoser.urls.jwt')),
+    # path('auth/basic/setting/', BasicSettingView.as_view(), name='basic-setting-api'),
+    # path('auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
+
 ]
 
 if settings.DEBUG:

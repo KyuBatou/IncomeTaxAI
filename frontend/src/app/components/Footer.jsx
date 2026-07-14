@@ -1,12 +1,11 @@
 import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import { ThemeProvider, styled, useTheme } from "@mui/material/styles";
 
-import { Paragraph, Span } from "./Typography";
+import { Span } from "./Typography";
 import useSettings from "app/hooks/useSettings";
 import { topBarHeight } from "app/utils/constant";
-import { color } from "echarts";
+import { Typography } from "@mui/material";
 
 // STYLED COMPONENTS
 const AppFooter = styled(Toolbar)(() => ({
@@ -53,10 +52,31 @@ export default function Footer() {
 
             <Span m="auto" />
 
-            <Paragraph m={0}>
-              Design and Developed by Deepak Soni
-              {/* <a href="https://incometaxlibrary.in/ai/" style={{color: 'black'}}>IncomeTax Ai</a> */}
-            </Paragraph>
+            {/* <Paragraph m={0}>
+              ITL AI - Designed, Developed and Delivered by <a href="https://incometaxlibrary.com/" style={{textDecoration: 'underline'}}>Income Tax Library</a>
+            </Paragraph> */}
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: 2,
+                color: "rgba(255,255,255,.45)",
+                fontSize: 14,
+              }}
+            >
+              ITL AI - Designed, Developed and Delivered by{" "}
+              <a
+                href="https://incometaxlibrary.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: "#ff4d6d",
+                  textDecoration: "underline",
+                }}
+              >
+                Income Tax Library
+              </a>
+            </Typography>
+
           </FooterContent>
         </AppFooter>
       </AppBar>

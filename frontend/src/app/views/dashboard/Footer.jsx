@@ -16,7 +16,6 @@ import { MatxLogo } from "app/components";
 export default function Footer({ data, scrollToSection }) {
   const navigate = useNavigate();
 
-  // 👇 map labels → section IDs in page
   const quickLinks = [
     { label: "Home", id: "home" },
     { label: "About", id: "about" },
@@ -56,9 +55,10 @@ export default function Footer({ data, scrollToSection }) {
           {/* Brand */}
           <Grid item xs={12} md={4}>
             <MatxLogo />
+
             <Typography
               sx={{
-                textAlign: 'center',
+                textAlign: "center",
                 fontSize: 32,
                 fontWeight: 800,
                 background:
@@ -78,12 +78,13 @@ export default function Footer({ data, scrollToSection }) {
                 lineHeight: 1.8,
               }}
             >
-              AI-powered legal research, drafting and intelligent tax assistance
-              for Chartered Accountants, Advocates and Tax Professionals.
+              AI-powered legal research, drafting and intelligent tax
+              assistance for Chartered Accountants, Advocates and Tax
+              Professionals.
             </Typography>
           </Grid>
 
-          {/* Quick Links (SCROLL FIXED) */}
+          {/* Quick Links */}
           <Grid item xs={6} md={2}>
             <Typography fontWeight={700} mb={3}>
               Quick Links
@@ -98,7 +99,10 @@ export default function Footer({ data, scrollToSection }) {
                     cursor: "pointer",
                     color: "rgba(255,255,255,.65)",
                     transition: ".3s",
-                    "&:hover": { color: "#ff4d6d", pl: 1 },
+                    "&:hover": {
+                      color: "#ff4d6d",
+                      pl: 1,
+                    },
                   }}
                 >
                   {item.label}
@@ -121,12 +125,16 @@ export default function Footer({ data, scrollToSection }) {
                 "Ask Bot",
               ].map((item) => (
                 <Typography
-                  onClick={() => window.location.href = "/gst"}
                   key={item}
+                  onClick={() => (window.location.href = "/gst")}
                   sx={{
+                    cursor: "pointer",
                     color: "rgba(255,255,255,.65)",
                     transition: ".3s",
-                    "&:hover": { color: "#ff4d6d", pl: 1 },
+                    "&:hover": {
+                      color: "#ff4d6d",
+                      pl: 1,
+                    },
                   }}
                 >
                   {item}
@@ -166,34 +174,66 @@ export default function Footer({ data, scrollToSection }) {
           </Grid>
         </Grid>
 
-        <Divider sx={{ my: 6, borderColor: "rgba(255,255,255,.08)" }} />
+        <Divider
+          sx={{
+            my: 6,
+            borderColor: "rgba(255,255,255,.08)",
+          }}
+        />
 
-        {/* Legal Links (API DRIVEN) */}
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          justifyContent="space-between"
-          spacing={2}
-        >
-          <Typography color="rgba(255,255,255,.5)">
-            © 2026 ITL AI. All Rights Reserved.
-          </Typography>
+        {/* Legal Links */}
+        <Stack spacing={2}>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            justifyContent="space-between"
+            spacing={2}
+          >
+            <Typography color="rgba(255,255,255,.5)">
+              © 2026 ITL AI. All Rights Reserved.
+            </Typography>
 
-          <Stack direction="row" spacing={4} flexWrap="wrap">
-            {data?.map((item) => (
-              <Typography
-                key={item.id}
-                onClick={() => navigate(`/${item.slug}`)}
-                sx={{
-                  cursor: "pointer",
-                  color: "rgba(255,255,255,.5)",
-                  transition: ".3s",
-                  "&:hover": { color: "#ff4d6d" },
-                }}
-              >
-                {item.section}
-              </Typography>
-            ))}
+            <Stack direction="row" spacing={4} flexWrap="wrap">
+              {data?.map((item) => (
+                <Typography
+                  key={item.id}
+                  onClick={() => navigate(`/${item.slug}`)}
+                  sx={{
+                    cursor: "pointer",
+                    color: "rgba(255,255,255,.5)",
+                    transition: ".3s",
+                    "&:hover": {
+                      color: "#ff4d6d",
+                    },
+                  }}
+                >
+                  {item.section}
+                </Typography>
+              ))}
+            </Stack>
           </Stack>
+
+          {/* Developer Credit */}
+          <Typography
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              color: "rgba(255,255,255,.45)",
+              fontSize: 14,
+            }}
+          >
+            ITL AI - Designed, Developed and Delivered by{" "}
+            <a
+              href="https://incometaxlibrary.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "#ff4d6d",
+                textDecoration: "underline",
+              }}
+            >
+              Income Tax Library
+            </a>
+          </Typography>
         </Stack>
       </Container>
     </Box>

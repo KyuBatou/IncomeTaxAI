@@ -106,11 +106,19 @@ export default function ChatContent({ sessionId }) {
       }
   
       const answer = res?.answer || "No response";
+      const results = res?.results || [];
+      const sourcesUsed = res?.sources_used || [];
   
       setMessages((prev) =>
         prev.map((m) =>
           m.id === tempId
-            ? { ...m, thinking: false, ai_answer: "" }
+            ? {
+                ...m,
+                thinking: false,
+                ai_answer: "",
+                results,
+                sources_used: sourcesUsed,
+              }
             : m
         )
       );
@@ -119,11 +127,14 @@ export default function ChatContent({ sessionId }) {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === tempId
-              ? { ...m, ai_answer: partial }
+              ? {
+                  ...m,
+                  ai_answer: partial,
+                }
               : m
           )
         );
-      }, 1.5);
+      }, 0.5);
     } catch (err) {
       console.error(err);
   
@@ -356,32 +367,49 @@ export default function ChatContent({ sessionId }) {
                   )}
                 </Typography>
                 {/* Sources */}
-                {Array.isArray(msg.sources_used) && msg.sources_used.length > 0 && (
-                  <Box sx={{ mt: 1 }}>
-                    <Stack spacing={0.5} sx={{ mt: 0.5 }}>
-                      {msg.sources_used.map((item) => (
-                        <Typography
-                          key={item.id}
-                          component="a"
-                          href={`https://incometaxlibrary.com/gst/judgements/${item.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{
-                            fontSize: 13,
-                            color: "primary.main",
-                            textDecoration: "none",
-                            "&:hover": {
-                              textDecoration: "underline",
-                            },
-                          }}
-                        >
-                          {item.heading}
-                        </Typography>
-                      ))}
-                    </Stack>
-                  </Box>
+                
+                {!loading && !msg.thinking && Array.isArray(msg.sources_used) && msg.sources_used.length > 0 && (
+                  <TableContainer
+                    component={Paper}
+                    variant="outlined"
+                    sx={{ p: 2 }}
+                  >
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell width={10}>S.No</TableCell>
+                          <TableCell width={90}>Party Name</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {msg.sources_used.map((row, count) => (
+                          <TableRow key={row.id}>
+                            <TableCell>{count+1}</TableCell>
+                            <TableCell>
+                              <Typography
+                                component="a"
+                                href={row.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                sx={{
+                                  color: "primary.main",
+                                  textDecoration: "none",
+                                  "&:hover": {
+                                    textDecoration: "underline",
+                                  },
+                                }}
+                              >
+                                {row.heading}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 )}
-                {Array.isArray(msg.results) && msg.results.length > 0 && (
+                {!msg.thinking && Array.isArray(msg.results) && msg.results.length > 0 && (
                   <TableContainer
                     component={Paper}
                     variant="outlined"

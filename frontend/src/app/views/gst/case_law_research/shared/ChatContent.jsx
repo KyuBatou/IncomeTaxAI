@@ -480,7 +480,7 @@ export default function ChatContent({ sessionId }) {
                         onClick={() => handleSimilar(msg)}
                         sx={{ textTransform: "none", fontSize: "0.75rem" }}
                       >
-                        Similar
+                        Rewrite
                       </Button>
                     </Stack>
 

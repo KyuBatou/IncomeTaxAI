@@ -93,7 +93,7 @@ class DraftAssistantSummarizeView(APIView):
                 message.ai_answer = api_response_json.get("answer", "No answer returned from the API.")
                 message.session.message_count += message.session.message_count
                 if message.session.title == "New Chat":
-                    message.session.title = main_content[::15] + "..."
+                    message.session.title = (lambda x: " ".join(x.split()[:4]) + ("..." if len(x.split()) > 4 else ""))(main_content)
                 message.session.save()
                 message.save()
                 return JsonResponse({

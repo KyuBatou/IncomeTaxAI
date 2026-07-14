@@ -102,7 +102,7 @@ class SummarizeView(APIView):
                 message.sources_used = api_response_json.get("sources", {})
                 message.session.message_count += message.session.message_count
                 if message.session.title == "New Chat":
-                    message.session.title = main_content[::30] + "..."
+                    message.session.title = (lambda x: " ".join(x.split()[:4]) + ("..." if len(x.split()) > 4 else ""))(main_content)
                 message.session.save()
                 message.save()
                 # return api_response_json
@@ -123,7 +123,7 @@ class SummarizeView(APIView):
                 message.ai_answer = api_response_json.get("answer", "No answer returned from the API.")
                 message.session.message_count += message.session.message_count
                 if message.session.title == "New Chat":
-                    message.session.title = main_content[::15] + "..."
+                    message.session.title = (lambda x: " ".join(x.split()[:4]) + ("..." if len(x.split()) > 4 else ""))(main_content)
                 message.session.save()
                 message.save()
                 return JsonResponse({
@@ -366,7 +366,7 @@ class AiChatSessionViewSet(viewsets.ModelViewSet):
         if model_type:
             queryset = queryset.filter(model_type=model_type)
 
-        return queryset.order_by("last_activity")
+        return queryset.order_by("-last_activity")
 
     def perform_create(self, serializer):
         serializer.save(

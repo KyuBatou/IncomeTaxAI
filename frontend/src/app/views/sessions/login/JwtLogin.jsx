@@ -18,6 +18,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import useAuth from "app/hooks/useAuth";
 import { Paragraph } from "app/components/Typography";
+import { Button } from "@mui/material";
 
 // STYLED COMPONENTS
 const FlexBox = styled(Box)(() => ({
@@ -119,6 +120,17 @@ export default function JwtLogin() {
 
           <Grid size={{ sm: 6, xs: 12 }}>
             <RightPanel>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/")}
+              sx={{
+                mb: 2,
+                borderRadius: 3,
+                textTransform: "none"
+              }}
+            >
+              ← Back to Home
+            </Button>
               <h2>Sign In</h2>
               <Paragraph mb={2}>Enter your details to continue</Paragraph>
               <Formik

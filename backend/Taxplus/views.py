@@ -615,6 +615,7 @@ class UserDetailsView(APIView):
 from django.http import HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from .utils import send_forgot_password_email
 
 def block_admin_login(request):
     return HttpResponseForbidden("Access Denied")

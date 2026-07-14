@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -11,6 +11,10 @@ import Grid from "@mui/material/Grid2";
 import styled from "@mui/material/styles/styled";
 import useTheme from "@mui/material/styles/useTheme";
 import LoadingButton from "@mui/lab/LoadingButton";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import useAuth from "app/hooks/useAuth";
 import { Paragraph } from "app/components/Typography";
@@ -20,36 +24,39 @@ const FlexBox = styled(Box)(() => ({
   display: "flex"
 }));
 
-const ContentBox = styled("div")(() => ({
-  height: "100%",
-  padding: "32px",
-  position: "relative",
-  background: "rgba(0, 0, 0, 0.01)"
-}));
 
 const StyledRoot = styled("div")(() => ({
+  minHeight: "100vh",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "#8B0016",
-  minHeight: "100% !important",
-  "& .card": {
-    maxWidth: 1200,
-    minHeight: 700,
-    margin: "1rem",
-    display: "flex",
-    borderRadius: 12,
-    alignItems: "center"
-  },
+  background:
+    "linear-gradient(135deg,#8B0016 0%,#c2185b 50%,#ff8a65 100%)",
 
-  ".img-wrapper": {
-    height: "100%",
-    minWidth: 320,
+  ".card": {
+    width: 950,
+    minHeight: 550,
     display: "flex",
-    padding: "2rem",
-    alignItems: "center",
-    justifyContent: "center"
+    overflow: "hidden",
+    borderRadius: 25,
+    boxShadow: "0 20px 60px rgba(0,0,0,.25)"
   }
+}));
+
+const LeftPanel = styled(Box)(() => ({
+  height: "100%",
+  padding: 40,
+  color: "#fff",
+  background:
+    "linear-gradient(160deg,#8B0016,#4a0010)",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center"
+}));
+
+const RightPanel = styled(Box)(() => ({
+  padding: 45,
+  width: "100%"
 }));
 
 // initial login credentials
@@ -75,6 +82,7 @@ export default function JwtLogin() {
   const navigate = useNavigate();
 
   const { login, isAuthenticated } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -95,19 +103,24 @@ export default function JwtLogin() {
   return (
     <StyledRoot>
       <Card className="card">
-        <Grid container>
-          <Grid size={{ sm: 6, xs: 12 }}>
-            <div className="img-wrapper">
-              <img
-                src="/assets/images/illustrations/dreamer.svg"
-                width="100%"
-                alt="Login Illustration"
-              />
-            </div>
+        <Grid container width="100%">
+        <Grid size={{ sm: 6, xs: 12 }}>
+          <LeftPanel>
+            <h1 style={{display: "block", margin: "0 auto", borderRadius: "30%",}}> Welcome Back!</h1>
+            <img
+              src="/assets/images/logo-circle.png"
+              width="220"
+              alt="login"
+              style={{display: "block", margin: "0 auto", borderRadius: "30%",}}
+            />
+            <p>An Intelligent Legal Research Assistant for Income Tax & GST</p>
+          </LeftPanel>
           </Grid>
 
           <Grid size={{ sm: 6, xs: 12 }}>
-            <ContentBox>
+            <RightPanel>
+              <h2>Sign In</h2>
+              <Paragraph mb={2}>Enter your details to continue</Paragraph>
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -141,20 +154,35 @@ export default function JwtLogin() {
                     <TextField
                       fullWidth
                       size="small"
-                      type="password"
+                      type={showPassword?"text":"password"}
                       name="password"
                       label="Password"
                       variant="outlined"
                       value={values.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      InputProps={{
+                        endAdornment:
+                        <InputAdornment position="end">
+                        <IconButton
+                          onClick={()=>setShowPassword(!showPassword)}
+                        >
+                          {
+                          showPassword?
+                          <VisibilityOff/>
+                          :
+                          <Visibility/>
+                          }
+                        </IconButton>
+                        </InputAdornment>
+                      }}
                       error={Boolean(touched.password && errors.password)}
                       helperText={touched.password && errors.password}
                       sx={{ mb: 1.5 }}
                     />
 
                     <FlexBox justifyContent="space-between">
-                      <FlexBox gap={1}>
+                      <FlexBox gap={1} alignItems="center">
                         <Checkbox
                           size="small"
                           name="remember"
@@ -175,16 +203,23 @@ export default function JwtLogin() {
                     </FlexBox>
 
                     <LoadingButton
+                      fullWidth
                       type="submit"
                       loading={isSubmitting}
                       variant="contained"
                       color="primary"
-                      sx={{ my: 2 }}
+                      sx={{
+                        mt:3,
+                        py:1.2,
+                        borderRadius:3,
+                        textTransform:"none",
+                        fontSize:16
+                      }}
                     >
                       Login
                     </LoadingButton>
 
-                    <Paragraph>
+                    <Paragraph sx={{mt:3}}>
                       Don't have an account?
                       <NavLink
                         to="/session/signup"
@@ -199,7 +234,7 @@ export default function JwtLogin() {
                   </form>
                 )}
               </Formik>
-            </ContentBox>
+            </RightPanel>
           </Grid>
         </Grid>
       </Card>

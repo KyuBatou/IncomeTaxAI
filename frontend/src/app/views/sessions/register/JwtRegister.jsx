@@ -16,9 +16,9 @@ import {
 import {styled} from "@mui/system";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
 import {BASE_URL,STATES} from "app/utils/constant";
 import LegalContent from "./TermsAndConditions";
+import apiClient from "app/hooks/apiClient";
 
 const StyledContainer=styled(Box)(()=>({
   minHeight:"100vh",
@@ -157,8 +157,8 @@ export default function SimpleRegister(){
 
     try{
 
-      await axios.post(
-        `${BASE_URL}auth/user/`,
+      await apiClient.post(
+        `${BASE_URL}/auth/user/`,
         formData
       );
 

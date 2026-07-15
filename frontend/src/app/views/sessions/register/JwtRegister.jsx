@@ -1,184 +1,395 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { Formik } from "formik";
-import * as Yup from "yup";
+import React,{useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Grid2 as Grid,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  TextField,
+  Typography,
+  Alert
+} from "@mui/material";
+import {styled} from "@mui/system";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
+import {BASE_URL,STATES} from "app/utils/constant";
+import LegalContent from "./TermsAndConditions";
 
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid2";
-import Checkbox from "@mui/material/Checkbox";
-import TextField from "@mui/material/TextField";
-import styled from "@mui/material/styles/styled";
-import useTheme from "@mui/material/styles/useTheme";
-import LoadingButton from "@mui/lab/LoadingButton";
-
-import useAuth from "app/hooks/useAuth";
-import { Paragraph } from "app/components/Typography";
-
-// STYLED COMPONENTS
-const ContentBox = styled("div")(() => ({
-  height: "100%",
-  padding: "32px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  background: "rgba(0, 0, 0, 0.01)"
-}));
-
-const JWTRegister = styled(JustifyBox)(() => ({
-  background: "#1A2038",
-  minHeight: "100vh !important",
-  "& .card": {
-    maxWidth: 800,
-    minHeight: 400,
-    margin: "1rem",
-    display: "flex",
-    borderRadius: 12,
-    alignItems: "center"
+const StyledContainer=styled(Box)(()=>({
+  minHeight:"100vh",
+  padding:20,
+  display:"flex",
+  alignItems:"center",
+  justifyContent:"center",
+  background:"linear-gradient(135deg,#8B0016,#c2185b,#ff8a65)",
+  ".card":{
+    width:"100%",
+    maxWidth:1100,
+    borderRadius:25,
+    overflow:"hidden",
+    boxShadow:"0 20px 60px rgba(0,0,0,.25)"
   }
 }));
 
-// initial login credentials
-const initialValues = {
-  email: "",
-  password: "",
-  username: "",
-  remember: true
+const LeftPanel=styled(Box)(()=>({
+  minHeight:650,
+  padding:40,
+  color:"#fff",
+  background:"linear-gradient(160deg,#8B0016,#4a0010)",
+  display:"flex",
+  flexDirection:"column",
+  justifyContent:"center",
+  alignItems:"center",
+  "@media(max-width:900px)":{
+    display:"none"
+  }
+}));
+
+const RightPanel=styled(Box)(()=>({
+  padding:40,
+  "@media(max-width:600px)":{
+    padding:20
+  }
+}));
+
+const inputStyle={
+  "& .MuiOutlinedInput-root":{
+    borderRadius:3,
+    background:"#fafafa"
+  }
 };
 
-// form field validation schema
-const validationSchema = Yup.object().shape({
-  password: Yup.string()
-    .min(6, "Password must be 6 character length")
-    .required("Password is required!"),
-  email: Yup.string().email("Invalid Email address").required("Email is required!")
-});
+const initialState={
+  email:"",
+  password:"",
+  re_password:"",
+  name:"",
+  mobileno:"",
+  company:"",
+  address:"",
+  city:"",
+  state:"",
+  pin:"",
+  telephone:"",
+  fax:"",
+  remember:false
+};
 
-export default function JwtRegister() {
-  const theme = useTheme();
-  const { register } = useAuth();
-  const navigate = useNavigate();
+export default function SimpleRegister(){
 
-  const handleFormSubmit = (values) => {
-    try {
-      register(values.email, values.username, values.password);
-      navigate("/");
-    } catch (e) {
-      console.log(e);
+  const navigate=useNavigate();
+
+  const [formData,setFormData]=useState(initialState);
+  const [errors,setErrors]=useState({});
+  const [loading,setLoading]=useState(false);
+  const [showPassword,setShowPassword]=useState(false);
+  const [message,setMessage]=useState("");
+  const [error,setError]=useState("");
+
+  const validate=()=>{
+
+    let e={};
+
+    if(!formData.email)
+      e.email="Email is required";
+    else if(!/\S+@\S+\.\S+/.test(formData.email))
+      e.email="Invalid email";
+
+    if(!formData.password)
+      e.password="Password is required";
+    else if(formData.password.length<6)
+      e.password="Minimum 6 characters required";
+
+    if(formData.password!==formData.re_password)
+      e.re_password="Passwords do not match";
+
+    if(!formData.name)
+      e.name="Name is required";
+
+    if(!formData.mobileno)
+      e.mobileno="Mobile required";
+    else if(!/^[0-9]{10}$/.test(formData.mobileno))
+      e.mobileno="Enter valid 10 digit mobile";
+
+    if(!formData.address)
+      e.address="Address required";
+
+    if(!formData.city)
+      e.city="City required";
+
+    if(!formData.state)
+      e.state="State required";
+
+    if(!formData.pin)
+      e.pin="Pincode required";
+    else if(!/^[0-9]{6}$/.test(formData.pin))
+      e.pin="Invalid pincode";
+
+    if(!formData.remember)
+      e.remember="Accept terms";
+
+    setErrors(e);
+    return Object.keys(e).length===0;
+  };
+
+  const handleChange=(e)=>{
+    const {name,value,checked,type}=e.target;
+
+    setFormData(prev=>({
+      ...prev,
+      [name]:type==="checkbox"?checked:value
+    }));
+  };
+
+  const handleSubmit=async(e)=>{
+    e.preventDefault();
+
+    if(!validate()) return;
+
+    setLoading(true);
+    setMessage("");
+    setError("");
+
+    try{
+
+      await axios.post(
+        `${BASE_URL}auth/user/`,
+        formData
+      );
+
+      setMessage("Registration successful");
+
+      setTimeout(()=>{
+        navigate("/session/signin");
+      },1500);
+
+    }catch(err){
+
+      setError(
+        err.response?.data?.message ||
+        "Registration failed"
+      );
+
+    }finally{
+      setLoading(false);
     }
   };
 
-  return (
-    <JWTRegister>
+  const fields=[
+    ["email","Username/Email"],
+    ["name","Name"],
+    ["password","Password"],
+    ["re_password","Confirm Password"],
+    ["mobileno","Mobile"],
+    ["company","Company"],
+    ["address","Address"],
+    ["city","City"],
+    ["state","State"],
+    ["pin","Pin Code"],
+    ["telephone","Telephone"],
+    ["fax","Fax"]
+  ];
+
+  return(
+    <StyledContainer>
       <Card className="card">
+
         <Grid container>
-          <Grid size={{ md: 6, xs: 12 }}>
-            <ContentBox>
+
+          <Grid size={{sm:5,xs:12}}>
+            <LeftPanel>
+
+              <Typography
+                variant="h5"
+                textAlign="center"
+                fontWeight={700}
+              >
+                Welcome Back!
+              </Typography>
+
+              <img
+                src="/assets/images/logo-circle.png"
+                width="120"
+                alt="logo"
+                style={{margin:30, borderRadius: '30%'}}
+              />
               <img
                 width="100%"
                 alt="Register"
                 src="/assets/images/illustrations/posting_photo.svg"
+                style={{margin:30}}
               />
-            </ContentBox>
+
+              <Typography textAlign="center">
+                Empowering Your Legal Journey with Case Laws,
+                Updates, and Expert Resources on Income Tax,
+                GST & Company Law!
+              </Typography>
+
+            </LeftPanel>
           </Grid>
 
-          <Grid size={{ md: 6, xs: 12 }}>
-            <Box p={4} height="100%">
-              <Formik
-                onSubmit={handleFormSubmit}
-                initialValues={initialValues}
-                validationSchema={validationSchema}>
-                {({
-                  values,
-                  errors,
-                  touched,
-                  isSubmitting,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit
-                }) => (
-                  <form onSubmit={handleSubmit}>
+          <Grid size={{sm:7,xs:12}}>
+
+            <RightPanel>
+
+              <Typography variant="h4" mb={2}>
+                Create Account
+              </Typography>
+
+              {message&&
+                <Alert severity="success">
+                  {message}
+                </Alert>
+              }
+
+              {error&&
+                <Alert severity="error">
+                  {error}
+                </Alert>
+              }
+
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                mt={2}
+              >
+
+                <Grid container spacing={2}>
+
+                  {fields.map(([name,label])=>(
+
+                    <Grid
+                      size={{sm:6,xs:12}}
+                      key={name}
+                    >
+
+                    {name==="state"?
+
+                    <TextField
+                      select
+                      fullWidth
+                      size="small"
+                      name="state"
+                      label="State"
+                      value={formData.state}
+                      onChange={handleChange}
+                      error={!!errors.state}
+                      helperText={errors.state}
+                      sx={inputStyle}
+                    >
+                      {STATES.map(s=>
+                        <MenuItem
+                          key={s.value}
+                          value={s.value}
+                        >
+                          {s.label}
+                        </MenuItem>
+                      )}
+                    </TextField>
+
+                    :
+
                     <TextField
                       fullWidth
                       size="small"
-                      type="text"
-                      name="username"
-                      label="Username"
-                      variant="outlined"
-                      onBlur={handleBlur}
-                      value={values.username}
+                      name={name}
+                      label={label}
+                      type={
+                        name==="password"||name==="re_password"
+                        ?
+                        showPassword?"text":"password"
+                        :
+                        "text"
+                      }
+                      value={formData[name]}
                       onChange={handleChange}
-                      helperText={touched.username && errors.username}
-                      error={Boolean(errors.username && touched.username)}
-                      sx={{ mb: 3 }}
+                      error={!!errors[name]}
+                      helperText={errors[name]}
+                      sx={inputStyle}
+                      InputProps={
+                        name==="password"
+                        ?
+                        {
+                          endAdornment:
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={()=>
+                                setShowPassword(!showPassword)
+                              }
+                            >
+                              {
+                                showPassword
+                                ?
+                                <VisibilityOff/>
+                                :
+                                <Visibility/>
+                              }
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        :
+                        {}
+                      }
                     />
 
-                    <TextField
-                      fullWidth
-                      size="small"
-                      type="email"
-                      name="email"
-                      label="Email"
-                      variant="outlined"
-                      onBlur={handleBlur}
-                      value={values.email}
-                      onChange={handleChange}
-                      helperText={touched.email && errors.email}
-                      error={Boolean(errors.email && touched.email)}
-                      sx={{ mb: 3 }}
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      name="password"
-                      type="password"
-                      label="Password"
-                      variant="outlined"
-                      onBlur={handleBlur}
-                      value={values.password}
-                      onChange={handleChange}
-                      helperText={touched.password && errors.password}
-                      error={Boolean(errors.password && touched.password)}
-                      sx={{ mb: 2 }}
-                    />
+                    }
 
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Checkbox
-                        size="small"
-                        name="remember"
-                        onChange={handleChange}
-                        checked={values.remember}
-                        sx={{ padding: 0 }}
-                      />
+                    </Grid>
 
-                      <Paragraph fontSize={13}>
-                        I have read and agree to the terms of service.
-                      </Paragraph>
-                    </Box>
+                  ))}
 
-                    <LoadingButton
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      loading={isSubmitting}
-                      sx={{ mb: 2, mt: 3 }}>
-                      Register
-                    </LoadingButton>
+                </Grid>
 
-                    <Paragraph>
-                      Already have an account?
-                      <NavLink
-                        to="/session/signin"
-                        style={{ color: theme.palette.primary.main, marginLeft: 5 }}>
-                        Login
-                      </NavLink>
-                    </Paragraph>
-                  </form>
-                )}
-              </Formik>
-            </Box>
+                <Box display="flex" alignItems="center" mt={2}>
+
+                  <Checkbox
+                    size="small"
+                    name="remember"
+                    checked={formData.remember}
+                    onChange={handleChange}
+                  />
+
+                  <LegalContent/>
+
+                </Box>
+
+                <Button
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  disabled={loading}
+                  sx={{
+                    mt:2,
+                    py:1.2,
+                    borderRadius:3
+                  }}
+                >
+                  {loading?"Registering...":"Register"}
+                </Button>
+
+                <Button
+                  fullWidth
+                  sx={{mt:1}}
+                  onClick={()=>navigate("/session/signin")}
+                >
+                  Already have account? Login
+                </Button>
+
+              </Box>
+
+            </RightPanel>
+
           </Grid>
+
         </Grid>
+
       </Card>
-    </JWTRegister>
+    </StyledContainer>
   );
 }

@@ -13,10 +13,10 @@ import { lazy } from "react";
 const NotFound = Loadable(lazy(() => import("./NotFound")));
 const ForgotPassword = Loadable(lazy(() => import("./ForgotPassword")));
 const JwtbaseLogin = Loadable(lazy(() => import("./login/JwtLogin")));
-const FirebaseRegister = Loadable(lazy(() => import("./register/FirebaseRegister")));
+const JwtRegister = Loadable(lazy(() => import("./register/JwtRegister")));
 
 const sessionRoutes = [
-  { path: "/session/signup", element: <FirebaseRegister /> },
+  { path: "/session/signup", element: <JwtRegister /> },
   // { path: "/session/signin", element: <FirebaseLogin /> },
   { path: "/session/signin", element: <JwtbaseLogin /> },
   { path: "/session/forgot-password", element: <ForgotPassword /> },

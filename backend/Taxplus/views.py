@@ -646,3 +646,53 @@ class LegalContentDetailView(APIView):
         content = get_object_or_404(LegalContent, slug=slug)
         serializer = LegalContentSerializer(content)
         return Response(serializer.data)
+
+from rest_framework.permissions import BasePermission
+
+class IsLoginAuthenticated(BasePermission):
+
+    def has_permission(self, request, view):
+        try:
+            if request.user and request.user.is_authenticated:
+                return True
+            return False
+        except Exception as e:
+            return False
+
+class BasicSettingView(APIView):
+    permission_classes = [IsLoginAuthenticated]
+
+    def get(self, request):
+        profile = request.user
+        serializer = BasicSettingSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        profile = request.user
+        serializer = BasicSettingSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsLoginAuthenticated]
+
+    def put(self, request):
+        user = request.user
+        data = request.data
+
+        current_password = data.get("current_password")
+        new_password = data.get("new_password")
+        confirm_password = data.get("confirm_password")
+
+        if not user.check_password(current_password):
+            return Response({"detail": "Current password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({"detail": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.passwordd = new_password
+        user.save()
+        return Response({"detail": "Password updated successfully."})

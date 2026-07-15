@@ -140,3 +140,14 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             return JsonResponse({"error": "Validation Error: " + str(e)}, status=400)
         except Exception as e:
             return JsonResponse({"error": "An unexpected error occurred", "details": str(e)}, status=500)
+
+class BasicSettingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            'email', 'name', 'company', 'address', 'city',
+            'state', 'pin', 'telephone', 'mobileno', 'fax',
+            'regdate', 'valid_date'
+        ]
+        read_only_fields = ['email', 'name', 'regdate', 'valid_date']

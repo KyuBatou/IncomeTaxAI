@@ -112,8 +112,8 @@ ai_patterns = [
     path('auth/forget-password/', ForgetPasswordViews.as_view(), name='forget-password-email'),
     path("auth/user/", UserRegisterView.as_view(), name='user-register'),
     path('auth/', include('djoser.urls.jwt')),
-    # path('auth/basic/setting/', BasicSettingView.as_view(), name='basic-setting-api'),
-    # path('auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
+    path('auth/basic/setting/', BasicSettingView.as_view(), name='basic-setting-api'),
+    path('auth/change-password/', ChangePasswordView.as_view(), name='change-password'),
 
 ]
 

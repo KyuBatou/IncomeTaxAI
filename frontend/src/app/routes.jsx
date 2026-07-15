@@ -14,6 +14,7 @@ const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics3")))
 const GST = Loadable(lazy(() => import("app/views/gst/App")));
 const SubscribeTable = Loadable(lazy(() => import("app/views/subscribe/App")));
 const ContentTable = Loadable(lazy(() => import("app/views/legal-content/App")));
+const UserSetting = Loadable(lazy(() => import("app/views/settings/App")));
 
 const routes = [
   { path: "/", element: <Navigate to="dashboard" /> },
@@ -28,6 +29,8 @@ const routes = [
       // dashboard route
       // { path: "/dashboard", element: <Analytics />, auth: authRoles.admin },
       { path: "/gst", element: <GST />, auth: authRoles.admin },
+      { path: "/user-setting", element: <UserSetting />, auth: authRoles.guest },
+
     ]
   },
   { path: "/dashboard", element: <Analytics />, auth: authRoles.admin },

@@ -153,15 +153,17 @@ const Layout1Topbar = () => {
             </StyledItem>
 
             <StyledItem>
-              <Link to="/page-layouts/user-profile">
+              <Link to="/user-setting">
                 <Person />
                 <Span sx={{ marginInlineStart: 1 }}>Profile</Span>
               </Link>
             </StyledItem>
 
             <StyledItem>
-              <Settings />
-              <Span sx={{ marginInlineStart: 1 }}>Settings</Span>
+              <Link to="/gst">
+                <Person />
+                <Span sx={{ marginInlineStart: 1 }}>ITL AI</Span>
+              </Link>
             </StyledItem>
 
             <StyledItem onClick={logout}>

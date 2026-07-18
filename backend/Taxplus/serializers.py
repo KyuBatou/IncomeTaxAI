@@ -101,10 +101,18 @@ class SalesmanSerializer(serializers.ModelSerializer):
         fields = ['id', 'name',]
 
 class PlansListSerializer(serializers.ModelSerializer):
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = PricingPlan
-        fields = '__all__'
+        fields = ["id", "name", "services", "price", "icon", "is_popular", "order",]
+
+    def get_price(self, obj):
+        try:
+            value = obj.yearly_price.replace(",", "").replace("/-", "")
+            return float(f"{float(value):.2f}")
+        except (ValueError, AttributeError, TypeError):
+            return 0.00
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):

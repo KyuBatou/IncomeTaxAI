@@ -98,8 +98,12 @@ ai_patterns = [
     # path('chat/<str:category>/', ChatNewView.as_view(), name='new_chat'),
     # path('chat/<str:category>/<int:session_id>/delete/', ChatDeleteView.as_view(), name='delete_chat'),
 
-    # path('create-paytm-order/', payment, name='create_paytm_order'),
-    # path('verify-paytm-payment/', paytm_response, name='verify_paytm_payment'),
+    path('api/create-paytm-order/', payment, name='create_paytm_order'),
+    path('api/verify-paytm-payment/', paytm_response, name='verify_paytm_payment'),
+    path('api/create-order/', create_order, name='create_order'),
+    # path('api/create-order/', create_order2, name='create_order'),
+    path('api/verify-payment/', verify_payment, name='verify_payment'),
+    # path('api/verify-payment/', verify_payment2, name='verify_payment'),
 
     path('salesmen/', SalesmanListView.as_view(), name='salesman-list'),
     path('plans/', PlansListView.as_view(), name='plans-list'),

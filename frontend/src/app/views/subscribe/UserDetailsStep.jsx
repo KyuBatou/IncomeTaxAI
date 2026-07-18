@@ -65,14 +65,15 @@ export default function UserDetailsStep({ setUserData, userData, handleNextStep 
         fullWidth
         multiline={multiline}
         variant="outlined"
+        color="primary"
         onChange={(e) => setUserData({ ...userData, [key]: e.target.value })}
       />
     </Grid>
   );
 
   return (
-    <Box sx={{ maxWidth: 700, margin: "0 auto", padding: 3, border: "1px solid #ddd", borderRadius: 2, boxShadow: 2 }}>
-      <Typography variant="h5" align="center" gutterBottom>
+    <Box sx={{ maxWidth: 700, margin: "0 auto", padding: 3, border: "1px solid #ddd", borderRadius: 2, boxShadow: 2, backgroundColor: "white" }}>
+      <Typography variant="h5" align="center" gutterBottom color="primary">
         Enter Your Email
       </Typography>
 
@@ -109,7 +110,7 @@ export default function UserDetailsStep({ setUserData, userData, handleNextStep 
 
       {userData && (
         <Box mt={4}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom color="primary">
             User Details
           </Typography>
           <Grid container spacing={2}>
@@ -126,7 +127,7 @@ export default function UserDetailsStep({ setUserData, userData, handleNextStep 
             </Button>
             <Button
               variant="contained"
-              color="success"
+              color="primary"
               size="large"
               onClick={handleNextStep}
               disabled={!isFetched}

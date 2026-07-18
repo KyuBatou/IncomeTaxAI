@@ -25,8 +25,8 @@ export default function SubscriptionForm({
 }) {
 
   return (
-    <Box sx={{ maxWidth: 800, margin: "0 auto", p: 3, border: "1px solid #ddd", borderRadius: 2, boxShadow: 2 }}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Box sx={{ maxWidth: 800, margin: "0 auto", p: 3, border: "1px solid #ddd", borderRadius: 2, boxShadow: 2, backgroundColor: "white" }}>
+      <Typography variant="h4" align="center" gutterBottom color="primary">
         Subscription Offer
       </Typography>
 
@@ -54,9 +54,9 @@ export default function SubscriptionForm({
                   />
                   <Box>
                     <Typography sx={{ fontSize: "18px", fontWeight: "bold", color: plan.id === 5 ? "green" : "primary.main" }}>
-                      {plan.year}
+                      {plan.name}
                     </Typography>
-                    <Typography sx={{ fontSize: "16px", fontWeight: 500, color: "error.main", display: "flex", alignItems: "center" }}>
+                    <Typography sx={{ fontSize: "16px", fontWeight: 500, color: "error.main", display: "flex", alignItems: "center" }} color="primary">
                       {userData.isFounderMember && plan.id === 1 ? (
                         <>
                           <span style={{ textDecoration: "line-through", color: "#999", marginRight: 8 }}>
@@ -81,7 +81,7 @@ export default function SubscriptionForm({
 
       <Grid container spacing={2} mt={3}>
         <Grid item xs={12}>
-          <Typography variant="body1">Booked By</Typography>
+          <Typography variant="body1" color="primary">Booked By</Typography>
           <Select
             fullWidth
             value={selectedSalesman}
@@ -97,7 +97,7 @@ export default function SubscriptionForm({
           </Select>
           </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="body1">Amount</Typography>
+          <Typography variant="body1" color="primary">Amount</Typography>
           <TextField
             value={amount}
             onChange={handleAmountChange}
@@ -106,11 +106,11 @@ export default function SubscriptionForm({
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="body1">Tax Amount (18%)</Typography>
+          <Typography variant="body1" color="primary">Tax Amount (18%)</Typography>
           <TextField value={taxAmount} disabled fullWidth />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="body1">Coupon</Typography>
+          <Typography variant="body1" color="primary">Coupon</Typography>
           <TextField
             value={coupon}
             onChange={(e) => setcoupon(e.target.value)} // Update coupon value on change
@@ -131,7 +131,7 @@ export default function SubscriptionForm({
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="body1">Final Amount</Typography>
+          <Typography variant="body1" color="primary">Final Amount</Typography>
           <TextField value={finalAmount} disabled fullWidth />
         </Grid>
       </Grid>

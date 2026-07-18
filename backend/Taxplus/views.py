@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 from uuid import uuid4
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.http import require_POST
 from .forms import EmailCheckForm, UserDetailsForm
 from django.shortcuts import get_object_or_404
 from django.views.generic.edit import FormView
@@ -29,6 +30,12 @@ RAZORPAY_KEY_ID = 'rzp_live_KOcogkdLbAxLEu'
 RAZORPAY_KEY_SECRET = 'BUZCMpYbbWuu59Yt9p6UXpbp'
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+
+def get_plan_year(selected_plans):
+    # selected = [plan['year'] for plan in TblSubscription.objects.all() if plan['id'] in selected_plans]
+    selected = [plan.name for plan in PricingPlan.objects.all() if plan.pk in selected_plans]
+    if len(selected) > 1: return ', '.join(selected[:-1]) + f" with {selected[-1]}"
+    return selected[0] if selected else ""
 
 class IndexView(TemplateView):
     template_name = "index.html"
@@ -381,108 +388,213 @@ from . import PaytmChecksum
 @csrf_exempt
 def payment(request):
     try:
-        body_data = json.loads(request.body.decode('utf-8'))
-        print("body_data", body_data)
-
-        order_id = body_data['orderId']
-        # print(body_data['email'])
-        # print(body_data['name'])
-        # print(body_data['mobileNumber'])
-        # print(body_data['companyName'])
-        # print(body_data['address'])
-        # print(body_data['legalName'])
-        # print(body_data['gstin'])
-        # print(body_data['selectedSalesman'])
-        print(body_data['product_name'])
-        # print(body_data['amount'])
-        # print(body_data['taxAmount'])
-        # print(body_data['totalAmount'])
-
-        # product_name = get_plan_year(body_data['selectedPlans'])
-        data = TblPayment.objects.create(
-            email_id=body_data['email'],
-            user_id=User.objects.get(email__iexact=body_data['email'], is_salesman=False).pk,
-            name=body_data['name'],
-            mobile_no=body_data['mobileNumber'],
-            company_name=body_data['companyName'],
-            address=body_data['address'],
-            legal_name=body_data['legalName'],
-            gstin=body_data['gstin'],
-            # booked_by_id=data['selectedSalesman'],
-            # product_name=body_data['product_name'],
-            order_number=body_data['orderId'],
-            amount=body_data['amount'],
-            gst='18',
-            gst_amount=body_data['taxAmount'],
-            payable_amount=body_data['totalAmount'],
-            txnid="",
-            status='Pending',
-        )
-        data.save()
-        paytmParams = {
-            "body": {
-                "requestType": "Payment",
-                "mid": settings.PAYTM_MID,
-                "websiteName": settings.PAYTM_WEBSITE,
-                "orderId": str(order_id),
-                "callbackUrl": "https://ai.incometaxlibrary.com/ai/verify-paytm-payment/",
-                "txnAmount" : {
-                    "value": str(body_data['totalAmount']),
-                    "currency" : "INR",
-                },
-                "userInfo" : {
-                    "custId" : "CUST_001",
-                }
+        body_unicode = request.body.decode('utf-8')
+        body_data = data = json.loads(body_unicode)
+        orderId = body_data['orderNumber']
+        userDetails = body_data['userDetails']
+        product_name = get_plan_year(body_data['selectedPlans'])
+        # data = TblPayment.objects.create(
+        #     email_id=userDetails['email'],
+        #     user_id=User.objects.get(email__iexact=userDetails['email'], is_salesman=False).pk,
+        #     name=userDetails['name'],
+        #     mobile_no=userDetails['mobileNumber'],
+        #     company_name=userDetails['companyName'],
+        #     address=userDetails['address'],
+        #     legal_name=userDetails['legalName'],
+        #     gstin=userDetails['gstin'],
+        #     booked_by_id=data['selectedSalesman'],
+        #     product_name=product_name,
+        #     order_number=data['orderNumber'],
+        #     amount=data['amount'],
+        #     gst='18',
+        #     gst_amount=data['taxAmount'],
+        #     payable_amount=data['totalAmount'],
+        #     txnid="",
+        #     status='Pending',
+        # )
+        # data.save()
+        paytmParams = {'body':{
+            "requestType": "Payment",
+            "mid" : settings.PAYTM_MID,
+            "orderId" : str(orderId),
+            "websiteName": settings.PAYTM_WEBSITE,
+            "txnAmount" : {
+                "value": str(int(round(body_data['totalAmount']))),
+                "currency" : "INR",
+            },
+            "userInfo" : {
+                "custId" : "CUST_001",
             }
-        }
-
+        }}
         checksum = PaytmChecksum.generateSignature(json.dumps(paytmParams["body"]), settings.PAYTM_MERCHANT_KEY)
         paytmParams["head"] = {"signature" : checksum}
         post_data = json.dumps(paytmParams)
-        url = f"{settings.PAYTM_PRODUCTION_URL}?mid={settings.PAYTM_MID}&orderId={order_id}"
+        url = f"{settings.PAYTM_PRODUCTION_URL}?mid={settings.PAYTM_MID}&orderId={orderId}"
         response = requests.post(url, data=post_data, headers={"Content-type": "application/json"})
-        print(response.json())
         return JsonResponse(response.json())
-
     except Exception as e:
         print(e)
-        return JsonResponse({"error": str(e)}, status=400)
-
+        return JsonResponse({"error" : str(e)}, status=400)
 
 @csrf_exempt
 def paytm_response(request):
-    print("request.POST", type(request.POST))
-    # paytm_params = dict(request.POST)
-    paytm_params = request.POST.dict()
+    body_unicode = request.body.decode('utf-8')
+    paytm_params = json.loads(body_unicode)
+    is_valid_checksum = False
+    if 'CHECKSUMHASH' in paytm_params:
+        paytm_checksum = paytm_params['CHECKSUMHASH']
+        is_valid_checksum = PaytmChecksum.verifySignature(
+            paytm_params, settings.PAYTM_MERCHANT_KEY, paytm_checksum
+        )
+        return JsonResponse({
+            "success": True,
+            "message": "Transaction successful",
+            "transaction_id": paytm_params.get("TXNID"),
+        }, status=200)
 
-    paytm_checksum = paytm_params.get('CHECKSUMHASH')
-
-    is_valid = PaytmChecksum.verifySignature(
-        paytm_params,
-        settings.PAYTM_MERCHANT_KEY,
-        paytm_checksum
-    )
-
-    if is_valid:
-        order_id = paytm_params.get("ORDERID")
-        payment = TblPayment.objects.get(order_number=order_id)
-
+    if is_valid_checksum:
+        payment = TblPayment.objects.get(order_number=paytm_params.get("ORDERID"))
         payment.txnid = paytm_params.get("TXNID")
         payment.bank_txnid = paytm_params.get("BANKTXNID")
         payment.payment_mode = paytm_params.get("PAYMENTMODE")
+        # payment.bank_name = paytm_params.get("bank")
         payment.gateway_name = paytm_params.get("GATEWAYNAME")
-
-        if paytm_params.get("RESPCODE") == "01":
-            payment.status = "SUCCESS"
-        else:
-            payment.status = "FAILED"
-
         payment.save()
+        if paytm_params.get("RESPCODE") == "01":
+            payment.status = paytm_params.get("RESPMSG")
+            payment.resp_code = paytm_params.get("RESPCODE")
+            payment.save()
+            return JsonResponse({
+                "success": True,
+                "message": "Transaction successful",
+                "transaction_id": paytm_params.get("TXNID"),
+            }, status=200)
+        else:
+            payment.status = paytm_params.get("RESPMSG")
+            payment.resp_code = paytm_params.get("RESPCODE")
+            payment.save()
+            return JsonResponse({
+                "success": False,
+                "message": "Transaction failed",
+                "order_id": paytm_params.get("ORDERID"),
+                "reason": paytm_params.get("RESPMSG")
+            }, status=200)
+    else:
+        # payment.status = "TXN_FAILURE"
+        # payment.resp_code = "400"
+        # payment.save()
+        return JsonResponse({
+            "success": False,
+            "message": "Invalid checksum"
+        }, status=400)
 
-        return redirect(f"/ai/receipt/{payment.txnid}/")
 
-    return HttpResponse("Checksum mismatch", status=400)
 
+@csrf_exempt
+def create_order(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        order_data = {
+            'amount': int(round(data['totalAmount'] * 100)),
+            'currency': 'INR',
+            'payment_capture': 1
+        }
+        order = client.order.create(data=order_data)
+        userDetails = data['userDetails']
+        product_name = get_plan_year(data['selectedPlans'])
+        data = TblPayment.objects.create(
+            email_id=userDetails['email'],
+            user_id=User.objects.get(email__iexact=userDetails['email'], is_salesman=False).pk,
+            name=userDetails['name'],
+            mobile_no=userDetails['mobileNumber'],
+            company_name=userDetails['companyName'],
+            address=userDetails['address'],
+            legal_name=userDetails['legalName'],
+            gstin=userDetails['gstin'],
+            booked_by_id=data['selectedSalesman'],
+            product_name=product_name,
+            order_number=data['orderNumber'],
+            amount=data['amount'],
+            gst='18',
+            gst_amount=data['taxAmount'],
+            payable_amount=data['totalAmount'],
+            txnid=order['id'],
+            status='Pending',
+        )
+        data.save()
+        return JsonResponse(order)
+
+@csrf_exempt
+def create_order2(request):
+    if request.method == 'POST':
+        RAZORPAY_KEY_ID = 'rzp_test_pOCIYbOYzrYWUK'
+        RAZORPAY_KEY_SECRET = 'naQ0AQuSB0BimggKWZaeaymq'
+        client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+        data = json.loads(request.body.decode('utf-8'))
+        order_data = {
+            'amount': 499 * 100,
+            'currency': 'INR',
+            'payment_capture': 1
+        }
+        order = client.order.create(data=order_data)
+        print(order)
+        return JsonResponse(order)
+
+
+@csrf_exempt
+@require_POST
+def verify_payment2(request):
+    payment_data = json.loads(request.body.decode('utf-8'))
+    razorpay_order_id = payment_data.get('razorpay_order_id')
+    razorpay_payment_id = payment_data.get('razorpay_payment_id')
+    razorpay_signature = payment_data.get('razorpay_signature')
+    params = {
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_payment_id': razorpay_payment_id,
+        'razorpay_signature': razorpay_signature,
+    }
+
+    payment_details = client.payment.fetch(razorpay_payment_id)
+    try:
+        client.utility.verify_payment_signature(params)
+        print({'status': 'success', 'message': 'Payment verified successfully'})
+        return JsonResponse({'status': 'success', 'message': 'Payment verified successfully'})
+    except razorpay.errors.SignatureVerificationError:
+        print({'status': 'failure', 'message': 'Payment verification failed'})
+        return JsonResponse({'status': 'failure', 'message': 'Payment verification failed'}, status=400)
+
+@csrf_exempt
+@require_POST
+def verify_payment(request):
+    payment_data = json.loads(request.body.decode('utf-8'))
+    razorpay_order_id = payment_data.get('razorpay_order_id')
+    razorpay_payment_id = payment_data.get('razorpay_payment_id')
+    razorpay_signature = payment_data.get('razorpay_signature')
+    payment = TblPayment.objects.get(txnid=razorpay_order_id)
+    params = {
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_payment_id': razorpay_payment_id,
+        'razorpay_signature': razorpay_signature,
+    }
+
+    payment_details = client.payment.fetch(razorpay_payment_id)
+    payment.txnid = payment_details.get("order_id")
+    payment.bank_txnid = payment_details.get("id")
+    payment.payment_mode = payment_details.get("method")
+    payment.bank_name = payment_details.get("bank")
+    payment.gateway_name = payment_details.get("bank")
+    payment.save()
+    try:
+        client.utility.verify_payment_signature(params)
+        payment.status = "TXN_SUCCESS"
+        payment.resp_code = "01"
+        payment.save()
+        return JsonResponse({'status': 'success', 'message': 'Payment verified successfully'})
+    except razorpay.errors.SignatureVerificationError:
+        payment.status = "TXN_FAILURE"
+        payment.resp_code = "227"
+        payment.save()
+        return JsonResponse({'status': 'failure', 'message': 'Payment verification failed'}, status=400)
 
 def block_admin_login(request):
     return HttpResponseForbidden("Access Denied")

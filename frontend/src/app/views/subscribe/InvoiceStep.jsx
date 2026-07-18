@@ -71,6 +71,7 @@ const InvoiceStep = ({
         mx: "auto",
         p: 4,
         backgroundColor: "#fff",
+        color: '#000',
         borderRadius: 2,
         boxShadow: 3,
         border: "1px solid #ddd",

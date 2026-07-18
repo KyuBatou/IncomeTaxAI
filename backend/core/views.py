@@ -369,10 +369,16 @@ class AiChatSessionViewSet(viewsets.ModelViewSet):
         return queryset.order_by("-last_activity")
 
     def perform_create(self, serializer):
+        model_type = self.request.data.get("model_type")
+        AiChatSession.objects.filter(
+            user=self.request.user,
+            model_type=model_type,
+            messages__isnull=True,
+        ).delete()
         serializer.save(
             user=self.request.user,
             session_token=str(uuid.uuid4()),
-            model_type=self.request.data.get("model_type")
+            model_type=model_type,
         )
 
 

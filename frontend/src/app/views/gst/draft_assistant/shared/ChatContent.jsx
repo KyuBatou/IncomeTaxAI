@@ -10,6 +10,8 @@ import ChatFooter from "./ChatFooter";
 import { saveAs } from "file-saver";
 import { ThinkingDots } from "./ThinkingDots";
 import ReactMarkdown from "react-markdown";
+import { marked } from "marked";
+import html2pdf from "html2pdf.js";
 
 export default function ChatContent({ sessionId }) {
   const [loading, setLoading] = useState(false);
@@ -155,26 +157,94 @@ export default function ChatContent({ sessionId }) {
   };
   
 
-  const handleDownload = async (text) => {
+  const handleDownloadWord = async (text) => {
+    const tokens = marked.lexer(text);
+  
+    const children = [];
+  
+    tokens.forEach((token) => {
+      if (token.type === "heading") {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: token.text,
+                bold: true,
+                size: token.depth === 1 ? 32 : 26,
+              }),
+            ],
+            spacing: {
+              after: 200,
+            },
+          })
+        );
+      }
+  
+      else if (token.type === "paragraph") {
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: token.text.replace(/\*\*/g, ""),
+                size: 24,
+              }),
+            ],
+            spacing: {
+              after: 120,
+            },
+          })
+        );
+      }
+  
+      else if (token.type === "list") {
+        token.items.forEach((item) => {
+          children.push(
+            new Paragraph({
+              text: item.text,
+              bullet: {
+                level: 0,
+              },
+            })
+          );
+        });
+      }
+    });
+  
     const doc = new Document({
       sections: [
         {
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: text,
-                  size: 24,
-                }),
-              ],
-            }),
-          ],
+          children,
         },
       ],
     });
   
     const blob = await Packer.toBlob(doc);
     saveAs(blob, "ai-response.docx");
+  };
+
+  const handleDownloadPdf = () => {
+    const element = document.getElementById("pdf-content");
+  
+    html2pdf()
+      .set({
+        margin: 10,
+        filename: "ai-response.pdf",
+        image: {
+          type: "jpeg",
+          quality: 1,
+        },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+        },
+        jsPDF: {
+          unit: "mm",
+          format: "a4",
+          orientation: "portrait",
+        },
+      })
+      .from(element)
+      .save();
   };
 
   useEffect(() => {
@@ -252,9 +322,24 @@ export default function ChatContent({ sessionId }) {
                   {msg.thinking ? (
                     <ThinkingDots />
                   ) : (
+                    <div
+                    id="pdf-content"
+                    style={{
+                      width: "700px", // Instead of 800px
+                      maxWidth: "100%",
+                      padding: "20px",
+                      boxSizing: "border-box",
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                      whiteSpace: "normal",
+                      textAlign: "justify",
+                      background: "#fff",
+                    }}
+                  >
                     <ReactMarkdown>
                       {msg.ai_answer || ""}
                     </ReactMarkdown>
+                    </div>
                   )}
                 </Typography>
                 {/* ACTION ROW */}
@@ -282,11 +367,21 @@ export default function ChatContent({ sessionId }) {
                       <Button
                         size="small"
                         startIcon={<DownloadIcon />}
-                        onClick={() => handleDownload(msg.ai_answer)}
+                        onClick={() => handleDownloadWord(msg.ai_answer)}
                         sx={{ textTransform: "none", fontSize: "0.75rem" }}
                       >
-                        Download
+                        Download Word
                       </Button>
+
+                      <Button
+                        size="small"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => handleDownloadPdf(msg.ai_answer)}
+                        sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                      >
+                        Download Pdf
+                      </Button>
+
                     </Stack>
 
                     {/* RIGHT SIDE → TIME */}

@@ -86,6 +86,7 @@ const sortGroups = (groups) => {
 export default function ChatSidebar({ selected, setSelected }) {
   const [loading, setLoading] = useState(true);
   const [chats, setChats] = useState([]);
+  const [creatingSession, setCreatingSession] = useState(false);
 
   // -----------------------------
   // Load Sessions
@@ -132,20 +133,14 @@ export default function ChatSidebar({ selected, setSelected }) {
   // -----------------------------
   const handleNewChat = async () => {
     try {
-      const session = await createSession();
-
-      const newChat = {
-        id: session.id,
-        title: session.title || "New Chat",
-        session_token: session.session_token,
-        last_activity: new Date().toISOString(),
-        dateGroup: "Today"
-      };
-
-      setChats((prev) => [newChat, ...prev]);
-      setSelected(newChat.id);
+      setCreatingSession(true);
+  
+      await createSession();
+      await loadSessions();
     } catch (err) {
       console.error("Create Session Error:", err);
+    } finally {
+      setCreatingSession(false);
     }
   };
 
@@ -202,14 +197,15 @@ export default function ChatSidebar({ selected, setSelected }) {
     >
       {/* New Chat */}
       <Box sx={{ p: 1 }}>
-        <Button
+      <Button
           fullWidth
           variant="contained"
           startIcon={<AddIcon />}
+          disabled={creatingSession}
           onClick={handleNewChat}
           sx={{ textTransform: "none", py: 0.8 }}
         >
-          New Chat
+          {creatingSession ? "Creating..." : "New Chat"}
         </Button>
       </Box>
 

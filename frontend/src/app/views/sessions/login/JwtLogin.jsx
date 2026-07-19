@@ -112,7 +112,7 @@ export default function JwtLogin() {
               src="/assets/images/logo-circle.png"
               width="220"
               alt="login"
-              style={{display: "block", margin: "0 auto", borderRadius: "30%",}}
+              style={{display: "block", margin: "0 auto", borderRadius: "30%", backgroundColor: "white"}}
             />
             <p>An Intelligent Legal Research Assistant for Income Tax & GST</p>
           </LeftPanel>

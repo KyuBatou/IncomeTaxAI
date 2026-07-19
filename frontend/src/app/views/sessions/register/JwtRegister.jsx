@@ -216,7 +216,7 @@ export default function SimpleRegister(){
                 src="/assets/images/logo-circle.png"
                 width="120"
                 alt="logo"
-                style={{margin:30, borderRadius: '30%'}}
+                style={{margin:30, borderRadius: '30%', backgroundColor: "white"}}
               />
               <img
                 width="100%"

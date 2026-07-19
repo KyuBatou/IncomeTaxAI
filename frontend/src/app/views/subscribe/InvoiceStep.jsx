@@ -170,7 +170,7 @@ const InvoiceStep = ({
               </Box>
             }
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             value="razorpay"
             control={<Radio />}
             label={
@@ -182,7 +182,7 @@ const InvoiceStep = ({
                 />
               </Box>
             }
-          />
+          /> */}
         </RadioGroup>
       </FormControl>
 

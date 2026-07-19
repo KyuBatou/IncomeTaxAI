@@ -158,6 +158,7 @@ export default function PricingSection({ data = [] }) {
                   <Button
                     fullWidth
                     endIcon={<ArrowForwardRoundedIcon />}
+                    onClick={() => { window.location.href = "/subscribe" }}
                     sx={{
                       mt: 6,
                       py: 1.7,

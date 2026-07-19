@@ -5,6 +5,7 @@ import { Span } from "./Typography";
 import { MatxLogo } from "app/components";
 import useSettings from "app/hooks/useSettings";
 import { Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 // STYLED COMPONENTS
 const BrandRoot = styled("div")(() => ({
@@ -28,29 +29,31 @@ export default function Brand({ children }) {
   return (
     <BrandRoot>
       <Box display="flex" alignItems="center">
-        <MatxLogo />
-        <Typography
-          onClick={() => scrollToSection("home")}
-          sx={{
-            fontWeight: 900,
-            fontSize: 20,
-            cursor: "pointer",
-            letterSpacing: 1,
-            ml:2,
+        <Link to="/gst">
+          <MatxLogo />
+          <Typography
+            onClick={() => scrollToSection("home")}
+            sx={{
+              fontWeight: 900,
+              fontSize: 20,
+              cursor: "pointer",
+              letterSpacing: 1,
+              ml: 2,
 
-            background:
-              "linear-gradient(90deg,#ff4d6d,#ff8fa3,#ffb3c1)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+              background:
+                "linear-gradient(90deg,#ff4d6d,#ff8fa3,#ffb3c1)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
 
-            transition: "0.3s",
-            "&:hover": {
-              transform: "scale(1.05)",
-            },
-          }}
-        >
-          ITL AI
-        </Typography>
+              transition: "0.3s",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            ITL AI
+          </Typography>
+        </Link>
 
       </Box>
 

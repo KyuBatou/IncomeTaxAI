@@ -47,27 +47,29 @@ export default function LandingHeader({ scrollToSection }) {
       >
         {/* Logo */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <MatxLogo />
+          <Link to="/gst">
+            <MatxLogo />
 
-          <Typography
-            onClick={() => handleNavigation("home")}
-            sx={{
-              fontWeight: 900,
-              fontSize: 20,
-              cursor: "pointer",
-              letterSpacing: 1,
-              background:
-                "linear-gradient(90deg,#ff4d6d,#ff8fa3,#ffb3c1)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              transition: "0.3s",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            ITL AI
-          </Typography>
+            <Typography
+              onClick={() => handleNavigation("home")}
+              sx={{
+                fontWeight: 900,
+                fontSize: 20,
+                cursor: "pointer",
+                letterSpacing: 1,
+                background:
+                  "linear-gradient(90deg,#ff4d6d,#ff8fa3,#ffb3c1)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                transition: "0.3s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              ITL AI
+            </Typography>
+          </Link>
         </Box>
 
         {/* Navigation */}

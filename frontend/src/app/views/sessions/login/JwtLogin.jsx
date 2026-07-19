@@ -62,8 +62,8 @@ const RightPanel = styled(Box)(() => ({
 
 // initial login credentials
 const initialValues = {
-  email: "bhaawani.singh@gmail.com",
-  password: "Bhawani@6127",
+  email: "",
+  password: "",
   remember: true
 };
 

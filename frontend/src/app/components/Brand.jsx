@@ -29,7 +29,7 @@ export default function Brand({ children }) {
   return (
     <BrandRoot>
       <Box display="flex" alignItems="center">
-        <Link to="/gst">
+        {/* <Link to="/gst"> */}
           <MatxLogo />
           <Typography
             onClick={() => scrollToSection("home")}
@@ -53,7 +53,7 @@ export default function Brand({ children }) {
           >
             ITL AI
           </Typography>
-        </Link>
+        {/* </Link> */}
 
       </Box>
 

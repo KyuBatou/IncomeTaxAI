@@ -48,7 +48,7 @@ export default function LandingHeader({ scrollToSection }) {
       >
         {/* Logo */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Link to="/gst">
+          {/* <Link to="/gst"> */}
             <MatxLogo />
 
             <Typography
@@ -70,7 +70,7 @@ export default function LandingHeader({ scrollToSection }) {
             >
               ITL AI
             </Typography>
-          </Link>
+          {/* </Link> */}
         </Box>
 
         {/* Navigation */}
